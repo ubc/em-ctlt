@@ -225,7 +225,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			$espresso_paginate .= "<a href='#' current_page=$total_pages class='event_paginate $next_no_more ui-icon ui-icon-seek-end'>&gt;&gt;</a>";
 			$espresso_paginate .= "</div>";	
 		}
-		echo "<div id='event_content' class='event_content'>"; // begin event_content
+		echo "<div id='event_content' class='event_content'>";
 			if ( count($events) < 1 ) {
 				//echo $sql;
 				echo __('No events available...', 'event_espresso');
@@ -234,6 +234,8 @@ if (!function_exists('event_espresso_get_event_details')) {
 				echo '<p id="events_category_name-' . $category_id . '" class="events_category_name">' . stripslashes_deep($category_name) . '</p>';
 				echo espresso_format_content($category_desc);
 			}
+			
+			/** CTLT START **/
 			echo '<table class="table table-bordered table-hover table-condensed">';
 					echo "<tr>";
 						echo "<th>Date</th><th>Title</th><th>Description</th>";
@@ -248,7 +250,9 @@ if (!function_exists('event_espresso_get_event_details')) {
 						echo "</tr>";
 					}
 			echo "</table>";
-		echo "</div>";	// end event_content
+			/** CTLT END **/
+			
+		echo "</div>";
 		echo "</div>";
 		if ( isset( $espresso_paginate ) ) {
 			echo $espresso_paginate; // spit out the pagination links
