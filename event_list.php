@@ -238,7 +238,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			/** CTLT START **/
 			echo '<table class="table table-bordered table-hover table-condensed">';
 					echo "<tr>";
-						echo "<th>Date</th><th>Title</th><th>Description</th>";
+						echo "<th>Date</th><th>Title</th><th>Series</th><th>Description</th>";
 					echo "</tr>";
 			/** CTLT END **/
 			
@@ -361,57 +361,102 @@ if (!function_exists('event_espresso_get_event_details')) {
 				$registration_url = $externalURL != '' ? $externalURL : espresso_reg_url($event_id);
 					//Serve up the event list
 					//As of version 3.0.17 the event list details have been moved to event_list_display.php
-	
-					/*if ($allow_override == 1) {
+					if ($allow_override == 1) {
 						//Uncomment to show active status array
 						//print_r( event_espresso_get_is_active($event_id));
-						include('event_list_display.php');
+						/** CTLT START **/
+						echo '<tr>';
+							echo '<td>'; ?>
+								<p id="event_date-<?php echo $event_id ?>">  
+									<?php echo event_date_display($start_date, get_option('date_format')) ?> 
+									<?php //Add to calendar button
+									echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
+									<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>
+								</p>
+							<?php echo '</td>';
+							echo '<td>'; ?>
+								<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
+							<?php echo '</td>';
+							echo '<td>'; ?>
+								
+							<?php echo '</td>';
+							echo '<td>'; ?>
+								<div class="event-desc">
+									<?php echo espresso_format_content($event_desc); ?>
+								</div>
+							<?php echo '</td>';
+						echo '</tr>';
+						/** CTLT END **/
 					} else {
-						switch (event_espresso_get_status($event_id)) {
+						switch ( event_espresso_get_status( $event_id ) ) {
 							case 'NOT_ACTIVE':
 								//Don't show the event
 								//Uncomment the following two lines to show events that are not active and the active status array
 								//print_r( event_espresso_get_is_active($event_id));
 								//include('event_list_display.php');
 								break;
-	
+								
 							case 'PENDING':
-								if (current_user_can('administrator') || function_exists('espresso_member_data') && espresso_can_view_event($event_id) == true) {
+									if (current_user_can('administrator') || function_exists('espresso_member_data') && espresso_can_view_event($event_id) == true) {
 									//Uncomment to show active status array
 									//print_r( event_espresso_get_is_active($event_id));
 	
 									echo '<div class="pending_event">';
-									include('event_list_display.php');
+										/** CTLT START **/
+										echo '<tr>';
+											echo '<td>'; ?>
+												<p id="event_date-<?php echo $event_id ?>">  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
+													<?php //Add to calendar button
+													echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
+													<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>		
+												</p>
+											<?php echo '</td>';
+											echo '<td>'; ?>
+												<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
+											<?php echo '</td>';
+											echo '<td>'; ?>
+											
+											<?php echo '</td>';
+											echo '<td>'; ?>
+												<div class="event-desc">
+													<?php echo espresso_format_content($event_desc); ?>
+												</div>
+											<?php echo '</td>';
+										echo '</tr>';
+										/** CTLT END **/
 									echo '</div>';
 								}
 								break;
-	
+								
 							default:
-	
 								//Uncomment to show active status array
 								//print_r( event_espresso_get_is_active($event_id));
-								include('event_list_display.php');
+								/** CTLT START **/
+									echo '<tr>';
+										echo '<td>'; ?>
+											<p id="event_date-<?php echo $event_id ?>">  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
+												<?php //Add to calendar button
+												echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
+												<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>
+											</p>
+										<?php echo '</td>';
+										echo '<td>'; ?>
+											<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
+										<?php echo '</td>';
+										echo '<td>'; ?>
+										
+										<?php echo '</td>';
+										echo '<td>'; ?>
+											<div class="event-desc">
+												<?php echo espresso_format_content($event_desc); ?>
+											</div>
+										<?php echo '</td>';
+									echo '</tr>';
+								/** CTLT END **/
 								break;
 						}
-					}*/
-					/** CTLT START **/
-					echo '<tr>';
-						echo '<td>'; ?>
-							<p id="event_date-<?php echo $event_id ?>">  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
-								<?php //Add to calendar button
-								echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
-							</p>
-						<?php echo '</td>';
-						echo '<td>'; ?>
-							<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
-						<?php echo '</td>';
-						echo '<td>'; ?>
-							<div class="event-desc">
-								<?php echo espresso_format_content($event_desc); ?>
-							</div>
-						<?php echo '</td>';
-					echo '</tr>';
-					/** CTLT END **/
+					}
+					
 			}
 
 			/** CTLT START **/
