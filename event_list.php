@@ -236,7 +236,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			}
 			
 			/** CTLT START **/
-			echo '<table class="table table-bordered table-hover table-condensed">';
+			echo '<table class="table table-bordered table-hover">';
 					echo "<tr>";
 						echo "<th>Date</th><th>Title</th><th>Series</th><th>Description</th>";
 					echo "</tr>";
@@ -378,7 +378,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 								<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 							<?php echo '</td>';
 							echo '<td>'; ?>
-								
+								<?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?>
 							<?php echo '</td>';
 							echo '<td>'; ?>
 								<div class="event-desc">
@@ -415,7 +415,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 												<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 											<?php echo '</td>';
 											echo '<td>'; ?>
-											
+												<?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?>
 											<?php echo '</td>';
 											echo '<td>'; ?>
 												<div class="event-desc">
@@ -444,7 +444,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 											<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 										<?php echo '</td>';
 										echo '<td>'; ?>
-										
+											<?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?>
 										<?php echo '</td>';
 										echo '<td>'; ?>
 											<div class="event-desc">
