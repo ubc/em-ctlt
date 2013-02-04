@@ -25,7 +25,11 @@ if (!function_exists('event_espresso_get_event_details_ajx')) {
 
 //Events Listing - Shows the events on your page.
 if (!function_exists('event_espresso_get_event_details')) {
-
+	
+	/** CTLT START **/
+	
+	/** CTLT END **/
+	
 	function event_espresso_get_event_details( $attributes ) {
 
 		global $wpdb, $org_options, $events_in_session;
@@ -236,7 +240,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			}
 			
 			/** CTLT START **/
-			echo '<table class="table table-bordered table-hover">';
+			echo '<table id="jQuery-espresso-sort-table" class="table table-bordered table-hover">';
 					echo "<tr>";
 						echo "<th>Date</th><th>Title</th><th>Series</th><th>Description</th>";
 					echo "</tr>";
@@ -378,7 +382,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 								<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 							<?php echo '</td>';
 							echo '<td>'; ?>
-								<?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?>
+								<a><?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?></a>
 							<?php echo '</td>';
 							echo '<td>'; ?>
 								<div class="event-desc">
@@ -415,7 +419,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 												<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 											<?php echo '</td>';
 											echo '<td>'; ?>
-												<?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?>
+												<a><?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?></a>
 											<?php echo '</td>';
 											echo '<td>'; ?>
 												<div class="event-desc">
@@ -444,7 +448,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 											<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 										<?php echo '</td>';
 										echo '<td>'; ?>
-											<?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?>
+											<a><?php echo do_shortcode('[CATEGORY_NAME event_id="' . $event_id .'"]'); ?></a>
 										<?php echo '</td>';
 										echo '<td>'; ?>
 											<div class="event-desc">
