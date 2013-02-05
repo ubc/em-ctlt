@@ -1,6 +1,7 @@
 <?php
 
 // CTLT NOTE: CTLT edits are between the CTLT START and CTLT END comment sections
+// Credits to the jQuery client-side tablesorter library by Christian Bach http://www.tablesorter.com
 
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.
 //This is an group of functions for querying all of the events in your databse.
@@ -238,10 +239,10 @@ if (!function_exists('event_espresso_get_event_details')) {
 			}
 			
 			/** CTLT START **/
-			echo '<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover">';
+			echo '<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover tablesorter">';
 				echo '<thead>';
 					echo '<tr>';
-						echo '<th id="date">Date</th><th id="title">Title</th><th id="series">Series</th><th>Description</th>';
+						echo '<th class="header">Date</th><th class="header">Title</th><th class="header">Series</th><th>Description</th>';
 					echo '</tr>';
 				echo '</thead>';
 				echo '<tbody>';
@@ -370,14 +371,14 @@ if (!function_exists('event_espresso_get_event_details')) {
 						//Uncomment to show active status array
 						//print_r( event_espresso_get_is_active($event_id));
 						/** CTLT START **/
-						echo '<tr>';
-							echo '<td id="ctlt-jQ">'; ?>
-								<p id="event_date-<?php echo $event_id ?>">  
-									<?php echo event_date_display($start_date, get_option('date_format')) ?> 
-									<?php //Add to calendar button
-									echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
-									<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>
-								</p>
+							$ctlt_event_espresso_combined_time = strtotime( $start_date . ' ' . $all_meta['start_time'] );
+							echo '<tr>';
+								echo '<td>'; ?>
+									<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . ' ' . event_date_display($start_date, get_option('date_format')); ?> 
+										<?php //Add to calendar button
+										echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
+										<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>
+									</p>
 							<?php echo '</td>';
 							echo '<td>'; ?>
 								<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
@@ -408,12 +409,13 @@ if (!function_exists('event_espresso_get_event_details')) {
 	
 									echo '<div class="pending_event">';
 										/** CTLT START **/
+										$ctlt_event_espresso_combined_time = strtotime( $start_date . ' ' . $all_meta['start_time'] );
 										echo '<tr>';
 											echo '<td>'; ?>
-												<p id="event_date-<?php echo $event_id ?>">  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
+												<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . event_date_display($start_date, get_option('date_format')); ?> 
 													<?php //Add to calendar button
-													echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
-													<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>		
+													echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
+													<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>
 												</p>
 											<?php echo '</td>';
 											echo '<td>'; ?>
@@ -437,9 +439,10 @@ if (!function_exists('event_espresso_get_event_details')) {
 								//Uncomment to show active status array
 								//print_r( event_espresso_get_is_active($event_id));
 								/** CTLT START **/
+									$ctlt_event_espresso_combined_time = strtotime( $start_date . ' ' . $all_meta['start_time'] );
 									echo '<tr>';
 										echo '<td>'; ?>
-											<p id="event_date-<?php echo $event_id ?>">  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
+											<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . event_date_display($start_date, get_option('date_format')); ?> 
 												<?php //Add to calendar button
 												echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
 												<?php echo $all_meta['start_time'] . ' - ' . $all_meta['end_time'];?>
@@ -484,27 +487,20 @@ if (!function_exists('event_espresso_get_event_details')) {
 	/** CTLT START **/
 	
 	/**
-	 * ctlt_event_espresso_register_scripts function
 	 * used for registering the script that contains the table sorting jQuery function
 	 */
-	//function ctlt_event_espresso_register_scripts() {
-		// use the constant EVENT_ESPRESSO_TEMPLATE_DIR to access the template directory
-		// use the constant EVENT_ESPRESSO_UPLOAD_URL to access the espresso uploads url
-		wp_register_script( 'ctlt_event_espresso_sort_table', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/espresso_sort_table.js', array('jquery'), '1.0', true );
-		wp_register_script( 'ctlt_table_sorter_library', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/jquery.tablesorter.js', array('jquery'), '1.0', true );
-	//}
+	// use the constant EVENT_ESPRESSO_TEMPLATE_DIR to access the template directory
+	// use the constant EVENT_ESPRESSO_UPLOAD_URL to access the espresso uploads url
+	wp_register_script( 'ctlt_event_espresso_sort_table', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/espresso_sort_table.js', array('jquery'), '1.0', true );
+	wp_register_script( 'ctlt_table_sorter_library', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/jquery.tablesorter.js', array('jquery'), '1.0', true );
+	wp_register_style( 'ctlt_table_sorter_style', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/css/ctlt_event_espresso_list.css' );
 	
 	/**
-	 * ctlt_event_espresso_print_scripts function
 	 * adds the registered script to the table so that the jQuery sorting function can be invoked
 	 */
-	//function ctlt_event_espresso_print_scripts() {
-		// adds the javascript file to the page
-		wp_enqueue_script( 'ctlt_event_espresso_sort_table' );
-		wp_enqueue_script( 'ctlt_table_sorter_library' );
-	//}
-	
-	/*add_action( 'event_espresso_get_event_details', 'ctlt_event_espresso_register_scripts' );
-	add_action( 'ctlt_event_espresso_print_scripts', 'ctlt_event_espresso_print_scripts' );*/
+	// adds the javascript file to the page
+	wp_enqueue_script( 'ctlt_event_espresso_sort_table' );
+	wp_enqueue_script( 'ctlt_table_sorter_library' );
+	wp_enqueue_style( 'ctlt_table_sorter_style' );
 	/** CTLT END **/
 }
