@@ -10,3 +10,6 @@ table.tablesorter thead tr th.headerSortUp{
 table.tablesorter thead tr th.headerSortDown{
 	background-image: url(desc.gif);
 }
+span.hidden{
+	display: none;
+}
