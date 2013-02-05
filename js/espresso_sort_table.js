@@ -7,6 +7,8 @@ jQuery(document).ready(function() {
 				// disable it by setting the property sorter to false
 				sorter: false
 			}
-		}
+		},
+		// sort on the zeroth column and in ascending order
+		sortList: [[0,0]]
 	});
 });
