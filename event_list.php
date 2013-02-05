@@ -378,8 +378,8 @@ if (!function_exists('event_espresso_get_event_details')) {
 								echo '<td>'; ?>
 									<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . ' ' . event_date_display($start_date, get_option('date_format')); ?> 
 										<?php //Add to calendar button
-										echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
-										<?php echo date("g:i a", $ctlt_event_espresso_start_time) . ' - ' . date("g:i a", $ctlt_event_espresso_end_time);?>
+										echo apply_filters('filter_hook_espresso_display_ical', $all_meta) . '<br/>';?>
+										<?php echo date("g:i a", $ctlt_event_espresso_start_time) . '<br/> - <br/>' . date("g:i a", $ctlt_event_espresso_end_time);?>
 									</p>
 							<?php echo '</td>';
 							echo '<td>'; ?>
@@ -418,8 +418,8 @@ if (!function_exists('event_espresso_get_event_details')) {
 											echo '<td>'; ?>
 												<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . event_date_display($start_date, get_option('date_format')); ?> 
 													<?php //Add to calendar button
-													echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
-													<?php echo date("g:i a", $ctlt_event_espresso_start_time) . ' - ' . date("g:i a", $ctlt_event_espresso_end_time);?>
+													echo apply_filters('filter_hook_espresso_display_ical', $all_meta) . '<br/>';?>
+													<?php echo date("g:i a", $ctlt_event_espresso_start_time) . '<br/> - <br/>' . date("g:i a", $ctlt_event_espresso_end_time);?>
 												</p>
 											<?php echo '</td>';
 											echo '<td>'; ?>
@@ -448,10 +448,10 @@ if (!function_exists('event_espresso_get_event_details')) {
 									$ctlt_event_espresso_end_time = strtotime( $all_meta['end_time'] );
 									echo '<tr>';
 										echo '<td>'; ?>
-											<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . event_date_display($start_date, get_option('date_format')); ?> 
+											<p id="event_date-<?php echo $event_id ?>">  <?php echo '<span class="hidden">' . $ctlt_event_espresso_combined_time . '</span>' . ' ' . event_date_display($start_date, get_option('date_format')) . '<br/>'; ?>
 												<?php //Add to calendar button
-												echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?> <br/>
-												<?php echo date("g:i a", $ctlt_event_espresso_start_time) . ' - ' . date("g:i a", $ctlt_event_espresso_end_time);?>
+												echo apply_filters('filter_hook_espresso_display_ical', $all_meta) . '<br/>';?>
+												<?php echo date("g:i a", $ctlt_event_espresso_start_time) . '<br/> - <br/>' . date("g:i a", $ctlt_event_espresso_end_time);?>
 											</p>
 										<?php echo '</td>';
 										echo '<td>'; ?>
