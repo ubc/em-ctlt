@@ -35,16 +35,7 @@ if ($reg_form_only == false) {
 	<?php // echo '</div>'; ?>
 	<?php /* end venue details block */ ?>
 
-	<?php if ($display_desc == "Y") { //Show the description or not ?>
-	<p class="section-title">
-		<?php _e('Description:', 'event_espresso') ?>
-	</p>
-	<div class="event_description clearfix">
-		<?php echo espresso_format_content($event_desc); //Code to show the actual description. The Wordpress function "wpautop" adds formatting to your description.   ?>
-		
-	</div>
 	<?php
-	}//End display description
 
 	switch ($is_active['status']) {
 	
@@ -108,6 +99,11 @@ if ($reg_form_only == false) {
 					/* Display the address and google map link if available */
 					if ($location != '' && (empty($org_options['display_address_in_regform']) || $org_options['display_address_in_regform'] != 'N')) {
 	?>
+	<!-- CTLT START -->
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span4">
+	<!-- CTLT END -->
 				<p class="event_address" id="event_address-<?php echo $event_id ?>"><span class="section-title"><?php echo __('Address:', 'event_espresso'); ?></span> <br />
 					<span class="address-block">
 						<?php echo $venue_title; ?><br />
@@ -189,9 +185,27 @@ if ($reg_form_only == false) {
 						// Seating chart selector
 						do_action('espresso_seating_chart_select', $event_id);
 							
-					}						
+					}			
 	?>
-
+	<!-- CTLT START -->
+			</div>
+			<div class="span8">
+		<?php
+		if ($display_desc == "Y") { //Show the description or not ?>
+		<p class="section-title">
+			<?php _e('Description:', 'event_espresso') ?>
+		</p>
+		<div class="event_description clearfix">
+			<?php echo espresso_format_content($event_desc); //Code to show the actual description. The Wordpress function "wpautop" adds formatting to your description.   ?>
+			
+		</div>
+		<?php
+		}//End display description
+		?>
+			</div>
+		</div>
+	</div>
+	<!-- CTLT END -->		
 				<div id="event-reg-form-groups">
 				
 					<h3 class="section-heading"><?php _e('Registration Details', 'event_espresso'); ?></h3>
