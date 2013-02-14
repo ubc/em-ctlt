@@ -10,7 +10,7 @@ $ui_corner = 'ui-corner-all';
 //This tells the system to hide the event title if we only need to display the registration form.
 if ($reg_form_only == false) { 
 ?>
-	<h3 class="event_title ui-widget-header ui-corner-top" id="event_title-<?php echo $event_id; ?>">
+	<h3 class="event_title <!--ui-widget-header--> ui-corner-top" id="event_title-<?php echo $event_id; ?>">
 		<?php echo $event_name ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?> <?php echo $is_active['status'] == 'PENDING' ? ' - <span class="expired_event">Event is Pending</span>' : ''; ?> <?php echo $is_active['status'] == 'DRAFT' ? ' - <span class="expired_event">Event is a Draft</span>' : ''; ?>
 	</h3>
 	
@@ -18,7 +18,7 @@ if ($reg_form_only == false) {
 	$ui_corner = 'ui-corner-bottom';
 }
 ?>
- <div class="event_espresso_form_wrapper event-data-display ui-widget-content <?php echo $ui_corner ?>">
+ <div class="event_espresso_form_wrapper event-data-display <!--ui-widget-content--> <?php echo $ui_corner ?>">
  	<?php //Featured image
 		echo apply_filters('filter_hook_espresso_display_featured_image', $event_id, !empty($event_meta['event_thumbnail_url']) ? $event_meta['event_thumbnail_url'] : '');?>
 
