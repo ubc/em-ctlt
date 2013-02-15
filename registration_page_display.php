@@ -157,6 +157,19 @@ if ($reg_form_only == false) {
 						}//End time selected
 	?>
 				</p>
+				<!-- CTLT START -->
+				<p class="event_time">
+	<?php
+					// This block of code is used to display the staff that are tagged to the event
+					$event_staff = do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
+					if( !do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' ) ) {
+						echo "Sorry there is no staff member associated with this event";
+					} else {
+						echo do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
+					}
+	?>
+				</p>
+				<!-- CTLT END -->
 	<?php
 
 					// Added for seating chart addon

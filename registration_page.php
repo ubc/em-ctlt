@@ -115,7 +115,7 @@ if (!function_exists('register_attendees')) {
             $end_date = $data->event->end_date;
             $allow_overflow = $data->event->allow_overflow;
             $overflow_event_id = $data->event->overflow_event_id;
-
+            
             //Venue details
             $venue_title = $data->event->venue_title;
             $venue_url = $data->event->venue_url;
