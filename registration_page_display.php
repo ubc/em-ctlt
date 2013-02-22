@@ -158,17 +158,17 @@ if ($reg_form_only == false) {
 	?>
 				</p>
 				<!-- CTLT START -->
-				<p class="event_time">
 	<?php
 					// This block of code is used to display the staff that are tagged to the event
 					$event_staff = do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
 					if( !do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' ) ) {
-						echo "Sorry there is no staff member associated with this event";
+	?>					<b>Facilitator(s):</b>
+	<?php					echo '<div class="event_staff"><p class="event_person"><strong class="person_name">Sorry there is no staff <br/>member associated with <br/>this event</strong></p></div>';
 					} else {
-						echo do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
+	?>					<b>Facilitator(s):</b>
+	<?php				echo do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
 					}
 	?>
-				</p>
 				<!-- CTLT END -->
 	<?php
 
