@@ -9,6 +9,10 @@ Shortcode: [CTLT_ESPRESSO_CATEGORY_DISPLAY]
 Requirements:
 Notes: This file should be stored in your "/wp-content/uploads/espresso/templates/" folder and you should have downloaded the custom files addon from your event espresso account page
 */
+
+// registering scripts and styles here for sorting the table
+wp_register_script( 'ctlt_event_espresso_sort_table', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/js/espresso_sort_table.js', array('jquery')
+
 function ctlt_display_event_espresso_category(){
     global $wpdb;
     $sql = "SELECT c.category_name, c.category_desc FROM "
