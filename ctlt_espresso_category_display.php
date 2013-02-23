@@ -32,12 +32,28 @@ function ctlt_event_espresso_get_category_list_table($sql){
     $category_descs = $wpdb->category_desc;
     //$display_desc = $wpdb->last_result[0]->display_desc;
 
-   // if($display_desc == 'Y'){
+    // if($display_desc == 'Y'){
        // echo '<p>' . htmlspecialchars_decode($category_name) . '</p>';
        // echo '<p>' . htmlspecialchars_decode($category_desc) . '</p>';
-       foreach ($events as $event){
-       echo $event->category_name;
-       echo $event->category_desc;
-       }
-   // }
+    // }
+?>
+    <table class="table table-bordered table-hover table-condensed">
+        <thead>
+            <tr>
+                <th class="header headerSortDown">Series</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+<?php
+        foreach ($events as $event){
+            echo '<tr>';
+                echo '<td>' . $event->category_name . '</td>';
+                echo '<td>' . $event->category_desc . '</td>';
+            echo '</tr>';
+        }
+?>
+        </tbody>
+    </table>
+<?php
 }
