@@ -28,5 +28,18 @@ function ctlt_event_espresso_get_category_list_table($sql){
         $sessionid = (mt_rand(100,999).time());
         $_SESSION['event_espresso_sessionid'] = $sessionid;
     }
-    echo $_SESSION['event_espresso_sessionid'];
+    //echo $_SESSION['event_espresso_sessionid'];
+    global $wpdb;
+    //echo 'This page is located in ' . EVENT_ESPRESSO_TEMPLATE_DIR;
+    $events = $wpdb->get_results($sql);
+    $category_name = $wpdb->last_result[0]->category_name;
+    $category_desc = $wpdb->last_result[0]->category_desc;
+    $display_desc = $wpdb->last_result[0]->display_desc;
+
+   // if($display_desc == 'Y'){
+       // echo '<p>' . htmlspecialchars_decode($category_name) . '</p>';
+       // echo '<p>' . htmlspecialchars_decode($category_desc) . '</p>';
+       echo $category_name;
+       echo $category_desc;
+   // }
 }
