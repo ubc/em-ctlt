@@ -11,12 +11,8 @@ Notes: This file should be stored in your "/wp-content/uploads/espresso/template
 */
 function ctlt_display_event_espresso_category(){
     global $wpdb;
-    $sql = "SELECT e.*, c.category_name, c.category_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
-    JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
-    JOIN " . EVENTS_CATERORY_REL_TABLE . " r ON r.event_id = e.id
-    JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
-    WHERE e.is_active = 'Y'
-    ORDER BY ese.start_time";
+    $sql = "SELECT c.category_name, c.category_desc FROM "
+    . EVENTS_CATEGORY_TABLE . " c ";
 
     ctlt_event_espresso_get_category_list_table($sql);
 }
@@ -32,14 +28,16 @@ function ctlt_event_espresso_get_category_list_table($sql){
     global $wpdb;
     //echo 'This page is located in ' . EVENT_ESPRESSO_TEMPLATE_DIR;
     $events = $wpdb->get_results($sql);
-    $category_name = $wpdb->last_result[0]->category_name;
-    $category_desc = $wpdb->last_result[0]->category_desc;
-    $display_desc = $wpdb->last_result[0]->display_desc;
+    $category_names = $wpdb->category_name;
+    $category_descs = $wpdb->category_desc;
+    //$display_desc = $wpdb->last_result[0]->display_desc;
 
    // if($display_desc == 'Y'){
        // echo '<p>' . htmlspecialchars_decode($category_name) . '</p>';
        // echo '<p>' . htmlspecialchars_decode($category_desc) . '</p>';
-       echo $category_name;
-       echo $category_desc;
+       foreach ($events as $event){
+       echo $event->category_name;
+       echo $event->category_desc;
+       }
    // }
 }
