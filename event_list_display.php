@@ -71,17 +71,24 @@ $this_event_id = $event_id;
 		</div>
 	</td>
 	<td>
-		<?php
-			echo 'categories go here';
-		?>
+		<a><?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ); ?></a>
 	</td>
 	<td>
 		<?php
 	//Show short descriptions
 		if (!empty($event_desc) && isset($org_options['display_short_description_in_event_list']) && $org_options['display_short_description_in_event_list'] == 'Y') {
+			$output_desc = explode( " ", $event_desc, 15 );
+			if( count( $output_desc ) > 14 ) {
+				$output_desc = array_reverse( $output_desc );
+				array_shift( $output_desc );
+				$output_desc = array_reverse( $output_desc );
+				$output_desc[14] = "...";
+			}
+			$output_desc = implode( " ", $output_desc );
+			//var_dump($output_desc);
 			?>
 			<div class="event-desc">
-				<?php echo espresso_format_content($event_desc); ?>
+				<?php echo espresso_format_content($output_desc); ?>
 			</div>
 			<?php
 		}
