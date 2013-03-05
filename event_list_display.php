@@ -39,56 +39,55 @@ $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' -
 global $this_event_id;
 $this_event_id = $event_id;
 ?>
-<div id="event_data-<?php echo $event_id ?>" class="event_data <?php echo $css_class; ?> <?php echo $category_identifier; ?> event-data-display event-list-display event-display-boxes ui-widget">
-	<h3 id="event_title-<?php echo $event_id ?>" class="event_title ui-widget-header ui-corner-top"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
-		<?php /* These are custom messages that can be displayed based on the event status. Just un-comment the one you want to use. */ ?>
-		<?php //echo $status_display; //Turn this on to display the overall status of the event.  ?>
-		<?php //echo $status_display_ongoing; //Turn this on to display the ongoing message. ?>
-		<?php //echo $status_display_deleted; //Turn this on to display the deleted message. ?>
-		<?php //echo $status_display_secondary; //Turn this on to display the waitlist message. ?>
-		<?php //echo $status_display_reg_closed; //Turn this on to display the registration closed message. ?>
-		<?php //echo $status_display_not_open; //Turn this on to display the secondary message. ?>
-		<?php //echo $status_display_open; //Turn this on to display the not open message. ?>
-		<?php //echo $status_display_custom_closed; //Turn this on to display the closed message. ?>
-	</h3>
-<div class="event-data-display ui-widget-content ui-corner-bottom">
-	<?php /* Venue details. Un-comment to display. */ ?>
-	<?php //echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':'' ?>
-	<?php //echo $venue_address != ''?'<p id="event_venue_address-'.$event_id.'" class="event_venue_address">'.stripslashes_deep($venue_address).'</p>':''?>
-	<?php //echo $venue_address2 != ''?'<p id="event_venue_address2-'.$event_id.'" class="event_venue_address2">'.stripslashes_deep($venue_address2).'</p>':''?>
-	<?php //echo $venue_city != ''?'<p id="event_venue_city-'.$event_id.'" class="event_venue_city">'.stripslashes_deep($venue_city).'</p>':''?>
-	<?php //echo $venue_state != ''?'<p id="event_venue_state-'.$event_id.'" class="event_venue_state">'.stripslashes_deep($venue_state).'</p>':''?>
-	<?php //echo $venue_zip != ''?'<p id="event_venue_zip-'.$event_id.'" class="event_venue_zip">'.stripslashes_deep($venue_zip).'</p>':''?>
-	<?php //echo $venue_country != ''?'<p id="event_venue_country-'.$event_id.'" class="event_venue_country">'.stripslashes_deep($venue_country).'</p>':''
-	$event->event_cost = empty($event->event_cost) ? '' : $event->event_cost;
-	?>
+	<td>
+		<div class="event-meta">
+				<?php //Featured image
+				echo apply_filters('filter_hook_espresso_display_featured_image', $event_id, !empty($event_meta['event_thumbnail_url']) ? $event_meta['event_thumbnail_url'] : '');?>
+				<?php /*if ( $event->event_cost != '0.00' ) { ?>
+					 <p id="p_event_price-<?php echo $event_id ?>" class="event_price"><span class="section-title"><?php  echo __('Price: ', 'event_espresso'); ?></span> <?php echo  $org_options['currency_symbol'].$event->event_cost; ?></p>
+				<?php } else { ?>
+					<p id="p_event_price-<?php echo $event_id ?>" class="event_price"><?php echo __('Free Event', 'event_espresso'); ?></p>
+				<?php }*/?>
 
-	<div class="event-meta">
-			<?php //Featured image
-			echo apply_filters('filter_hook_espresso_display_featured_image', $event_id, !empty($event_meta['event_thumbnail_url']) ? $event_meta['event_thumbnail_url'] : '');?>
-			<?php if ( $event->event_cost != '0.00' ) { ?>
-				 <p id="p_event_price-<?php echo $event_id ?>" class="event_price"><span class="section-title"><?php  echo __('Price: ', 'event_espresso'); ?></span> <?php echo  $org_options['currency_symbol'].$event->event_cost; ?></p>
-			<?php } else { ?>
-				<p id="p_event_price-<?php echo $event_id ?>" class="event_price"><?php echo __('Free Event', 'event_espresso'); ?></p>
-			<?php } ?>
-
-		<p id="event_date-<?php echo $event_id ?>"><span class="section-title"><?php _e('Date:', 'event_espresso'); ?></span>  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
-			<?php //Add to calendar button
-			echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
-		</p>
-	</div>
-	<?php
-//Show short descriptions
-	if (!empty($event_desc) && isset($org_options['display_short_description_in_event_list']) && $org_options['display_short_description_in_event_list'] == 'Y') {
-		?>
-		<div class="event-desc">
-			<?php echo espresso_format_content($event_desc); ?>
+			<p id="event_date-<?php echo $event_id ?>"><!--<span class="section-title"><?php _e('Date:', 'event_espresso'); ?></span>-->  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
+				<?php //Add to calendar button
+				echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
+			</p>
 		</div>
+	</td>
+	<td>
+		<!--<div id="event_data-<?php echo $event_id ?>" class="event_data <?php echo $css_class; ?> <?php echo $category_identifier; ?> event-data-display event-list-display event-display-boxes ui-widget">-->
+		<div id="event_data-<?php echo $event_id ?>" >
+			<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
+				<?php /* These are custom messages that can be displayed based on the event status. Just un-comment the one you want to use. */ ?>
+				<?php //echo $status_display; //Turn this on to display the overall status of the event.  ?>
+				<?php //echo $status_display_ongoing; //Turn this on to display the ongoing message. ?>
+				<?php //echo $status_display_deleted; //Turn this on to display the deleted message. ?>
+				<?php //echo $status_display_secondary; //Turn this on to display the waitlist message. ?>
+				<?php //echo $status_display_reg_closed; //Turn this on to display the registration closed message. ?>
+				<?php //echo $status_display_not_open; //Turn this on to display the secondary message. ?>
+				<?php //echo $status_display_open; //Turn this on to display the not open message. ?>
+				<?php //echo $status_display_custom_closed; //Turn this on to display the closed message. ?>
+		</div>
+	</td>
+	<td>
 		<?php
-	}
-	?>
-
-	<?php if ( (isset($location) && $location != '' ) && (isset($org_options['display_address_in_event_list']) && $org_options['display_address_in_event_list'] == 'Y') ) { ?>
+			echo 'categories go here';
+		?>
+	</td>
+	<td>
+		<?php
+	//Show short descriptions
+		if (!empty($event_desc) && isset($org_options['display_short_description_in_event_list']) && $org_options['display_short_description_in_event_list'] == 'Y') {
+			?>
+			<div class="event-desc">
+				<?php echo espresso_format_content($event_desc); ?>
+			</div>
+			<?php
+		}
+		?>
+	</td>
+	<?php /*if ( (isset($location) && $location != '' ) && (isset($org_options['display_address_in_event_list']) && $org_options['display_address_in_event_list'] == 'Y') ) { ?>
 		<p class="event_address" id="event_address-<?php echo $event_id ?>"><span class="section-title"><?php echo __('Address:', 'event_espresso'); ?></span> <br />
 			
 			<span class="address-block">
@@ -114,7 +113,7 @@ $this_event_id = $event_id;
 		if ($display_reg_form == 'Y' && $externalURL == '') {
 			?>			<p id="available_spaces-<?php echo $event_id ?>" class="spaces-available"><span class="section-title"><?php _e('Available Spaces:', 'event_espresso') ?></span> <?php echo get_number_of_attendees_reg_limit($event_id, 'available_spaces') ?></p>
 			<?php
-		}
+		}*/
 
 		/**
 		 * Load the multi event link.
@@ -123,10 +122,10 @@ $this_event_id = $event_id;
 		//echo event_espresso_get_status($event_id);
 		//print_r( event_espresso_get_is_active($event_id));
 
-		if ($multi_reg && event_espresso_get_status($event_id) == 'ACTIVE'/* && $display_reg_form == 'Y'*/) { 
+		//if ($multi_reg && event_espresso_get_status($event_id) == 'ACTIVE'/* && $display_reg_form == 'Y'*/) { 
 		// Uncomment && $display_reg_form == 'Y' in the line above to hide the add to cart link/button form the event list when the registration form is turned off.
 
-			$params = array(
+			/*$params = array(
 				//REQUIRED, the id of the event that needs to be added to the cart
 				'event_id' => $event_id,
 				//REQUIRED, Anchor of the link, can use text or image
@@ -163,8 +162,8 @@ $this_event_id = $event_id;
 			
 		<?php
 		}
-	}
+	}*/
 	?>
 	
-</div><!-- / .event-data-display -->
-</div><!-- / .event-display-boxes -->
+<!--</div> / .event-data-display -->
+<!--</div> / .event-display-boxes -->
