@@ -51,7 +51,8 @@ $this_event_id = $event_id;
 
 			<p id="event_date-<?php echo $event_id ?>"><!--<span class="section-title"><?php _e('Date:', 'event_espresso'); ?></span>-->  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
 				<?php //Add to calendar button
-				echo apply_filters('filter_hook_espresso_display_ical', $all_meta);?>
+				echo apply_filters('filter_hook_espresso_display_ical', $all_meta) . '<br/>';
+				echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time');?>
 			</p>
 		</div>
 	</td>
