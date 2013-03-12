@@ -21,15 +21,16 @@ wp_enqueue_style( 'ctlt_table_sorter_style' );
 
 function ctlt_display_event_espresso_category(){
     global $wpdb;
-    $sql = "SELECT e.id, d.start_date, d.category_name, d.category_desc
+    $sql = "SELECT e.id, d.start_date, d.category_name, d.category_desc, d.cat_id
             FROM " . EVENTS_DETAIL_TABLE . " e
             INNER JOIN
             (
-                SELECT min(e.start_date) Start_date, c.category_name, c.category_desc
-                FROM " . EVENTS_DETAIL_TABLE . " e
-                INNER JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
-                INNER JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
-                GROUP BY c.category_name, c.category_desc
+                SELECT min(e.start_date) Start_date, c.category_name, c.category_desc, c.id AS cat_id
+                FROM wp_7_events_detail e
+                JOIN wp_7_events_category_rel r ON r.event_id = e.id
+                JOIN wp_7_events_category_detail c on c.id = r.cat_id
+                WHERE e.is_active = 'Y'
+                GROUP BY c.category_name, c.category_desc, c.id
 )  d ON e.start_date = d.Start_date
 WHERE e.is_active = 'Y'
 ORDER BY date(e.start_date)";
@@ -44,18 +45,11 @@ function ctlt_event_espresso_get_category_list_table($sql){
         $sessionid = (mt_rand(100,999).time());
         $_SESSION['event_espresso_sessionid'] = $sessionid;
     }
-    //echo $_SESSION['event_espresso_sessionid'];
     global $wpdb;
-    //echo 'This page is located in ' . EVENT_ESPRESSO_TEMPLATE_DIR;
     $events = $wpdb->get_results($sql);
     $category_names = $wpdb->category_name;
     $category_descs = $wpdb->category_desc;
-    //$display_desc = $wpdb->last_result[0]->display_desc;
 
-    // if($display_desc == 'Y'){
-       // echo '<p>' . htmlspecialchars_decode($category_name) . '</p>';
-       // echo '<p>' . htmlspecialchars_decode($category_desc) . '</p>';
-    // }
 ?>
     <table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover table-condensed tablesorter">
         <thead>
@@ -66,19 +60,35 @@ function ctlt_event_espresso_get_category_list_table($sql){
         </thead>
         <tbody>
 <?php
-        foreach ($events as $event){
+        foreach ($events as $event) {
             $event_id = $event->id;
             $event_date = $event->start_date;
+            $cat_id = $event->cat_id;
             $cat_name = $event->category_name;
             $cat_desc = $event->category_desc;
-            echo '<tr>';
-                echo '<td>' . event_date_display( $event_date, get_option( 'date_format' ) ) . '</td>';
-                echo '<td><a>' . $cat_name . '</a><br/>' . $cat_desc . '</td>';
-            echo '</tr>';
-        }
+            ctlt_espresso_category_url( $cat_id );
+            ?>
+            <tr>
+                <td><?php echo event_date_display( $event_date, get_option( 'date_format' ) );?></td>
+                <td><a href="<?php echo ctlt_espresso_category_url( $cat_id ); ?>"><?php echo $cat_name; ?></a><br/><?php echo $cat_desc; ?></td>
+            </tr>
+        <?php }
 ?>
         </tbody>
     </table>
 <?php
 }
+
+function ctlt_espresso_category_url( $cat_id = 0 ) {
+    global $org_options;
+    if ( $cat_id > 0 ) {
+        //return espresso_getTinyUrl(home_url().'/?page_id='.$org_options['event_page_id'].'&regevent_action=register&event_id='.$event_id);
+        $new_url = add_query_arg('category', $cat_id, get_permalink() );
+        return $new_url;
+    }/* else {
+      echo 'No event id supplied'; */
+    return;
+    //}
+}
+
 
