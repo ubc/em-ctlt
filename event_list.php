@@ -271,6 +271,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			$espresso_paginate .= "</div>";	
 		}
 		echo "<div id='event_content' class='event_content'>";
+		echo do_shortcode('[EVENT_SEARCH]');
 		if ( count($events) < 1) {
 			//echo $sql;
 			echo __('No events available...', 'event_espresso');
