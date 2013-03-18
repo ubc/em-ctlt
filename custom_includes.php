@@ -30,6 +30,10 @@ if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."espresso_table.php")){
 if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_display.php")){
 	require_once(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_display.php");
 }
+// custom template file for showing the registration page for categories
+if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_registration.php")){
+	require_once(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_registration.php");
+}
 /** CTLT END **/
 
 //Ongoing Events

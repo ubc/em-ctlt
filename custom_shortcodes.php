@@ -139,7 +139,11 @@ Notes: This file should be stored in your "/wp-content/uploads/espresso/template
 */
 function ctlt_espresso_category_display($atts) {
 	ob_start();
-	ctlt_display_event_espresso_category();
+	if(isset($_REQUEST['category'])):
+		ctlt_display_event_espresso_category_registration();
+	else:
+		ctlt_display_event_espresso_category();
+	endif;
 	$buffer = ob_get_contents();
 	ob_end_clean();
 	return $buffer;
