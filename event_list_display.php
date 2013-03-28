@@ -1,4 +1,8 @@
 <?php
+
+/*
+ * Version: 0.7
+ */
 //This is the event list template page.
 //This is a template file for displaying an event lsit on a page.
 //There should be a copy of this file in your wp-content/uploads/espresso/ folder.

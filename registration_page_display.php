@@ -1,4 +1,7 @@
 <?php
+/*
+ * Version: 0.7
+ */
 //This is the registration form.
 //This is a template file for displaying a registration form for an event on a page.
 //There should be a copy of this file in your wp-content/uploads/espresso/ folder.
@@ -166,7 +169,7 @@ if ($reg_form_only == false) {
 	<?php					echo '<div class="event_staff"><p class="event_person"><strong class="person_name">Sorry there is no staff <br/>member associated with <br/>this event</strong></p></div>';
 					} else {
 	?>					<b>Facilitator(s):</b>
-	<?php				echo do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
+	<?php				echo $event_staff;
 					}
 	?>
 				<!-- CTLT END -->

@@ -1,5 +1,9 @@
 <?php
 
+/*
+ * Version: 0.7
+ */
+
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.
 //This is an group of functions for querying all of the events in your databse.
 //This file should be stored in your "/wp-content/uploads/espresso/templates/" directory.

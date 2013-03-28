@@ -1,4 +1,8 @@
-<?php if (!defined('EVENT_ESPRESSO_VERSION')) { exit('No direct script access allowed'); }
+<?php
+/*
+ * Version: 0.7
+ */
+if (!defined('EVENT_ESPRESSO_VERSION')) { exit('No direct script access allowed'); }
 do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');		
 //As of version 3.0.17
 //This is a logic file for displaying a registration form for an event on a page. This file will do all of the backend data retrieval functions.

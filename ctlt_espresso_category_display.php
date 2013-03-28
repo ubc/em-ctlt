@@ -2,7 +2,7 @@
 /*
 Template Name: Category Display for Events
 Author: Julien law
-Contact:
+Version: 0.7
 Website:
 Description: This is a template file for displaying a list of categories.
 Shortcode: [CTLT_ESPRESSO_CATEGORY_DISPLAY]
@@ -66,11 +66,11 @@ function ctlt_event_espresso_get_category_list_table($sql){
             $cat_id = $event->cat_id;
             $cat_name = $event->category_name;
             $cat_desc = $event->category_desc;
-            ctlt_espresso_category_url( $cat_id );
+            $url = ctlt_espresso_category_url( $cat_id, $cat_name );
             ?>
             <tr>
                 <td><?php echo event_date_display( $event_date, get_option( 'date_format' ) );?></td>
-                <td><a href="<?php echo ctlt_espresso_category_url( $cat_id ); ?>"><?php echo $cat_name; ?></a><br/><?php echo $cat_desc; ?></td>
+                <td><a href="<?php echo $url ?>"><?php echo $cat_name; ?></a><br/><?php echo $cat_desc; ?></td>
             </tr>
         <?php }
 ?>
@@ -79,16 +79,15 @@ function ctlt_event_espresso_get_category_list_table($sql){
 <?php
 }
 
-function ctlt_espresso_category_url( $cat_id = 0 ) {
+function ctlt_espresso_category_url( $cat_id = 0, $cat_name = NULL ) {
     global $org_options;
-    if ( $cat_id > 0 ) {
+    if ( $cat_id > 0 && !empty($cat_name) ) {
         //return espresso_getTinyUrl(home_url().'/?page_id='.$org_options['event_page_id'].'&regevent_action=register&event_id='.$event_id);
-        $new_url = add_query_arg('category', $cat_id, get_permalink() );
+        $new_url = add_query_arg('category_id', $cat_id, get_permalink() );
+        $new_url = add_query_arg('category_name', $cat_name, $new_url );
         return $new_url;
     }/* else {
       echo 'No event id supplied'; */
     return;
     //}
 }
-
-
