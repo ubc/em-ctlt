@@ -50,6 +50,12 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 	$categories = $wpdb->get_results( $cat_sql );
 	$num_rows = $wpdb->num_rows;
 
+	//Check for Multi Event Registration
+	$multi_reg = false;
+	if( function_exists( 'event_espresso_multi_reg_init' ) ) {
+		$multi_reg = true;
+	}
+
 	// TODO: generate content and the category information
 	//	var_dump( $categories );
 	foreach( $categories as $category ) {
@@ -67,12 +73,16 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 	}
 	if( $num_rows > 0 ) {
 		// do some stuff here
+		//$multi_reg = false;
 		?>
 
 		<table class="table table-bordered table-hover">
 			<thead>
 				<tr>
-					<th>Date</th><th>Title</th><th>Description</th><th>test column</th>
+					<th>Date</th>
+					<th>Title</th>
+					<th>Description</th>
+					<th>Registration</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -110,18 +120,17 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 						$event_desc = implode( " ", $event_desc );
 					}
 					$post_url = get_site_url() . '?page_id=' . $org_options['event_page_id'] . '&regevent_action=register&event_id=' . $event_id;
-					?>
-					<tr>
-						<td><?php echo event_date_display($start_date, get_option('date_format')); ?></td>
-						<td><a href="<?php echo $post_url; ?>" id="event-reg-id-<?php echo $event_id; ?>"><?php echo $event_name; ?></a></td>
-						<td><?php echo $event_desc; ?></td>
-						<td><input type="checkbox" name="<?php echo $event_name; ?>" value="<?php echo $event_name; ?>" id="<?php echo $event_id; ?>"></td>
-					</tr>
-					<?php
+					
+					if( empty( $path ) ) {
+						include( $template_name );
+					}
+					else {
+						include( $path );
+					}
 				}?>
 			</tbody>
 		</table>
-		<button class="btn" type="button">Register</button>
+		<!--<button class="btn" type="button">Register</button>-->
 		<?php
 
 	}

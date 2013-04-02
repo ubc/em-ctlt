@@ -8,6 +8,10 @@ events
 
 == changelog ==
 
+v0.8 - added multi-event registration to the series view and events view
+     - added a paired file to ctlt_espresso_category_registration.php
+     - paired filename is ctlt_espresso_category_registration_display.php
+
 v0.7 - created singular series page that shows all the upcoming events under that series
 
 v0.6 - created the series page to better reflect the old events site

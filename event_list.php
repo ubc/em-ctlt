@@ -282,13 +282,14 @@ if (!function_exists('event_espresso_get_event_details')) {
 		}
 		else {
 			?>
-			<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover tablesorter">
+			<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover">
 				<thead>
 					<tr>
 						<th class="header">Date</th>
 						<th class="header">Title</th>
 						<th class="header">Series</th>
 						<th>Description</th>
+						<th>Registration</th>
 					</tr>
 				</thead>
 				<tbody>
