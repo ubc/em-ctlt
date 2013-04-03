@@ -26,9 +26,9 @@ function ctlt_display_event_espresso_category(){
             INNER JOIN
             (
                 SELECT min(e.start_date) Start_date, c.category_name, c.category_desc, c.id AS cat_id
-                FROM wp_7_events_detail e
-                JOIN wp_7_events_category_rel r ON r.event_id = e.id
-                JOIN wp_7_events_category_detail c on c.id = r.cat_id
+                FROM " . EVENTS_DETAIL_TABLE . " e
+                JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
+                JOIN " . EVENTS_CATEGORY_TABLE . " c on c.id = r.cat_id
                 WHERE e.is_active = 'Y'
                 GROUP BY c.category_name, c.category_desc, c.id
 )  d ON e.start_date = d.Start_date
