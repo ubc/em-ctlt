@@ -33,7 +33,8 @@ function ctlt_display_event_espresso_category(){
                 GROUP BY c.category_name, c.category_desc, c.id
 )  d ON e.start_date = d.Start_date
 WHERE e.is_active = 'Y'
-ORDER BY date(e.start_date)";
+ORDER BY date(e.start_date)
+GROUP BY d.category_name";
 
     ctlt_event_espresso_get_category_list_table($sql);
 }
