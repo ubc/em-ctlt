@@ -131,7 +131,7 @@ add_shortcode('ESPRESSO_TABLE', 'espresso_table');
 /*
 Shortcode Name: CTLT Espresso Category Display
 Author: Julien Law
-Contact: julienlaw1@gmail.com
+Contact: julienlaw@alumni.ubc.ca
 Website: 
 Description: Shows all the categories in the category manager.
 Usage Example: [CTLT_ESPRESSO_CATEGORY_DISPLAY]
@@ -139,7 +139,7 @@ Notes: This file should be stored in your "/wp-content/uploads/espresso/template
 */
 function ctlt_espresso_category_display($atts) {
 	ob_start();
-	if(isset($_REQUEST['category'])):
+	if(isset($_REQUEST['category_id'], $_REQUEST['category_name'])):
 		ctlt_display_event_espresso_category_registration();
 	else:
 		ctlt_display_event_espresso_category();
