@@ -2,7 +2,7 @@
 /*
 Template Name: Category Display for Events
 Author: Julien law
-Version: 0.8
+Version: 0.81
 Website:
 Description: This is a template file for displaying a list of categories.
 Shortcode: [CTLT_ESPRESSO_CATEGORY_DISPLAY]
@@ -34,11 +34,13 @@ function ctlt_display_event_espresso_category(){
             )  d ON e.start_date = d.Start_date
             WHERE e.is_active = 'Y'
             ORDER BY date(e.start_date)";*/
+
     $sql = "SELECT e.id, min(e.start_date) AS start_date, c.category_name, c.category_desc, c.id AS cat_id
             FROM " . EVENTS_DETAIL_TABLE . " e
             JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
             JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
             WHERE e.is_active = 'Y'
+            AND e.end_date > CURDATE()
             GROUP BY c.category_name, c.category_desc, c.id";
 
     ctlt_event_espresso_get_category_list_table($sql);
@@ -73,6 +75,7 @@ function ctlt_event_espresso_get_category_list_table($sql){
             $cat_name = $event->category_name;
             $cat_desc = $event->category_desc;
             $url = ctlt_espresso_category_url( $cat_id, $cat_name );
+
             ?>
             <tr>
                 <td><?php echo event_date_display( $event_date, get_option( 'date_format' ) );?></td>

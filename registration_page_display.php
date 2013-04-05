@@ -94,30 +94,37 @@ if ($reg_form_only == false) {
 ?>
 	<div class="event_espresso_form_wrapper">
 		<form method="post" action="<?php echo get_permalink( $event_page_id );?>" id="registration_form">
-	<?php
-				
-			//This hides the date/times and location when usign custom post types or the ESPRESSO_REG_FORM shortcode
-				if ( $reg_form_only == false ){	
-						
-					/* Display the address and google map link if available */
-					if ($location != '' && (empty($org_options['display_address_in_regform']) || $org_options['display_address_in_regform'] != 'N')) {
-	?>
-	<!-- CTLT START -->
+				<!-- CTLT START -->
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span4">
 	<!-- CTLT END -->
-				<p class="event_address" id="event_address-<?php echo $event_id ?>"><span class="section-title"><?php echo __('Address:', 'event_espresso'); ?></span> <br />
+	<?php
+				
+			//This hides the date/times and location when usign custom post types or the ESPRESSO_REG_FORM shortcode
+				if ( $reg_form_only == false ){	
+					
+					?>
+				<p class="event_address" id="event_address-<php echo $event_id; ?>"><span class="section-title"><?php echo __('Address:', 'event_espresso'); ?></span><br/>
 					<span class="address-block">
+					<?php
+					/* Display the address and google map link if available */
+					if ($location != '' && (empty($org_options['display_address_in_regform']) || $org_options['display_address_in_regform'] != 'N')) {
+	?>
 						<?php echo $venue_title; ?><br />
 						<?php echo stripslashes_deep($location); ?><br />
 						<span class="google-map-link"><?php echo $google_map_link; ?></span>
-					</span>
-				</p>
 	<?php
+					}
+					else {
+						?>
+						<span class="span_event_date_label">Sorry, there is no venue or address associated with this event</span>
+						<?php
 					}
 					do_action('action_hook_espresso_social_display_buttons', $event_id);
 	?>
+					</span>
+				</p>
 
 				<p class="start_date">
 					<?php if ($end_date !== $start_date) { ?>
@@ -164,12 +171,11 @@ if ($reg_form_only == false) {
 	<?php
 					// This block of code is used to display the staff that are tagged to the event
 					$event_staff = do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' );
+					echo '<span class="section-title">Facilitator(s):</span>';
 					if( !do_shortcode( '[ESPRESSO_STAFF event_id="' . $event_id . '"]' ) ) {
-	?>					<b>Facilitator(s):</b>
-	<?php					echo '<div class="event_staff"><p class="event_person"><strong class="person_name">Sorry there is no staff <br/>member associated with <br/>this event</strong></p></div>';
+						echo '<div class="event_staff"><p class="event_person"><strong class="person_name">Sorry, there is no staff <br/>member associated with <br/>this event</strong></p></div>';
 					} else {
-	?>					<b>Facilitator(s):</b>
-	<?php				echo $event_staff;
+						echo $event_staff;
 					}
 	?>
 				<!-- CTLT END -->

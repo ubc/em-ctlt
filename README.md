@@ -7,6 +7,9 @@ events
 * This is only to work on template customization for Events Espresso. (see https://eventespresso.com/wiki/put-custom-templates/)
 
 == changelog ==
+v0.81 - fixed the address layout issue when no venue or address is provided
+      - fixed a bug where the proceeding page was not being loaded when clicking on a series name
+      - fixed a bug where past events were showing up in the current events section for series
 
 v0.8 - added multi-event registration to the series view and events view
      - added a paired file to ctlt_espresso_category_registration.php

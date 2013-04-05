@@ -2,7 +2,7 @@
 /*
 Template Name: Category Registration for Events
 Author: Julien law
-Version: 0.7
+Version: 0.81
 Website:
 Description: This is a template file for displaying a list of categories.
 Requirements: ctlt_espresso_category_display.php
@@ -28,6 +28,7 @@ function ctlt_display_event_espresso_category_registration() {
 	JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
 	WHERE e.is_active = 'Y'
 	AND c.id = '" . $url_cat_id . "'
+	AND e.end_date > CURDATE()
 	ORDER BY date(e.start_date), ese.start_time";
 
 	ctlt_event_espresso_get_category_registration_view( $sql );
