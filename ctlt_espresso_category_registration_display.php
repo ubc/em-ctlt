@@ -1,4 +1,7 @@
 <?php
+/*
+ * Version: 0.81
+ */
 // This is the category event list template page.
 // This is a template file for displaying a category event list on a page
 

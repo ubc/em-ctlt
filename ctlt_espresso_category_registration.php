@@ -22,7 +22,7 @@ function ctlt_display_event_espresso_category_registration() {
 	// need to find a way to make this more secure
 	$url_cat_id = $_GET['category_id'];
 	global $wpdb;
-	$sql = "SELECT e.*, c.category_name, c.category_desc, c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
+	$sql = "SELECT e.*, min(e.start_date), c.category_name, c.category_desc, c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
 	JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
 	JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
 	JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
