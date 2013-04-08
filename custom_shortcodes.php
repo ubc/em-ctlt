@@ -133,21 +133,25 @@ Shortcode Name: CTLT Espresso Category Display
 Author: Julien Law
 Contact: julienlaw@alumni.ubc.ca
 Website: 
+Version: 0.9
 Description: Shows all the categories in the category manager.
-Usage Example: [CTLT_ESPRESSO_CATEGORY_DISPLAY]
+Usage Example:  [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="current"] to display upcoming events 
+				[CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="past"] to display past events
 Notes: This file should be stored in your "/wp-content/uploads/espresso/templates/" folder and you should have the custom_includes.php files installed in your "/wp-content/uploads/espresso/" directory.
 */
 function ctlt_espresso_category_display($atts) {
+	extract( shortcode_atts( array( 'event_type' => 'current' ), $atts ) );
+	$event_type = "{$event_type}";
 	ob_start();
-	if(isset($_REQUEST['category_id'], $_REQUEST['category_name'])):
-		ctlt_display_event_espresso_category_registration();
+	if( isset( $_REQUEST['category_id'], $_REQUEST['category_name'] ) ):
+		ctlt_display_event_espresso_category_registration( $event_type );
 	else:
-		ctlt_display_event_espresso_category();
+		ctlt_display_event_espresso_category( $event_type );
 	endif;
 	$buffer = ob_get_contents();
 	ob_end_clean();
 	return $buffer;
 }
-add_shortcode('CTLT_ESPRESSO_CATEGORY_DISPLAY', 'ctlt_espresso_category_display');
+add_shortcode( 'CTLT_ESPRESSO_CATEGORY_DISPLAY', 'ctlt_espresso_category_display' );
 
 /** CTLT END **/

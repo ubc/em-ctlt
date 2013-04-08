@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.7
+ * Version: 0.9
  */
 //This is the event list template page.
 //This is a template file for displaying an event lsit on a page.

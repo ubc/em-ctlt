@@ -1,6 +1,6 @@
 <?php
 /*
- * Version: 0.7
+ * Version: 0.9
  */
 //This is the registration form.
 //This is a template file for displaying a registration form for an event on a page.

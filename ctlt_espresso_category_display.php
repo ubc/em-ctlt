@@ -2,11 +2,12 @@
 /*
 Template Name: Category Display for Events
 Author: Julien law
-Version: 0.81
+Version: 0.9
 Website:
 Description: This is a template file for displaying a list of categories.
-Shortcode: [CTLT_ESPRESSO_CATEGORY_DISPLAY]
-Requirements:
+Shortcode Usage:   [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="current"] to display upcoming events
+                   [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="past"] to display past events
+Requirements: ctlt_espresso_category_registration.php, ctlt_espresso_category_registration_display.php, custom_shortcodes.php, custom_includes.php, custom_functions.php
 Notes: This file should be stored in your "/wp-content/uploads/espresso/templates/" folder and you should have downloaded the custom files addon from your event espresso account page
 */
 
@@ -19,7 +20,7 @@ wp_enqueue_script( 'ctlt_event_espresso_sort_table' );
 wp_enqueue_script( 'ctlt_table_sorter_library' );
 wp_enqueue_style( 'ctlt_table_sorter_style' );
 
-function ctlt_display_event_espresso_category(){
+function ctlt_display_event_espresso_category($event_type){
     global $wpdb;
     /*$sql = "SELECT e.id, d.start_date, d.category_name, d.category_desc, d.cat_id
             FROM " . EVENTS_DETAIL_TABLE . " e
@@ -35,12 +36,17 @@ function ctlt_display_event_espresso_category(){
             WHERE e.is_active = 'Y'
             ORDER BY date(e.start_date)";*/
 
+    // if $event_type is identical to 'past' then assign '<' to $conditional otherwise '>'
+    $conditional = ( $event_type === 'past' ) ? '<' : '>';
+
+    //var_dump($conditional); 
+
     $sql = "SELECT e.id, min(e.start_date) AS start_date, c.category_name, c.category_desc, c.id AS cat_id
             FROM " . EVENTS_DETAIL_TABLE . " e
             JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
             JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
             WHERE e.is_active = 'Y'
-            AND e.end_date > CURDATE()
+            AND e.end_date " . $conditional . " CURDATE()
             GROUP BY c.category_name, c.category_desc, c.id";
 
     ctlt_event_espresso_get_category_list_table($sql);

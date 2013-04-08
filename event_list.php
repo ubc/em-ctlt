@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.7
+ * Version: 0.9
  */
 
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.
@@ -282,7 +282,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		}
 		else {
 			?>
-			<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover">
+			<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover	">
 				<thead>
 					<tr>
 						<th class="header">Date</th>

@@ -1,13 +1,17 @@
 <?php
 /*
- * Version: 0.81
- */
+Template Name: Category Registration for Events
+Author: Julien law
+Version: 0.9
+Website:
+Description: This is a template file for displaying a list of categories.
+Requirements: ctlt_espresso_category_display.php, ctlt_espresso_category_registration_display.php, custom_shortcodes.php, custom_includes.php, custom_functions.php
+Shortcode Usage:   [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="current"] to display upcoming events
+                   [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="past"] to display past events
+Notes: This file should be stored in your "/wp-content/uploads/espresso/templates/" folder and you should have downloaded the custom files addon from your event espresso account page
+*/
 // This is the category event list template page.
 // This is a template file for displaying a category event list on a page
-
-// Print out the array of event status options
-// print_r ( event_espresso_get_is_active($event_id);
-// Here we can create messages based on the event status. These variables can be echoed anywhere on the page to display your status message.
 
 global $this_event_id;
 $this_event_id = $event_id;
