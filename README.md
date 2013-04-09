@@ -7,6 +7,7 @@ events
 * This is only to work on template customization for Events Espresso. (see https://eventespresso.com/wiki/put-custom-templates/)
 
 == changelog ==
+
 v0.9 - added parameters to the shortcode to show past or upcoming events
      - updated shortcode usage in the custom_shortcodes.php file
      - updated info for all commited files
