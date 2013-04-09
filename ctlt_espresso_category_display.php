@@ -2,7 +2,7 @@
 /*
 Template Name: Category Display for Events
 Author: Julien law
-Version: 0.9
+Version: 0.9.1
 Website:
 Description: This is a template file for displaying a list of categories.
 Shortcode Usage:   [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="current"] to display upcoming events

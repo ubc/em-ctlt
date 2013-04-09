@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.9
+ * Version: 0.9.1
  */
 
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.
@@ -151,7 +151,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		//User sql
 		$sql .= (isset($user_id)  && !empty($user_id))? " AND wp_user = '" . $user_id . "' ": '';
 		
-		$sql .= $show_expired == 'false' ? " AND (e.start_date >= '" . date('Y-m-d') . "' OR e.event_status = 'O' OR e.registration_end >= '" . date('Y-m-d') . "') " : '';
+		$sql .= $show_expired == 'false' ? " AND (e.start_date >= '" . date('Y-m-d') . "' OR e.event_status = 'O' OR e.registration_end >= '" . date('Y-m-d') . "') " : " AND (e.end_date <= '" . date('Y-m-d') . "' OR e.registration_end <= '" . date('Y-m-d') . "') ";
 		if  ($show_expired == 'true'){
 			$allow_override = 1;
 		}

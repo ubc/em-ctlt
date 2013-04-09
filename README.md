@@ -8,6 +8,9 @@ events
 
 == changelog ==
 
+
+v0.9.1 - added ability to show ONLY past events in the event_list view
+
 v0.9 - added parameters to the shortcode to show past or upcoming events
      - updated shortcode usage in the custom_shortcodes.php file
      - updated info for all commited files
