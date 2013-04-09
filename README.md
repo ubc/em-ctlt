@@ -7,9 +7,15 @@ events
 * This is only to work on template customization for Events Espresso. (see https://eventespresso.com/wiki/put-custom-templates/)
 
 == changelog ==
+v0.9 - added parameters to the shortcode to show past or upcoming events
+     - updated shortcode usage in the custom_shortcodes.php file
+     - updated info for all commited files
+     - the ctlt_espresso_category_* php files will now parse the parameter in the shortcode and determine whether to show past or upcoming events
+
 v0.81 - fixed the address layout issue when no venue or address is provided
       - fixed a bug where the proceeding page was not being loaded when clicking on a series name
       - fixed a bug where past events were showing up in the current events section for series
+      - recurring events now only show the first upcoming one in the series view
 
 v0.8 - added multi-event registration to the series view and events view
      - added a paired file to ctlt_espresso_category_registration.php
