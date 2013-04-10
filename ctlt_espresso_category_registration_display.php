@@ -2,7 +2,7 @@
 /*
 Template Name: Category Registration for Events
 Author: Julien law
-Version: 0.9.1
+Version: 0.10
 Website:
 Description: This is a template file for displaying a list of categories.
 Requirements: ctlt_espresso_category_display.php, ctlt_espresso_category_registration_display.php, custom_shortcodes.php, custom_includes.php, custom_functions.php
@@ -15,79 +15,51 @@ Notes: This file should be stored in your "/wp-content/uploads/espresso/template
 
 global $this_event_id;
 $this_event_id = $event_id;
-?>
-	<tr>
-		<td>
-			<div class="event-meta">
-				<p id="event_date-<?php echo $event_id; ?>">
-					<?php
-						echo event_date_display( $start_date, get_option('date_format') ) . '<br/>';
-						//echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) . '<br/>';
-						//echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' );
-					?>
-				</p>
-			</div>
-		</td>
-		<td>
-			<div id="event_data-<?php echo $event_id; ?>">
-				<!--<?php if( !$multi_reg ) { ?>
-				<a title="<?php echo stripslashes_deep( $event_name ); ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $post_url;?>"><?php echo stripslashes_deep( $event_name ); ?></a>
-				<?php }
-				else {
-					echo stripslashes_deep( $event_name );
-				} ?>-->
-				<?php echo stripslashes_deep( $event_name ); ?>
-			</div>
-		</td>
-		<td>
-			<div class="event-desc">
-				<?php echo espresso_format_content( $event_desc ); ?>
-			</div>
-		</td>
-		<td>
-		<?php 
-			if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) { 
-				$params = array(
-					// REQUIRED, The id of the event that needs to be added to the cart
-					'event_id' => $event_id,
-					// REQUIRED, Anchor of the link, can use text or image
-					'anchor' => __( "Add to Cart", 'event_espresso' ),
-					// REQUIRED, If not available at this point, use the next line before this array declaration
-					// $event_name = get_event_field( 'event_name', EVENT_DETAILS_TABLE, ' WHERE id = ' . $event_id );
-					'event_name' => $event_name,
-					// OPTIONAL, Will place this term before the link
-					'separator' => __( " or ", 'event_espresso' )
-				);
-				$cart_link = event_espresso_cart_link( $params );
-			}
-			else {
-				$cart_link = false;
-			} 
-			if( $display_reg_form == 'Y' ) {
-				// Check to see if the Members plugin is installed
-				$member_options = get_option( 'events_member_settings' );
-				if( function_exists( 'espresso_members_installed' ) && espresso_members_installed() == true && !is_user_logged_in() && ( $member_only == 'Y' || $member_options['member_only_all'] == 'Y' ) ) {
-					echo '<p class="ee_member_only">' . __( 'Member Only Event', 'event_espresso' ) . '</p>';
-				}
-				else {
-				?>
-					<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
-						<!--<a class="a_register_link ui-button ui-button-big ui-priority-primary ui-state-default ui-state-hover ui-state-focus ui-corner-all" id="a_register_link-<?php echo $event_id; ?>" href="<?php echo $post_url; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>"><?php _e( 'Register', 'event_espresso' ); ?></a>-->
-						<a id="a_register_link-<?php echo $event_id; ?>" href="<?php echo $post_url; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>"><?php _e( 'Register', 'event_espresso' ); ?></a>
-						<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
+if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
+	$params = array(
+			// REQUIRED, the id of the event that needs to be added to the cart
+			'event_id' => $event_id,
+			// REQUIRED, anchor of the link, can use text or image
+			'anchor' => __( "Add to cart", 'event_espresso' ),
+			// REQUIRED, if not available at this point, use the next line before this array declaration
+			// $event_name = get_event_field( 'event_name', EVENT_DETAILS_TABLE, ' WHERE id = ' . $event_id );
+			'event_name' => $event_name
+		);
+	$cart_link = event_espresso_cart_link( $params );
+}
+else {
+	$cart_link = false;
+} ?>
+		<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
+			<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
+		</p>
+	<div class="row-fluid">
+		<div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+			<div class="media" style="padding: 10px;">
+				<a class="pull-left" href="<?php echo $post_url?>">
+					<img class="media-object" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACtUlEQVR4Xu2Y24upYRTGl0lGmNQUhXCDmRqTKCmH8q87C2mmqYkiLpTcIGfGYfaziuxmz+x8tv1dWOtG38e73nc96/DLq+n3+zu6YtOIAFIB0gIyA654BpIMQaGAUEAoIBQQClyxAoJBwaBgUDAoGLxiCMifIcGgYFAwKBgUDAoGr1iBszFYr9ep2+3Sbrcjm81GDw8PpNFoDpL+ogy9v7+TwWCgYDD423ff6X4Jn9/tdZYAtVqNOp0OabVa9r9er8ntdpPX6+VniJJKpfi9TqejeDxONzc3P9bbJXz+tKFiATabDaXTac5oIpGgj48ParfbdHd3Rw6Hg/dsNBr8DqbX6ykWi9F0OqXX11cWLRQK0WQyIQR9e3tLz8/PlM1mT/Z5XHGndrNiAVarFR92u91y0IvFglvA5/PxGebzOeVyOXK5XDQajWg2m7FQOGylUqHhcEj39/e8Dt+harBeqc9TA9//XrEA6O1qtcp+kE2UOQxBPD09cZDj8ZiSySSVSiVaLpcHAY7Fwxqz2UzhcJjO8fnfBUCG8/k8l240GuUsFotF7nW/38/iGI1Gcjqd1Gw2uVI8Hg8/w1qtFr+HRSIRrqJzfSoRQXEFIOOYAehtCLB/hgCPj4/08vLy5TwYgKgIDMdMJnOoGovFQoFA4OBDic+/DdfvxFEsAIJABSBrdrudPweDAVmtVq4AlDkMByuXyxwcMo3g3t7eqNfrcYVgHaoDAxBrlfpUkn2sUSwAFmOAFQoFAhFgaAf0MoI8NrQGBAAFMBAhyJ4eEALcxxzZ0+RUn6pQ4DhAoAxmMpmUJuLLukv4/NPhzqqAfxatio5EALkRkhshuRGSGyEVh7DqWwsFhAJCAaGAUED1UaziAYQCQgGhgFBAKKDiEFZ9a6GAUEAoIBQQCqg+ilU8gFDg2inwCQx0jZ8W40NiAAAAAElFTkSuQmCC">				
+				</a>
+				<div class="media-body">
+					<h4 class="media-heading">
+						<div id="event_data-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $post_url ?>"><?php echo stripslashes_deep( $event_name ) ?></a></div>
+						<?php
+						if( isset( $cart_link ) && $externalURL == '' && $cart_link) {
+							?>
+							<div class="pull-right" style="margin-right: 20px;"><?php echo $cart_link; ?></div>
+							<?php
+						}
+						else { 
+							?>
+							<div class="pull-right" style="margin-right: 20px;"><a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ) ?>" href="<?php echo $post_url; ?>"><?php _e( 'Register', 'event_espresso') ?></a></div>
+							<?php
+						} ?>
+					</h4>
+					<p>
+						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option('date_format') ); ?> |
+						<i class="icon-time"></i> <span class="label label-inverse"><?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span>
+						<br /><?php echo stripslashes_deep( $event_desc );?>
 					</p>
-				<?php
-				}
-			}
-			else { ?>
-				<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
-					<!--<a class="a_register_link ui-button ui-button-big ui-priority-primary ui-state-default ui-state-hover ui-state-focus ui-corner-all" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $post_url; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>"><?php _e( 'View Details', 'event_espresso' ); ?></a>-->
-					<a id="a_register_link-<?php echo $event_id ?>" href="<?php echo $post_url; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>"><?php _e( 'View Details', 'event_espresso' ); ?></a>
-					<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
-				</p>
-				<?php	
-			}
-
-		?>
-		</td>
-	</tr>
+				</div>
+			</div>
+		</div>
+	</div>

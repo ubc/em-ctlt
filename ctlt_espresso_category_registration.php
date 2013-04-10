@@ -2,7 +2,7 @@
 /*
 Template Name: Category Registration for Events
 Author: Julien law
-Version: 0.9.1
+Version: 0.10
 Website:
 Description: This is a template file for displaying a list of categories.
 Requirements: ctlt_espresso_category_display.php, ctlt_espresso_category_registration_display.php, custom_shortcodes.php, custom_includes.php, custom_functions.php
@@ -89,7 +89,7 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 		//$multi_reg = false;
 		?>
 
-		<table class="table table-bordered table-hover">
+		<!--<table class="table table-bordered table-hover">
 			<thead>
 				<tr>
 					<th>Date</th>
@@ -98,7 +98,7 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 					<th>Registration</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody>-->
 		<?php	foreach( $events as $event ) {
 					$event_id = $event->id;
 					$event_name = $event->event_name;
@@ -141,8 +141,8 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 						include( $path );
 					}
 				}?>
-			</tbody>
-		</table>
+			<!--</tbody>
+		</table>-->
 		<!--<button class="btn" type="button">Register</button>-->
 		<?php
 
