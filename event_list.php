@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.9.1
+ * Version: 0.10
  */
 
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.
@@ -282,7 +282,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		}
 		else {
 			?>
-			<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover	">
+			<!--<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover	">
 				<thead>
 					<tr>
 						<th class="header">Date</th>
@@ -292,7 +292,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 						<th>Registration</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody>-->
 			<?php
 		}
 		 if ($display_desc == 'Y') {
@@ -470,8 +470,8 @@ if (!function_exists('event_espresso_get_event_details')) {
 		}
 		if( count($events) > 0 ) {
 			?>
-					</tbody>
-				</table>
+					<!--</tbody>
+				</table>-->
 			<?php
 		}
 		echo "</div>";

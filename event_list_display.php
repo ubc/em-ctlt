@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.9.1
+ * Version: 0.10
  */
 //This is the event list template page.
 //This is a template file for displaying an event lsit on a page.
@@ -42,105 +42,76 @@ $status_display_open = $status['status'] == 'REGISTRATION_OPEN' ? ' - ' . $statu
 $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' - <span class="espresso_closed">' . __('Regsitration is closed', 'event_espresso') . '</span>' : '';
 global $this_event_id;
 $this_event_id = $event_id;
+if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
+	$params = array(
+			// REQUIRED, the id of the event that needs to be added to the cart
+			'event_id' => $event_id,
+			// REQUIRED, anchor of the link, can use text or image
+			'anchor' => __( "Add to cart", 'event_espresso' ),
+			// REQUIRED, if not available at this point, use the next line before this array declaration
+			// $event_name = get_event_field( 'event_name', EVENT_DETAILS_TABLE, ' WHERE id = ' . $event_id );
+			'event_name' => $event_name
+		);
+	$cart_link = event_espresso_cart_link( $params );
+}
+else {
+	$cart_link = false;
+} 
 ?>
-	<td>
-		<div class="event-meta">
-				<?php //Featured image
-				echo apply_filters('filter_hook_espresso_display_featured_image', $event_id, !empty($event_meta['event_thumbnail_url']) ? $event_meta['event_thumbnail_url'] : '');?>
-				<?php /*if ( $event->event_cost != '0.00' ) { ?>
-					 <p id="p_event_price-<?php echo $event_id ?>" class="event_price"><span class="section-title"><?php  echo __('Price: ', 'event_espresso'); ?></span> <?php echo  $org_options['currency_symbol'].$event->event_cost; ?></p>
-				<?php } else { ?>
-					<p id="p_event_price-<?php echo $event_id ?>" class="event_price"><?php echo __('Free Event', 'event_espresso'); ?></p>
-				<?php }*/?>
-
-			<p id="event_date-<?php echo $event_id ?>"><!--<span class="section-title"><?php _e('Date:', 'event_espresso'); ?></span>-->  <?php echo event_date_display($start_date, get_option('date_format')) ?> 
-				<?php //Add to calendar button
-				echo apply_filters('filter_hook_espresso_display_ical', $all_meta) . '<br/>';
-				echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time');?>
-			</p>
-		</div>
-	</td>
-	<td>
-		<!--<div id="event_data-<?php echo $event_id ?>" class="event_data <?php echo $css_class; ?> <?php echo $category_identifier; ?> event-data-display event-list-display event-display-boxes ui-widget">-->
-		<div id="event_data-<?php echo $event_id ?>" >
-			<a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
-				<?php /* These are custom messages that can be displayed based on the event status. Just un-comment the one you want to use. */ ?>
-				<?php //echo $status_display; //Turn this on to display the overall status of the event.  ?>
-				<?php //echo $status_display_ongoing; //Turn this on to display the ongoing message. ?>
-				<?php //echo $status_display_deleted; //Turn this on to display the deleted message. ?>
-				<?php //echo $status_display_secondary; //Turn this on to display the waitlist message. ?>
-				<?php //echo $status_display_reg_closed; //Turn this on to display the registration closed message. ?>
-				<?php //echo $status_display_not_open; //Turn this on to display the secondary message. ?>
-				<?php //echo $status_display_open; //Turn this on to display the not open message. ?>
-				<?php //echo $status_display_custom_closed; //Turn this on to display the closed message. ?>
-		</div>
-	</td>
-	<td>
-		<a><?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ); ?></a>
-	</td>
-	<td>
-		<?php
-	//Show short descriptions
-		if (!empty($event_desc) && isset($org_options['display_short_description_in_event_list']) && $org_options['display_short_description_in_event_list'] == 'Y') {
-			$output_desc = explode( " ", $event_desc, 15 );
-			if( count( $output_desc ) > 14 ) {
-				$output_desc = array_reverse( $output_desc );
-				array_shift( $output_desc );
-				$output_desc = array_reverse( $output_desc );
-				$output_desc[14] = "...";
-			}
-			$output_desc = implode( " ", $output_desc );
-			//var_dump($output_desc);
-			?>
-			<div class="event-desc">
-				<?php echo espresso_format_content($output_desc); ?>
+	<div class="row-fluid">
+		<div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+			<div class="media" style="padding: 10px;">
+				<a class="pull-left" title="<?php echo stripslashes_deep( $event_name ); ?>" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>">
+					<?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
+				</a>
+				<div class="media-body">
+					<h4 class="media-heading">
+						<div id="event_date-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ); ?>"  class="a_event_title" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep( $event_name ); ?></a></div>
+						<div class="pull-right" style="margin-right: 20px;">
+							<?php
+							if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
+								echo $cart_link;
+							}
+							else {
+								?>
+								<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
+									<?php _e( 'Register', 'event_espresso' ); ?>
+								</a>
+								<?php
+							}
+							?>
+						</div>
+					</h4>
+					<p>
+						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> 
+						<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> |
+						<i class="icon-time"></i>
+						<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> |
+						<i class="icon-folder-open"></i> <?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ) ?>
+						<br />
+						<?php
+						// show shorter descriptions set at 15 words max
+						if (!empty($event_desc) && isset($org_options['display_short_description_in_event_list']) && $org_options['display_short_description_in_event_list'] == 'Y') {
+							$output_desc = explode( " ", $event_desc, 15 );
+							if( count( $output_desc ) > 14 ) {
+								$output_desc = array_reverse( $output_desc );
+								array_shift( $output_desc );
+								$output_desc = array_reverse( $output_desc );
+								$output_desc[14] = "...";
+							}
+							$output_desc = implode( " ", $output_desc );
+						?>
+							<div class="event-desc">
+								<?php echo espresso_format_content( $output_desc ); ?>
+							</div>
+						<?php
+						}
+						?>
+					</p>
+				</div>
 			</div>
-			<?php
-		}
-		?>
-	</td>
-	<td>
-		<?php
-			if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
-				$params = array(
-					// REQUIRED, the id of the event that needs to be added to the cart
-					'event_id' => $event_id,
-					// REQUIRED, anchor of the link, can use text or image
-					'anchor' => __( "Add to Cart", 'event_espresso' ),
-					// REQUIRED, if not available at this point, use the next line before this array declaration
-					// $event_name = get_event_field( 'event_name', EVENT_DETAILS_TABLE, ' WHERE id = ' . $event_id );
-					'event_name' => $event_name,
-					// OPTIONAL, will place this term before the link
-					'separator' => __( " or ", 'event_espresso' )
-				);
-				$cart_link = event_espresso_cart_link( $params );
-			}
-			else {
-				$cart_link = false;
-			}
-			if( $display_reg_form == 'Y' ) {
-				// check to see if the Members plugin is installed
-				$member_options = get_option( 'events_member_settings' );
-				if( function_exists( 'espresso_members_installed' ) && espresso_members_installed() == true && !is_user_logged_in() && ( $member_only == 'Y' || $member_options['member_only_all'] == 'Y' ) ) {
-					echo '<p class="ee_member_only">' . __( 'Member Only Event', 'event_espresso' ) . '</p>';
-				}
-				else {
-					?>
-					<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
-						<a id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>"><?php _e( 'View Details', 'event_espresso' ); ?></a>
-						<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
-					</p><?php
-				}
-			}
-			else {
-				?>
-				<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
-					<a id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>"><?php _e( 'View Details', 'event_espresso' ); ?></a>
-					<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
-				</p><?php
-			}
-		?>
-	</td>
+		</div>
+	</div>
 	
 <!--</div> / .event-data-display -->
 <!--</div> / .event-display-boxes -->

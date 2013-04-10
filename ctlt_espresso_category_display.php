@@ -41,13 +41,14 @@ function ctlt_display_event_espresso_category($event_type){
 
     //var_dump($conditional); 
 
-    $sql = "SELECT e.id, min(e.start_date) AS start_date, c.category_name, c.category_desc, c.id AS cat_id
-            FROM " . EVENTS_DETAIL_TABLE . " e
+    $sql = "SELECT e.id, min(e.start_date) AS start_date, c.category_name, c.category_desc, c.id AS cat_id, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e 
+            JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
             JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
             JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
             WHERE e.is_active = 'Y'
             AND e.end_date " . $conditional . " CURDATE()
-            GROUP BY c.category_name, c.category_desc, c.id";
+            GROUP BY c.category_name, c.category_desc, c.id
+            ORDER BY start_date, ese.start_time";
 
     ctlt_event_espresso_get_category_list_table($sql);
 }
@@ -64,51 +65,41 @@ function ctlt_event_espresso_get_category_list_table($sql){
     $category_names = $wpdb->category_name;
     $category_descs = $wpdb->category_desc;
 
-?>
-    <!--<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th class="header headerSortDown">Date</th>
-                <th class="header">Series</th>
-            </tr>
-        </thead>
-        <tbody>-->
-<?php
-        foreach ($events as $event) {
-            $event_id = $event->id;
-            $event_date = $event->start_date;
-            $cat_id = $event->cat_id;
-            $cat_name = $event->category_name;
-            $cat_desc = $event->category_desc;
-            $url = ctlt_espresso_category_url( $cat_id, $cat_name );
+    foreach ($events as $event) {
+        $event_id = $event->id;
+        $event_date = $event->start_date;
+        $cat_id = $event->cat_id;
+        $cat_name = $event->category_name;
+        $cat_desc = $event->category_desc;
+        $url = ctlt_espresso_category_url( $cat_id, $cat_name );
 
-            ?>
-            <!--<tr>
-                <td><?php echo event_date_display( $event_date, get_option( 'date_format' ) );?></td>
-                <td><a href="<?php echo $url ?>"><?php echo $cat_name; ?></a><br/><?php echo $cat_desc; ?></td>
-            </tr>-->
-            <div class="row-fluid">
-                <div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
-                    <div class="media" style="padding: 10px;">
-                        <a class="pull-left" href="<?php echo $url; ?>">
-                            <img class="media-object" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACtUlEQVR4Xu2Y24upYRTGl0lGmNQUhXCDmRqTKCmH8q87C2mmqYkiLpTcIGfGYfaziuxmz+x8tv1dWOtG38e73nc96/DLq+n3+zu6YtOIAFIB0gIyA654BpIMQaGAUEAoIBQQClyxAoJBwaBgUDAoGLxiCMifIcGgYFAwKBgUDAoGr1iBszFYr9ep2+3Sbrcjm81GDw8PpNFoDpL+ogy9v7+TwWCgYDD423ff6X4Jn9/tdZYAtVqNOp0OabVa9r9er8ntdpPX6+VniJJKpfi9TqejeDxONzc3P9bbJXz+tKFiATabDaXTac5oIpGgj48ParfbdHd3Rw6Hg/dsNBr8DqbX6ykWi9F0OqXX11cWLRQK0WQyIQR9e3tLz8/PlM1mT/Z5XHGndrNiAVarFR92u91y0IvFglvA5/PxGebzOeVyOXK5XDQajWg2m7FQOGylUqHhcEj39/e8Dt+harBeqc9TA9//XrEA6O1qtcp+kE2UOQxBPD09cZDj8ZiSySSVSiVaLpcHAY7Fwxqz2UzhcJjO8fnfBUCG8/k8l240GuUsFotF7nW/38/iGI1Gcjqd1Gw2uVI8Hg8/w1qtFr+HRSIRrqJzfSoRQXEFIOOYAehtCLB/hgCPj4/08vLy5TwYgKgIDMdMJnOoGovFQoFA4OBDic+/DdfvxFEsAIJABSBrdrudPweDAVmtVq4AlDkMByuXyxwcMo3g3t7eqNfrcYVgHaoDAxBrlfpUkn2sUSwAFmOAFQoFAhFgaAf0MoI8NrQGBAAFMBAhyJ4eEALcxxzZ0+RUn6pQ4DhAoAxmMpmUJuLLukv4/NPhzqqAfxatio5EALkRkhshuRGSGyEVh7DqWwsFhAJCAaGAUED1UaziAYQCQgGhgFBAKKDiEFZ9a6GAUEAoIBQQCqg+ilU8gFDg2inwCQx0jZ8W40NiAAAAAElFTkSuQmCC">
-                        </a>
-                        <div class="media-body">
-                            <h4 class="media-heading">
-                                <a href="<?php echo $url; ?>"><?php echo $cat_name; ?></a>
-                            </h4>
-                            <p>
-                                <?php echo $cat_desc; ?>
-                            </p>
-                        </div>
+        ?>
+        <!--<tr>
+            <td><?php echo event_date_display( $event_date, get_option( 'date_format' ) );?></td>
+            <td><a href="<?php echo $url ?>"><?php echo $cat_name; ?></a><br/><?php echo $cat_desc; ?></td>
+        </tr>-->
+        <div class="row-fluid">
+            <div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+                <div class="media" style="padding: 10px;">
+                    <a class="pull-left" href="<?php echo $url; ?>">
+                       <?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <a href="<?php echo $url; ?>"><?php echo $cat_name; ?></a>
+                        </h4>
+                        <p>
+                            <i class="icon-calendar"></i> <?php echo event_date_display( $event_date, get_option( 'date_format' ) ) ?>
+                            <br />
+                            <div class="event-desc">
+                                <?php echo espresso_format_content( $cat_desc ); ?>
+                            </div>
+                        </p>
                     </div>
                 </div>
             </div>
-        <?php }
-?>
-        <!--</tbody>
-    </table>-->
-<?php
+        </div>
+    <?php }
 }
 
 function ctlt_espresso_category_url( $cat_id = 0, $cat_name = NULL ) {

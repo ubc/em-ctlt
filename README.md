@@ -7,7 +7,7 @@ events
 * This is only to work on template customization for Events Espresso. (see https://eventespresso.com/wiki/put-custom-templates/)
 
 == changelog ==
-
+v0.10 - changed the styling of the event listing for all the event views
 
 v0.9.1 - added ability to show ONLY past events in the event_list view
 

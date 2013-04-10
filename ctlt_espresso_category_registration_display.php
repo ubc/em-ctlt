@@ -30,29 +30,31 @@ if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
 else {
 	$cart_link = false;
 } ?>
-		<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
+		<!--<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
 			<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
-		</p>
+		</p>-->
 	<div class="row-fluid">
 		<div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
 			<div class="media" style="padding: 10px;">
 				<a class="pull-left" href="<?php echo $post_url?>">
-					<img class="media-object" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACtUlEQVR4Xu2Y24upYRTGl0lGmNQUhXCDmRqTKCmH8q87C2mmqYkiLpTcIGfGYfaziuxmz+x8tv1dWOtG38e73nc96/DLq+n3+zu6YtOIAFIB0gIyA654BpIMQaGAUEAoIBQQClyxAoJBwaBgUDAoGLxiCMifIcGgYFAwKBgUDAoGr1iBszFYr9ep2+3Sbrcjm81GDw8PpNFoDpL+ogy9v7+TwWCgYDD423ff6X4Jn9/tdZYAtVqNOp0OabVa9r9er8ntdpPX6+VniJJKpfi9TqejeDxONzc3P9bbJXz+tKFiATabDaXTac5oIpGgj48ParfbdHd3Rw6Hg/dsNBr8DqbX6ykWi9F0OqXX11cWLRQK0WQyIQR9e3tLz8/PlM1mT/Z5XHGndrNiAVarFR92u91y0IvFglvA5/PxGebzOeVyOXK5XDQajWg2m7FQOGylUqHhcEj39/e8Dt+harBeqc9TA9//XrEA6O1qtcp+kE2UOQxBPD09cZDj8ZiSySSVSiVaLpcHAY7Fwxqz2UzhcJjO8fnfBUCG8/k8l240GuUsFotF7nW/38/iGI1Gcjqd1Gw2uVI8Hg8/w1qtFr+HRSIRrqJzfSoRQXEFIOOYAehtCLB/hgCPj4/08vLy5TwYgKgIDMdMJnOoGovFQoFA4OBDic+/DdfvxFEsAIJABSBrdrudPweDAVmtVq4AlDkMByuXyxwcMo3g3t7eqNfrcYVgHaoDAxBrlfpUkn2sUSwAFmOAFQoFAhFgaAf0MoI8NrQGBAAFMBAhyJ4eEALcxxzZ0+RUn6pQ4DhAoAxmMpmUJuLLukv4/NPhzqqAfxatio5EALkRkhshuRGSGyEVh7DqWwsFhAJCAaGAUED1UaziAYQCQgGhgFBAKKDiEFZ9a6GAUEAoIBQQCqg+ilU8gFDg2inwCQx0jZ8W40NiAAAAAElFTkSuQmCC">				
+					<?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url '] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
 				</a>
 				<div class="media-body">
 					<h4 class="media-heading">
 						<div id="event_data-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $post_url ?>"><?php echo stripslashes_deep( $event_name ) ?></a></div>
-						<?php
-						if( isset( $cart_link ) && $externalURL == '' && $cart_link) {
-							?>
-							<div class="pull-right" style="margin-right: 20px;"><?php echo $cart_link; ?></div>
+						<div class="pull-right" style="margin-right: 20px;">
 							<?php
-						}
-						else { 
-							?>
-							<div class="pull-right" style="margin-right: 20px;"><a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ) ?>" href="<?php echo $post_url; ?>"><?php _e( 'Register', 'event_espresso') ?></a></div>
-							<?php
-						} ?>
+							if( isset( $cart_link ) && $externalURL == '' && $cart_link) {
+								?>
+								<?php echo $cart_link; ?>
+								<?php
+							}
+							else { 
+								?>
+								<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ) ?>" href="<?php echo $post_url; ?>"><?php _e( 'Register', 'event_espresso') ?></a>
+								<?php
+							} ?>
+						</div>
 					</h4>
 					<p>
 						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option('date_format') ); ?> |
