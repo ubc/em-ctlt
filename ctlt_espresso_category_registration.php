@@ -2,7 +2,7 @@
 /*
 Template Name: Category Registration for Events
 Author: Julien law
-Version: 0.10
+Version: 0.10.1
 Website:
 Description: This is a template file for displaying a list of categories.
 Requirements: ctlt_espresso_category_display.php, ctlt_espresso_category_registration_display.php, custom_shortcodes.php, custom_includes.php, custom_functions.php
@@ -34,7 +34,7 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 
 	$url_cat_id = $_GET['category_id'];
 	global $wpdb;
-	$sql = "SELECT e.*, min(e.start_date), c.category_name, c.category_desc, c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
+	$sql = "SELECT e.*, c.category_name, c.category_desc, c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
 	JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
 	JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
 	JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
@@ -85,66 +85,48 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 	<?php
 	}
 	if( $num_rows > 0 ) {
-		// do some stuff here
-		//$multi_reg = false;
-		?>
-
-		<!--<table class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<th>Date</th>
-					<th>Title</th>
-					<th>Description</th>
-					<th>Registration</th>
-				</tr>
-			</thead>
-			<tbody>-->
-		<?php	foreach( $events as $event ) {
-					$event_id = $event->id;
-					$event_name = $event->event_name;
-					$event_desc = stripslashes_deep($event->event_desc);
-					$event_identifier = $event->event_identifier;
-					$active = $event->is_active;
-					$registration_start = $event->registration_start;
-					$registration_end = $event->registration_end;
-					$start_date = $event->start_date;
-					$end_date = $event->end_date;
-					$reg_limit = $event->reg_limit;
-					$event_address = $event->address;
-					$event_address2 = $event->address2;
-					$event_city = $event->city;
-					$event_state = $event->state;
-					$event_zip = $event->zip;
-					$event_country = $event->country;
-					$member_only = $event->member_only;
-					$externalURL = $event->externalURL;
-					$recurrence_id = $event->recurrence_id;
-					$display_reg_form = $event->display_reg_form;
-					$allow_overflow = $event->allow_overflow;
-					$overflow_event_id = $event->overflow_event_id;
-					if( !empty($event_desc) ) {
-						$event_desc = explode( " ", $event_desc, 15 );
-						if( count( $event_desc ) > 14 ) {
-							$event_desc = array_reverse( $event_desc );
-							array_shift( $event_desc );
-							$event_desc = array_reverse( $event_desc );
-							$event_desc[14] = "...";
-						}
-						$event_desc = implode( " ", $event_desc );
+		foreach( $events as $event ) {
+				$event_id = $event->id;
+				$event_name = $event->event_name;
+				$event_desc = stripslashes_deep($event->event_desc);
+				$event_identifier = $event->event_identifier;
+				$active = $event->is_active;
+				$registration_start = $event->registration_start;
+				$registration_end = $event->registration_end;
+				$start_date = $event->start_date;
+				$end_date = $event->end_date;
+				$reg_limit = $event->reg_limit;
+				$event_address = $event->address;
+				$event_address2 = $event->address2;
+				$event_city = $event->city;
+				$event_state = $event->state;
+				$event_zip = $event->zip;
+				$event_country = $event->country;
+				$member_only = $event->member_only;
+				$externalURL = $event->externalURL;
+				$recurrence_id = $event->recurrence_id;
+				$display_reg_form = $event->display_reg_form;
+				$allow_overflow = $event->allow_overflow;
+				$overflow_event_id = $event->overflow_event_id;
+				if( !empty($event_desc) ) {
+					$event_desc = explode( " ", $event_desc, 15 );
+					if( count( $event_desc ) > 14 ) {
+						$event_desc = array_reverse( $event_desc );
+						array_shift( $event_desc );
+						$event_desc = array_reverse( $event_desc );
+						$event_desc[14] = "...";
 					}
-					$post_url = get_site_url() . '?page_id=' . $org_options['event_page_id'] . '&regevent_action=register&event_id=' . $event_id;
-					
-					if( empty( $path ) ) {
-						include( $template_name );
-					}
-					else {
-						include( $path );
-					}
-				}?>
-			<!--</tbody>
-		</table>-->
-		<!--<button class="btn" type="button">Register</button>-->
-		<?php
+					$event_desc = implode( " ", $event_desc );
+				}
+				$post_url = get_site_url() . '?page_id=' . $org_options['event_page_id'] . '&regevent_action=register&event_id=' . $event_id;
+				
+				if( empty( $path ) ) {
+					include( $template_name );
+				}
+				else {
+					include( $path );
+				}
+			}
 
 	}
 	else {
