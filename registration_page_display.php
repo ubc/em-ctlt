@@ -1,6 +1,6 @@
 <?php
 /*
- * Version: 0.10
+ * Version: 0.11
  */
 //This is the registration form.
 //This is a template file for displaying a registration form for an event on a page.
@@ -13,7 +13,7 @@ $ui_corner = 'ui-corner-all';
 //This tells the system to hide the event title if we only need to display the registration form.
 if ($reg_form_only == false) { 
 ?>
-	<h3 class="event_title <!--ui-widget-header--> ui-corner-top" id="event_title-<?php echo $event_id; ?>">
+	<h3 class="event_title ui-corner-top" id="event_title-<?php echo $event_id; ?>">
 		<?php echo $event_name ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?> <?php echo $is_active['status'] == 'PENDING' ? ' - <span class="expired_event">Event is Pending</span>' : ''; ?> <?php echo $is_active['status'] == 'DRAFT' ? ' - <span class="expired_event">Event is a Draft</span>' : ''; ?>
 	</h3>
 	

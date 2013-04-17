@@ -2,7 +2,7 @@
 /*
 Template Name: Category Registration for Events
 Author: Julien law
-Version: 0.10
+Version: 0.11
 Website:
 Description: This is a template file for displaying a list of categories.
 Requirements: ctlt_espresso_category_display.php, ctlt_espresso_category_registration_display.php, custom_shortcodes.php, custom_includes.php, custom_functions.php
