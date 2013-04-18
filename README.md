@@ -8,6 +8,10 @@ events
 
 == changelog ==
 
+v0.12 
+      - added confirmation_display.php and payment_page.php to the templates
+      - made some minor ui changes to the shopping cart
+
 v0.11 
       - added the template file for the shopping cart
       

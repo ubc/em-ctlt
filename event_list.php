@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.11
+ * Version: 0.12
  */
 
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.

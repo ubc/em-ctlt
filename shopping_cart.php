@@ -130,7 +130,7 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 
 			
 			<p id="event_espresso_submit_cart">
-				<input type="submit" class="submit btn_event_form_submit ui-priority-primary ui-state-default ui-state-hover ui-state-focus ui-corner-all" name="Continue" id="event_espresso_continue_registration" value="<?php _e( 'Enter Attendee Information', 'event_espresso' ); ?>&nbsp;&raquo;" />
+				<input type="submit" class="btn" name="Continue" id="event_espresso_continue_registration" value="<?php _e( 'Enter Attendee Information', 'event_espresso' ); ?>&nbsp;&raquo;" />
 			</p>
 			
 		</div><!-- / .mer-event-submit -->

@@ -1,6 +1,6 @@
 <?php
 /*
- * Version: 0.11
+ * Version: 0.12
  */
 if (!defined('EVENT_ESPRESSO_VERSION')) { exit('No direct script access allowed'); }
 do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');		
