@@ -133,7 +133,6 @@ Shortcode Name: CTLT Espresso Category Display
 Author: Julien Law
 Contact: julienlaw@alumni.ubc.ca
 Website: 
-Version: 0.9
 Description: Shows all the categories in the category manager.
 Usage Example:  [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="current"] to display upcoming events 
 				[CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="past"] to display past events
@@ -154,4 +153,24 @@ function ctlt_espresso_category_display($atts) {
 }
 add_shortcode( 'CTLT_ESPRESSO_CATEGORY_DISPLAY', 'ctlt_espresso_category_display' );
 
+/*
+Shortcode name: CTLT Bootstrap Espresso Event Search
+Author: Julien law
+Contact: julienlaw@alumni.ubc.ca
+Website:
+Description: A Twitter Bootstrap version of the Event Espresso Search
+Usage Example: [CTLT_BOOTSTRAP_EVENT_SEARCH]
+Notes: This file should be stored in your "/wp-content/uploads/espresso/" directory.
+*/
+function ctlt_bootstrap_espresso_event_search() {
+    global $wpdb, $espresso_manager, $current_user, $org_options;
+    $array = array( 'ee_search' => 'true' );
+    $url = add_query_arg( $array, get_permalink( $org_options['event_page_id'] ) );
+    ob_start();
+    ctlt_display_event_espresso_search( $url );
+    $buffer = ob_get_contents();
+    ob_end_clean();
+    return $buffer;
+}
+add_shortcode( 'CTLT_BOOTSTRAP_EVENT_SEARCH', 'ctlt_bootstrap_espresso_event_search' );
 /** CTLT END **/

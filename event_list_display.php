@@ -59,7 +59,7 @@ else {
 } 
 ?>
 	<div class="row-fluid">
-		<div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+		<div class="span12" style="border: 1px solid #aaa; border-radius: 4px; margin-bottom: 10px;">
 			<div class="media" style="padding: 10px;">
 				<a class="pull-left" title="<?php echo stripslashes_deep( $event_name ); ?>" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>">
 					<?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
@@ -67,21 +67,21 @@ else {
 				<div class="media-body">
 					<h4 class="media-heading">
 						<div id="event_date-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ); ?>"  class="a_event_title" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep( $event_name ); ?></a></div>
-						<div class="pull-right" style="margin-right: 20px;">
-							<?php
-							if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
-								echo $cart_link;
-							}
-							else {
-								?>
-								<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
-									<?php _e( 'Register', 'event_espresso' ); ?>
-								</a>
-								<?php
-							}
-							?>
-						</div>
 					</h4>
+					<div class="pull-right" style="margin-right: 20px;">
+						<?php
+						if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
+							echo '<h4>' . $cart_link . '</h4>';
+						}
+						else {
+							?>
+							<h4><a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
+								<?php _e( 'Register', 'event_espresso' ); ?>
+							</a></h4>
+							<?php
+						}
+						?>
+					</div>
 					<p>
 						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> 
 						<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> |

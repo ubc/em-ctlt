@@ -274,34 +274,18 @@ if (!function_exists('event_espresso_get_event_details')) {
 			$espresso_paginate .= "<a href='#' current_page=$total_pages class='event_paginate $next_no_more ui-icon ui-icon-seek-end'>&gt;&gt;</a>";
 			$espresso_paginate .= "</div>";	
 		}
+		echo do_shortcode('[CTLT_BOOTSTRAP_EVENT_SEARCH]');
 		echo "<div id='event_content' class='event_content'>";
-		echo do_shortcode('[EVENT_SEARCH]');
 		if ( count($events) < 1) {
 			//echo $sql;
 			echo __('No events available...', 'event_espresso');
 		}
-		else {
-			?>
-			<!--<table id="ctlt-jQuery-event-espresso-sort-table" class="table table-bordered table-hover	">
-				<thead>
-					<tr>
-						<th class="header">Date</th>
-						<th class="header">Title</th>
-						<th class="header">Series</th>
-						<th>Description</th>
-						<th>Registration</th>
-					</tr>
-				</thead>
-				<tbody>-->
-			<?php
-		}
-		 if ($display_desc == 'Y') {
+		if ($display_desc == 'Y') {
 			echo '<p id="events_category_name-' . $category_id . '" class="events_category_name">' . stripslashes_deep($category_name) . '</p>';
 			echo espresso_format_content($category_desc);
 		}
 		foreach ($events as $event) {
 			?>
-				<tr>
 			<?php			
 			$event_id = $event->id;
 			$event_name = $event->event_name;
@@ -465,7 +449,6 @@ if (!function_exists('event_espresso_get_event_details')) {
 					}
 				}
 			?>
-			</tr>
 			<?php
 		}
 		if( count($events) > 0 ) {

@@ -144,3 +144,63 @@ if (!function_exists('espresso_list_builder')) {
 	//echo '<p>Database Queries: ' . get_num_queries() .'</p>';
 	}
 }
+
+/*
+Function Name: CTLT Display Event Espresso Search
+Author: Julien Law
+Contact: julienlaw@alumni.ubc.ca
+Website:
+Description: Creates an autocomplete search tool using Twitter Bootstrap
+Requirements: A theme that uses Twitter Bootstrap and the custom files addon
+*/
+function ctlt_display_event_espresso_search( $url ) {
+    global $wpdb, $espresso_manager, $current_user, $org_options;
+    ?>
+	<div id="espresso-search-form-dv" class="ui-widget">
+		<form name="form" method="post" action="<?php echo $url ?>">
+			<input id="ee_autocomplete" name="ee_name" placeholder="Search Events Here..." />
+			<input id="ee_search_submit" name="ee_search_submit" class="btn" type="submit" value="Search" />
+			<input id="event_id" name="event_id" type="hidden">
+		</form>
+	</div>
+	<?php 
+	$ee_autocomplete_params = array();
+	$SQL = "SELECT e.*";
+	$SQL .= ", c.category_name cat_name, c.category_desc cat_desc";
+	if ( isset($org_options['use_venue_manager']) && $org_options['use_venue_manager'] == 'Y' ) {
+		$SQL .= ", v.city venue_city, v.state venue_state, v.name venue_name, v.address venue_address, v.city venue_city, v.state venue_state, v.zip venue_zip, v.country venue_country, v.meta venue_meta ";		
+	}
+	$SQL .= " FROM " . EVENTS_DETAIL_TABLE . " e ";
+	$SQL .= " LEFT JOIN " . EVENTS_CATEGORY_REL_TABLE . " cr ON cr.event_id = e.id LEFT JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = cr.cat_id";
+	if ( isset($org_options['use_venue_manager']) && $org_options['use_venue_manager'] == 'Y' ) {
+		$SQL .= " LEFT JOIN " . EVENTS_VENUE_REL_TABLE . " vr ON vr.event_id = e.id LEFT JOIN " . EVENTS_VENUE_TABLE . " v ON v.id = vr.venue_id ";
+	}
+
+	$SQL .= " WHERE e.is_active = 'Y' ";
+	$SQL .= " AND e.event_status != 'D' ";
+	//echo '<p>$sql = '.$sql.'</p>';							
+	$events = $wpdb->get_results($SQL);
+	$num_rows = $wpdb->num_rows;
+								
+	if ($num_rows > 0) {
+		foreach ($events as $event){
+			$venue_city = !empty($event->venue_city) ? stripslashes_deep($event->venue_city)  : '';
+			$venue_state = !empty($event->venue_state) ?  (!empty($event->venue_city) ? ', ' : '') .stripslashes_deep($event->venue_state)  : '';
+
+			$venue_name = !empty($event->venue_name) ?' @' . stripslashes_deep($event->venue_name)  . ' - ' . $venue_city . $venue_state . ''  : '';
+			$cat_name = !empty($event->cat_name) ? ' - category: ' . stripslashes_deep($event->cat_name) . '' : '';
+			//An Array of Objects with label and value properties:
+			$ee_autocomplete_params[] = array( 
+							'url' => espresso_reg_url($event->id), 
+							'value' => stripslashes_deep($event->event_name) . $venue_name . $cat_name, 
+							'id' => $event->id
+					);
+			//echo '{ url:"'.espresso_reg_url($event->id).'", value: "'.stripslashes_deep($event->event_name) . $venue_name .'", id: "'.$event->id.'" },';
+		}
+	}
+	wp_register_script('espresso_autocomplete', (EVENT_ESPRESSO_PLUGINFULLURL . "scripts/espresso_autocomplete.js"), array( 'jquery-ui-autocomplete' ), '1.0.0', TRUE );
+	wp_enqueue_script('espresso_autocomplete');
+	wp_localize_script( 'espresso_autocomplete', 'ee_autocomplete_params', $ee_autocomplete_params );
+	//Load scripts
+	add_action('wp_footer', 'ee_load_jquery_autocomplete_scripts');
+}
