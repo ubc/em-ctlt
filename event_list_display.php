@@ -87,7 +87,8 @@ else {
 						<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> |
 						<i class="icon-time"></i>
 						<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> |
-						<i class="icon-folder-open"></i> <?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ) ?>
+						<i class="icon-folder-open"></i> <?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ) ?> |
+						<i class="icon-user"></i> <?php echo do_shortcode( '[ATTENDEE_NUMBERS event_id="' . $event_id . '" type="num_attendees_slash_reg_limit"]' ) ?>
 						<br />
 						<?php
 						// show shorter descriptions set at 15 words max
