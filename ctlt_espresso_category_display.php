@@ -22,24 +22,9 @@ wp_enqueue_style( 'ctlt_table_sorter_style' );
 
 function ctlt_display_event_espresso_category($event_type){
     global $wpdb;
-    /*$sql = "SELECT e.id, d.start_date, d.category_name, d.category_desc, d.cat_id
-            FROM " . EVENTS_DETAIL_TABLE . " e
-            INNER JOIN
-            (
-                SELECT min(e.start_date) Start_date, c.category_name, c.category_desc, c.id AS cat_id
-                FROM " . EVENTS_DETAIL_TABLE . " e
-                JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
-                JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
-                WHERE e.is_active = 'Y'
-                GROUP BY c.category_name, c.category_desc, c.id
-            )  d ON e.start_date = d.Start_date
-            WHERE e.is_active = 'Y'
-            ORDER BY date(e.start_date)";*/
 
     // if $event_type is identical to 'past' then assign '<' to $conditional otherwise '>'
     $conditional = ( $event_type === 'past' ) ? '<' : '>';
-
-    //var_dump($conditional); 
 
     $sql = "SELECT e.id, min(e.start_date) AS start_date, c.category_name, c.category_desc, c.id AS cat_id, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e 
             JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
@@ -62,44 +47,46 @@ function ctlt_event_espresso_get_category_list_table($sql){
     }
     global $wpdb;
     $events = $wpdb->get_results($sql);
+    $num_rows = count($events);
     $category_names = $wpdb->category_name;
     $category_descs = $wpdb->category_desc;
+    
+    if ($num_rows > 0) {
+        foreach ($events as $event) {
+            $event_id = $event->id;
+            $event_date = $event->start_date;
+            $cat_id = $event->cat_id;
+            $cat_name = $event->category_name;
+            $cat_desc = $event->category_desc;
+            $url = ctlt_espresso_category_url( $cat_id, $cat_name );
 
-    foreach ($events as $event) {
-        $event_id = $event->id;
-        $event_date = $event->start_date;
-        $cat_id = $event->cat_id;
-        $cat_name = $event->category_name;
-        $cat_desc = $event->category_desc;
-        $url = ctlt_espresso_category_url( $cat_id, $cat_name );
-
-        ?>
-        <!--<tr>
-            <td><?php echo event_date_display( $event_date, get_option( 'date_format' ) );?></td>
-            <td><a href="<?php echo $url ?>"><?php echo $cat_name; ?></a><br/><?php echo $cat_desc; ?></td>
-        </tr>-->
-        <div class="row-fluid">
-            <div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
-                <div class="media" style="padding: 10px;">
-                    <a class="pull-left" href="<?php echo $url; ?>">
-                       <?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
-                    </a>
-                    <div class="media-body">
-                        <h4 class="media-heading">
-                            <a href="<?php echo $url; ?>"><?php echo $cat_name; ?></a>
-                        </h4>
-                        <p>
-                            <i class="icon-calendar"></i> <?php echo event_date_display( $event_date, get_option( 'date_format' ) ) ?>
-                            <br />
-                            <div class="event-desc">
-                                <?php echo espresso_format_content( $cat_desc ); ?>
-                            </div>
-                        </p>
+            ?>
+            <div class="row-fluid">
+                <div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
+                    <div class="media" style="padding: 10px;">
+                        <a class="pull-left" href="<?php echo $url; ?>">
+                           <?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading">
+                                <a href="<?php echo $url; ?>"><?php echo $cat_name; ?></a>
+                            </h4>
+                            <p>
+                                <i class="icon-calendar"></i> <?php echo event_date_display( $event_date, get_option( 'date_format' ) ) ?>
+                                <br />
+                                <div class="event-desc">
+                                    <?php echo espresso_format_content( $cat_desc ); ?>
+                                </div>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    <?php }
+        <?php }
+    }
+    else {
+        echo __('No events available...', 'event_espresso');
+    }
 }
 
 function ctlt_espresso_category_url( $cat_id = 0, $cat_name = NULL ) {
