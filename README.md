@@ -8,6 +8,9 @@ events
 
 == changelog ==
 
+v0.13 - added multi-registration php files
+      - made some UI changes to the event-list PHP files and the registration-page PHP files
+
 v0.12 
       - added confirmation_display.php and payment_page.php to the templates
       - made some minor ui changes to the shopping cart

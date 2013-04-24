@@ -53,6 +53,7 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 				$num_attendees = get_number_of_attendees_reg_limit( $r->id, 'num_attendees' ); //Get the number of attendees
 				$available_spaces = get_number_of_attendees_reg_limit( $r->id, 'available_spaces' ); //Gets a count of the available spaces
 				$number_available_spaces = get_number_of_attendees_reg_limit( $r->id, 'number_available_spaces' ); //Gets the number of available spaces
+				$registration_limit = get_number_of_attendees_reg_limit( $r->id, 'reg_limit' );
 				//echo "<pre>$r->id, $num_attendees,$available_spaces,$number_available_spaces</pre>";
 		?>
 				<div class="multi_reg_cart_block event-display-boxes ui-widget ui-corner-all" id="multi_reg_cart_block-<?php echo $r->id ?>">
@@ -62,10 +63,30 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 							<div class="row-fluid">
 								<div class="span4">
 									<i class="icon-calendar"></i> <?php echo event_date_display( $r->start_date, get_option( 'date_format' ) ); ?> <br />
-									<i class="icon-time"></i> <?php echo espresso_event_time( $r->id, 'start_time' ); ?> - <?php echo espresso_event_time( $r->id, 'end_time' ); ?>
+									<i class="icon-time"></i> <?php echo espresso_event_time( $r->id, 'start_time' ); ?> - <?php echo espresso_event_time( $r->id, 'end_time' ); ?> <br />
+									<i class="icon-user"></i> <?php echo $num_attendees . '/' . $registration_limit; ?>
 								</div>
 								<div class="span8">
-									<?php echo event_espresso_group_price_dropdown( $r->id, 0, 1, $_SESSION['espresso_session']['events_in_session'][$r->id]['price_id'] );?>
+									<?php
+									/*if ( $num_attendees >= $registration_limit ) {
+										?>
+										<div class="espresso_event_full event-display-boxes" id="espresso_event_full-<?php echo $r->id; ?>">
+											<div class="event-messages">
+												<p class="event_full"><strong><?php _e('We are sorry but this event has reached the maximum number of attendees!', 'event_espresso' ); ?></strong></p>
+												<p class="event_full"><strong><?php _e('Please check back in the event someone cancels.', 'event_espresso' ); ?></strong></p>
+											</div>
+										<?php
+										if( ( $num_attendees >= $registration_limit ) && ( $r->allow_overflow == 'Y' && $r->overflow_event_id != 0 ) ) {
+											?>
+											<p>If you still wish to attend this event, you can join the waiting list and you will be assigned a spot as soon as one is available on a first come first serve basis.</p>
+											<p id="register_link-<?php echo $r->overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $r->overflow_event_id ?>" href="<?php echo espresso_reg_url( $r->overflow_event_id ); ?>" title="<?php echo stripslashes_deep( $r->event_name ) ?>"><?php _e( 'Join Waiting List', 'event_espresso' ); ?></a></p>
+											<?php
+										}
+									}
+									else {*/
+										echo event_espresso_group_price_dropdown( $r->id, 0, 1, $_SESSION['espresso_session']['events_in_session'][$r->id]['price_id'] );
+									//}
+									?>
 								</div>
 							</div>
 		
@@ -73,7 +94,6 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 							<input type="hidden" name="use_coupon[<?php echo $r->id; ?>]" value="<?php echo $r->use_coupon_code; ?>" />
 							<input type="hidden" name="use_groupon[<?php echo $r->id; ?>]" value="<?php echo $r->use_groupon_code; ?>" />
 							<?php do_action_ref_array( 'action_hook_espresso_add_to_multi_reg_cart_block', array( $r ) ); ?>
-					
 						</div><!-- / .event-data-display -->
 					</div>
 				</div><!-- / .event-display-boxes -->

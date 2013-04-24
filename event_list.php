@@ -64,8 +64,8 @@ if (!function_exists('event_espresso_get_event_details')) {
 			'sort'						=> 'ASC',
 			'css_class'					=> 'NULL',
 			'current_page'				=> 1,
-			'events_per_page'			=> 50,
-			'num_page_links_to_display'	=>10,
+			'events_per_page'			=> 5,
+			'num_page_links_to_display'	=> 10,
 			'use_wrapper'				=> true
 		);
 		// loop thru default atts
@@ -254,35 +254,35 @@ if (!function_exists('event_espresso_get_event_details')) {
 				$next_no_more = 'no_more';
 			}
 			
-			$espresso_paginate = "<div class='page_navigation'>";
-			$espresso_paginate .= "<a href='#' current_page=1 class='event_paginate $prev_no_more ui-icon ui-icon-seek-first'>&lt;&lt;</a>";
-			$espresso_paginate .= "<a href='#' current_page=$prev class='event_paginate $prev_no_more ui-icon ui-icon-seek-prev'>&lt;</a>";
-			if ( $start > 1) {
-				$espresso_paginate .= "<span class='ellipse less'>...</span>";
+			$espresso_paginate = '<div class="pagination pagination-centered">';
+			$espresso_paginate .= '<ul>';
+			$espresso_paginate .= '<li><a href="#" current_page=1 class="event_paginate $prev_no_more">&laquo;</a></li>';
+			$espresso_paginate .= '<li><a href="#" current_page=' . $prev . ' class="event_paginate $prev_no_more ">&lt;</a></li>';
+			if ( $start > 1 ) {
+				$espresso_paginate .= '<span class="ellipse less">...</span>';
 			}
-			for($i = $start; $i <= $end; $i++) {
-				$active_page = '';
-				if ( $i == $current_page) {
-					$active_page = 'active_page';
+			for ( $i = $start; $i <= $end; $i++ ) {
+				$start_bold = '';
+				$end_bold = '';
+				if ( $i == $current_page ) {
+					$start_bold = '<b>';
+					$end_bold 	= '</b>';
 				}
-				$espresso_paginate .= "<a class='page_link event_paginate $active_page ' current_page=$i href='#' style='display: block; '>$i</a>";
+				$espresso_paginate .= '<li><a class="page_link event_paginate $active_page" current_page=$i href="#">' . $start_bold . $i . $end_bold . '</a></li>';
 			}
-			if ( $end < $total_pages) {
-				$espresso_paginate .= "<span class='ellipse more'>...</span>";
+			if ( $end < $total_pages ) {
+				$espresso_paginate .= '<span class="ellipse more">...</span>';
 			}
-			$espresso_paginate .= "<a href='#' current_page=$next class='event_paginate $next_no_more ui-icon ui-icon-seek-next'>&gt;</a>";
-			$espresso_paginate .= "<a href='#' current_page=$total_pages class='event_paginate $next_no_more ui-icon ui-icon-seek-end'>&gt;&gt;</a>";
-			$espresso_paginate .= "</div>";	
+			$espresso_paginate .= '<li><a href="#" current_page=' . $next . ' class="event_paginate $next_no_more">&gt;</a></li>';
+			$espresso_paginate .= '<li><a href="#" current_page=' . $total_pages . ' class="event_paginate $next_no_more">&raquo;</a></li>';
+			$espresso_paginate .= '</ul>';
+			$espresso_paginate .= '</div>';
 		}
 		echo do_shortcode('[CTLT_BOOTSTRAP_EVENT_SEARCH]');
 		echo "<div id='event_content' class='event_content'>";
 		if ( count($events) < 1) {
 			//echo $sql;
 			echo __('No events available...', 'event_espresso');
-		}
-		if ($display_desc == 'Y') {
-			echo '<p id="events_category_name-' . $category_id . '" class="events_category_name">' . stripslashes_deep($category_name) . '</p>';
-			echo espresso_format_content($category_desc);
 		}
 		foreach ($events as $event) {
 			?>

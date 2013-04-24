@@ -68,47 +68,46 @@ else {
 					<h4 class="media-heading">
 						<div id="event_date-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ); ?>"  class="a_event_title" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep( $event_name ); ?></a></div>
 					</h4>
-					<div class="pull-right" style="margin-right: 20px;">
-						<?php
-						if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
-							echo '<h4>' . $cart_link . '</h4>';
-						}
-						else {
-							?>
-							<h4><a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
-								<?php _e( 'Register', 'event_espresso' ); ?>
-							</a></h4>
+					<div class="container-fluid">
+						<div class="span4">
+							<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> 
+							<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> <br />
+							<i class="icon-time"></i>
+							<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br />
+							<i class="icon-folder-open"></i> <?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ) ?> <br />
+							<i class="icon-user"></i> <?php echo do_shortcode( '[ATTENDEE_NUMBERS event_id="' . $event_id . '" type="num_attendees_slash_reg_limit"]' ) ?>
+						</div>
+						<div class="span5">
 							<?php
-						}
-						?>
-					</div>
-					<p>
-						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> 
-						<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> |
-						<i class="icon-time"></i>
-						<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> |
-						<i class="icon-folder-open"></i> <?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ) ?> |
-						<i class="icon-user"></i> <?php echo do_shortcode( '[ATTENDEE_NUMBERS event_id="' . $event_id . '" type="num_attendees_slash_reg_limit"]' ) ?>
-						<br />
-						<?php
-						// show shorter descriptions set at 15 words max
-						if (!empty($event_desc) && isset($org_options['display_short_description_in_event_list']) && $org_options['display_short_description_in_event_list'] == 'Y') {
-							$output_desc = explode( " ", $event_desc, 15 );
-							if( count( $output_desc ) > 14 ) {
-								$output_desc = array_reverse( $output_desc );
-								array_shift( $output_desc );
-								$output_desc = array_reverse( $output_desc );
-								$output_desc[14] = "...";
+							// show shorter descriptions set at 15 words max
+							if (!empty($event_desc)) {
+								$output_desc = explode( " ", $event_desc, 15 );
+								if( count( $output_desc ) > 14 ) {
+									$output_desc = array_reverse( $output_desc );
+									array_shift( $output_desc );
+									$output_desc = array_reverse( $output_desc );
+									$output_desc[14] = "...";
+								}
+								$output_desc = implode( " ", $output_desc );
 							}
-							$output_desc = implode( " ", $output_desc );
-						?>
-							<div class="event-desc">
-								<?php echo espresso_format_content( $output_desc ); ?>
-							</div>
-						<?php
-						}
-						?>
-					</p>
+							echo $output_desc;
+							?>
+						</div>
+						<div class="span3">
+							<?php
+							if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
+								echo '<h4>' . $cart_link . '</h4>';
+							}
+							else {
+								?>
+								<h4><a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
+									<?php _e( 'Register', 'event_espresso' ); ?>
+								</a></h4>
+								<?php
+							}
+							?>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
