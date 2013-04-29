@@ -47,7 +47,7 @@ if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
 			// REQUIRED, the id of the event that needs to be added to the cart
 			'event_id' => $event_id,
 			// REQUIRED, anchor of the link, can use text or image
-			'anchor' => __( "Add to cart", 'event_espresso' ),
+			'anchor' => __( "Register", 'event_espresso' ),
 			// REQUIRED, if not available at this point, use the next line before this array declaration
 			// $event_name = get_event_field( 'event_name', EVENT_DETAILS_TABLE, ' WHERE id = ' . $event_id );
 			'event_name' => $event_name
@@ -57,6 +57,10 @@ if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
 else {
 	$cart_link = false;
 } 
+$display_category_name = do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' );
+if( empty( $display_category_name ) ) {
+	$display_category_name = "Uncategorized";
+}
 ?>
 	<div class="row-fluid">
 		<div class="span12" style="border: 1px solid #aaa; border-radius: 4px; margin-bottom: 10px;">
@@ -74,7 +78,7 @@ else {
 							<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> <br />
 							<i class="icon-time"></i>
 							<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br />
-							<i class="icon-folder-open"></i> <?php echo do_shortcode( '[CATEGORY_NAME event_id="' . $event_id . '"]' ) ?> <br />
+							<i class="icon-folder-open"></i> <?php echo $display_category_name; ?> <br />
 							<i class="icon-user"></i> <?php echo do_shortcode( '[ATTENDEE_NUMBERS event_id="' . $event_id . '" type="num_attendees_slash_reg_limit"]' ) ?>
 						</div>
 						<div class="span5">
@@ -100,9 +104,11 @@ else {
 							}
 							else {
 								?>
-								<h4><a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
-									<?php _e( 'Register', 'event_espresso' ); ?>
-								</a></h4>
+								<h4>
+									<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
+										<?php _e( 'Register', 'event_espresso' ); ?>
+									</a>
+								</h4>
 								<?php
 							}
 							?>
