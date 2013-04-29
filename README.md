@@ -9,6 +9,8 @@ events
 == changelog ==
 
 v0.13.1 - fixed a bug where an uncategorized event will not show up in the series view
+        - fixed an issue with the series registration page not showing uncategorized events
+        - changed the way category name is grabbed for individual events in series view
 
 v0.13 - added multi-registration php files
       - made some UI changes to the event-list PHP files and the registration-page PHP files

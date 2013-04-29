@@ -20,7 +20,7 @@ if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
 			// REQUIRED, the id of the event that needs to be added to the cart
 			'event_id' => $event_id,
 			// REQUIRED, anchor of the link, can use text or image
-			'anchor' => __( "Add to cart", 'event_espresso' ),
+			'anchor' => __( "Register", 'event_espresso' ),
 			// REQUIRED, if not available at this point, use the next line before this array declaration
 			// $event_name = get_event_field( 'event_name', EVENT_DETAILS_TABLE, ' WHERE id = ' . $event_id );
 			'event_name' => $event_name
@@ -29,7 +29,8 @@ if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
 }
 else {
 	$cart_link = false;
-} ?>
+} 
+?>
 		<!--<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
 			<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
 		</p>-->
@@ -42,25 +43,34 @@ else {
 				<div class="media-body">
 					<h4 class="media-heading">
 						<div id="event_data-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $post_url ?>"><?php echo stripslashes_deep( $event_name ) ?></a></div>
-						<div class="pull-right" style="margin-right: 20px;">
+					</h4>
+					<div class="container-fluid">
+						<div class="span4">
+							<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option('date_format') ); ?> <br />
+							<i class="icon-time"></i> 
+							<span class="label label-inverse"><?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br />
+							<i class="icon-folder-open"></i> <?php echo $cat_name; ?> <br />
+							<i class="icon-user"></i> <?php echo do_shortcode( '[ATTENDEE_NUMBERS event_id="' . $event_id . '" type="num_attendees_slash_reg_limit"]' ); ?>
+						</div>
+						<div class="span5">
+							<?php echo $event_desc; ?>
+						</div>
+						<div class="span3">
 							<?php
 							if( isset( $cart_link ) && $externalURL == '' && $cart_link) {
-								?>
-								<?php echo $cart_link; ?>
-								<?php
+								echo '<h4>' . $cart_link . '</h4>'; 
 							}
 							else { 
 								?>
-								<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ) ?>" href="<?php echo $post_url; ?>"><?php _e( 'Register', 'event_espresso') ?></a>
+								<h4>
+									<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ) ?>" href="<?php echo $post_url; ?>">
+										<?php _e( 'Register', 'event_espresso') ?>
+									</a>
+								</h4>
 								<?php
 							} ?>
 						</div>
-					</h4>
-					<p>
-						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option('date_format') ); ?> |
-						<i class="icon-time"></i> <span class="label label-inverse"><?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span>
-						<br /><?php echo stripslashes_deep( $event_desc );?>
-					</p>
+					</div>
 				</div>
 			</div>
 		</div>

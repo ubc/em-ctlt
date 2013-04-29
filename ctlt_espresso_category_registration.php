@@ -34,13 +34,13 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 
 	$url_cat_id = $_GET['category_id'];
 	global $wpdb;
-	$sql = "SELECT e.*, c.category_name, c.category_desc, c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
-	JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
-	JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
-	JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
-	WHERE e.is_active = 'Y'
-	AND c.id = '" . $url_cat_id . "'
-	AND e.end_date " . $conditional . " CURDATE()
+	$sql = "SELECT e.*, IFNULL(c.category_name, 'Uncategorized') AS category_name, c.category_desc, c.id AS cat_id,  c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
+	LEFT JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
+	LEFT JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
+	LEFT JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
+	WHERE e.is_active = 'Y' ";
+	$sql .= ( $url_cat_id != 0 ) ? "AND c.id = '" . $url_cat_id . "' " : "AND ISNULL(c.id) ";
+	$sql .= "AND e.end_date " . $conditional . " CURDATE()
 	ORDER BY date(e.start_date), ese.start_time";
 
 	ctlt_event_espresso_get_category_registration_view( $sql );
@@ -48,8 +48,8 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 
 // Events Category Registration form listing
 function ctlt_event_espresso_get_category_registration_view( $sql ) {
-	$cat_sql = "SELECT * FROM " . EVENTS_CATEGORY_TABLE . "
-	WHERE id = '" . $_GET['category_id'] . "'";
+	/*$cat_sql = "SELECT IFNULL(category_name, 'Uncategorized') as category_name, category_desc FROM " . EVENTS_CATEGORY_TABLE . "
+	WHERE id = '" . $_GET['category_id'] . "'";*/
 	event_espresso_session_start();
 	if( !isset($_SESSION['event_espresso_sessionid'])) {
 		$sessionid = (mt_rand(100,999).time());
@@ -60,30 +60,27 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 
 	global $wpdb, $org_options;
 	$events = $wpdb->get_results( $sql );
-	$categories = $wpdb->get_results( $cat_sql );
 	$num_rows = $wpdb->num_rows;
-
+	$cat_id = $wpdb->last_result[0]->cat_id;
+	$cat_name = $wpdb->last_result[0]->category_name;
+	$cat_desc = $wpdb->last_result[0]->category_desc;
 	//Check for Multi Event Registration
 	$multi_reg = false;
 	if( function_exists( 'event_espresso_multi_reg_init' ) ) {
 		$multi_reg = true;
 	}
-
+	$description = ( $cat_id != 0 ) ? espresso_format_content( $cat_desc ) : espresso_format_content( "The events in here do not belong to any particular series." );
 	// TODO: generate content and the category information
-	//	var_dump( $categories );
-	foreach( $categories as $category ) {
-		$cat_name = $category->category_name;
-		$cat_desc = $category->category_desc;
-		?>
-		<h3><?php echo $cat_name;?></h3>
-		<p class="section-title">
-			<?php _e('Series Description: ', 'event_espresso'); ?>
-		</p>
-		<div class="event_description clearfix">
-			<?php echo espresso_format_content($cat_desc); ?>
-		</div>
+	//	var_dump( $cat_name );
+	?>
+	<h3><?php echo $cat_name;?></h3>
+	<p class="section-title">
+		<?php _e('Series Description: ', 'event_espresso'); ?>
+	</p>
+	<div class="event_description clearfix">
+		<?php echo $description; ?>
+	</div>
 	<?php
-	}
 	if( $num_rows > 0 ) {
 		foreach( $events as $event ) {
 				$event_id = $event->id;
