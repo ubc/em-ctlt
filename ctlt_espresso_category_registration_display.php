@@ -29,11 +29,10 @@ if( $multi_reg && event_espresso_get_status( $event_id ) == 'ACTIVE' ) {
 }
 else {
 	$cart_link = false;
-} 
+}
+$num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' ); // gets the number of attendees
+if( $event_status != 'S' ) {
 ?>
-		<!--<p id="register_link-<?php echo $event_id; ?>" class="register-link-footer">
-			<?php echo isset( $cart_link ) && $externalURL == '' ? $cart_link : ''; ?>
-		</p>-->
 	<div class="row-fluid">
 		<div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
 			<div class="media" style="padding: 10px;">
@@ -57,6 +56,18 @@ else {
 						</div>
 						<div class="span3">
 							<?php
+							if( $num_attendees >= $reg_limit ) {
+								if( $overflow_event_id != '0' && $allow_overflow == 'Y' ) {
+									?>
+									<h4>
+										<a id="regiser_link-<?php echo $overflow_event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo espresso_reg_url( $overflow_event_id ); ?>">
+											<?php _e( 'Join Waiting List', 'event_espresso' ); ?>
+										</a>
+									</h4>
+									<?php
+								}
+							}
+							else {
 							if( isset( $cart_link ) && $externalURL == '' && $cart_link) {
 								echo '<h4>' . $cart_link . '</h4>'; 
 							}
@@ -68,6 +79,7 @@ else {
 									</a>
 								</h4>
 								<?php
+							}
 							} ?>
 						</div>
 					</div>
@@ -75,3 +87,5 @@ else {
 			</div>
 		</div>
 	</div>
+	<?php
+}

@@ -61,6 +61,7 @@ $display_category_name = do_shortcode( '[CATEGORY_NAME event_id="' . $event_id .
 if( empty( $display_category_name ) ) {
 	$display_category_name = "Uncategorized";
 }
+$num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' ); // gets the number of attendees
 ?>
 	<div class="row-fluid">
 		<div class="span12" style="border: 1px solid #aaa; border-radius: 4px; margin-bottom: 10px;">
@@ -79,7 +80,7 @@ if( empty( $display_category_name ) ) {
 							<i class="icon-time"></i>
 							<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br />
 							<i class="icon-folder-open"></i> <?php echo $display_category_name; ?> <br />
-							<i class="icon-user"></i> <?php echo do_shortcode( '[ATTENDEE_NUMBERS event_id="' . $event_id . '" type="num_attendees_slash_reg_limit"]' ) ?>
+							<i class="icon-user"></i> <?php echo $num_attendees . '/' . $reg_limit; ?>
 						</div>
 						<div class="span5">
 							<?php
@@ -99,17 +100,33 @@ if( empty( $display_category_name ) ) {
 						</div>
 						<div class="span3">
 							<?php
-							if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
-								echo '<h4>' . $cart_link . '</h4>';
+							// do a conditional check to see if event is full
+							// if event is full only display the join waitlist button
+							// otherwise show whatever the regular stuff is
+							if( $num_attendees >= $reg_limit ) {
+									if( $overflow_event_id != '0' && $allow_overflow == 'Y' ) {
+										?>
+										<h4>
+											<a id="regiser_link-<?php echo $overflow_event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo espresso_reg_url( $overflow_event_id ); ?>">
+												<?php _e( 'Join Waiting List', 'event_espresso' ); ?>
+											</a>
+										</h4>
+										<?php
+									}
 							}
 							else {
-								?>
-								<h4>
-									<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
-										<?php _e( 'Register', 'event_espresso' ); ?>
-									</a>
-								</h4>
-								<?php
+								if( isset( $cart_link ) && $externalURL == '' && $cart_link ) {
+									echo '<h4>' . $cart_link . '</h4>';
+								}
+								else {
+									?>
+									<h4>
+										<a id="a_register_link-<?php echo $event_id; ?>" title="<?php echo stripslashes_deep( $event_name ); ?>" href="<?php echo $registration_url; ?>">
+											<?php _e( 'Register', 'event_espresso' ); ?>
+										</a>
+									</h4>
+									<?php
+								}
 							}
 							?>
 						</div>

@@ -88,6 +88,7 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 				$event_desc = stripslashes_deep($event->event_desc);
 				$event_identifier = $event->event_identifier;
 				$active = $event->is_active;
+				$event_status = $event->event_status;
 				$registration_start = $event->registration_start;
 				$registration_end = $event->registration_end;
 				$start_date = $event->start_date;

@@ -8,6 +8,9 @@ events
 
 == changelog ==
 
+v0.13.2 - fixed a ui bug where the add to cart button will still appear for events that are full
+        - fixed a bug in the series pages where event waitlist appears with the main events as well
+
 v0.13.1 - fixed a bug where an uncategorized event will not show up in the series view
         - fixed an issue with the series registration page not showing uncategorized events
         - changed the way category name is grabbed for individual events in series view
