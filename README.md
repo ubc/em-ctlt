@@ -8,6 +8,8 @@ events
 
 == changelog ==
 
+v0.15 - made some changes so that the registration page will still show up when an event is expired but registration is disabled
+
 v0.15 - made major changes to the file stucture
       - added a gateways folder (this folder handles the files regarding payments)
       

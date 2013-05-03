@@ -41,54 +41,6 @@ if ($reg_form_only == false) {
 	<?php
 
 	switch ($is_active['status']) {
-	
-		case 'EXPIRED': 
-		
-			//only show the event description.
-			echo '<h3 class="expired_event">' . __('This event has passed.', 'event_espresso') . '</h3>';
-			break;
-
-		case 'REGISTRATION_CLOSED': 
-		
-			//only show the event description.
-			// if todays date is after $reg_end_date
-?>
-	<div class="event-registration-closed event-messages ui-corner-all ui-state-highlight">
-		<span class="ui-icon ui-icon-alert"></span>
-		<p class="event_full">
-			<strong>
-				<?php _e('We are sorry but registration for this event is now closed.', 'event_espresso'); ?>
-			</strong>
-		</p>
-		<p class="event_full">
-			<strong>
-				<?php  _e('Please ', 'event_espresso');?><a href="contact" title="<?php  _e('contact us ', 'event_espresso');?>"><?php  _e('contact us ', 'event_espresso');?></a><?php  _e('if you would like to know if spaces are still available.', 'event_espresso'); ?>
-			</strong>
-		</p>
-	</div>
-<?php
-			break;
-
-		case 'REGISTRATION_NOT_OPEN': 
-			//only show the event description.
-			// if todays date is after $reg_end_date
-			// if todays date is prior to $reg_start_date
-?>
-	<div class="event-registration-pending event-messages ui-corner-all ui-state-highlight">
-		<span class="ui-icon ui-icon-alert"></span>
-			<p class="event_full">
-				<strong>
-					<?php _e('We are sorry but this event is not yet open for registration.', 'event_espresso'); ?>
-				</strong>
-			</p>
-			<p class="event_full">
-				<strong>
-					<?php echo  __('You will be able to register starting ', 'event_espresso') . ' ' . event_espresso_no_format_date($reg_start_date, 'F d, Y'); ?>
-				</strong>
-			</p>
-		</div>
-<?php
-		break;
 
 		default: //This will display the registration form
 ?>
@@ -183,30 +135,32 @@ if ($reg_form_only == false) {
 
 					// Added for seating chart addon
 					$display_price_dropdown = TRUE;
-
-					if (defined('ESPRESSO_SEATING_CHART')) {
-						$seating_chart_id = seating_chart::check_event_has_seating_chart($event_id);
-						if ($seating_chart_id !== FALSE) {
-							$display_price_dropdown = FALSE;
+					if( $is_active['status'] == 'REGISTRATION_OPEN' ) {
+						if (defined('ESPRESSO_SEATING_CHART')) {
+							$seating_chart_id = seating_chart::check_event_has_seating_chart($event_id);
+							if ($seating_chart_id !== FALSE) {
+								$display_price_dropdown = FALSE;
+							}
 						}
-					}
 
-					if ($display_price_dropdown == TRUE) {
-						$price_label = '<span class="section-title">'.__('Choose an Option: ', 'event_espresso').'</span>';
+
+						if ($display_price_dropdown == TRUE) {
+							$price_label = '<span class="section-title">'.__('Choose an Option: ', 'event_espresso').'</span>';
 	?>
-						<p class="event_prices">
-							<?php do_action( 'espresso_price_select', $event_id, array('show_label'=>TRUE, 'label'=>$price_label) );?>
-						</p>
+							<p class="event_prices">
+								<?php do_action( 'espresso_price_select', $event_id, array('show_label'=>TRUE, 'label'=>$price_label) );?>
+							</p>
 	<?php
-					} else {
+						} else {
 	?>
-						<p class="event_prices">
-							<?php do_action( 'espresso_seating_price_select_action', $event_id );?>
-						</p>
+							<p class="event_prices">
+								<?php do_action( 'espresso_seating_price_select_action', $event_id );?>
+							</p>
 	<?php
-						// Seating chart selector
-						do_action('espresso_seating_chart_select', $event_id);
-							
+							// Seating chart selector
+							do_action('espresso_seating_chart_select', $event_id);
+								
+						}
 					}			
 	?>
 	<!-- CTLT START -->
@@ -219,14 +173,69 @@ if ($reg_form_only == false) {
 		</p>
 		<div class="event_description clearfix">
 			<?php echo espresso_format_content($event_desc); //Code to show the actual description. The Wordpress function "wpautop" adds formatting to your description.   ?>
-			
 		</div>
 		<?php
 		}//End display description
 		?>
 			</div>
 		</div>
+		<?php
+		if( $is_active['status'] != 'REGISTRATION_OPEN') {
+			?>
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="alert">
+						<div class="row-fluid">
+							<div class="span11">
+								<?php
+								switch( $is_active['status'] ) {
+									case 'EXPIRED':
+										// show the expired message
+										__( 'This event has passed.', 'event_espresso' );
+										break;
+
+									case 'REGISTRATION_CLOSED':
+										// if today's date is after $reg_end_date
+										_e( 'We are sorry but registration for this event is now closed.', 'event_espresso' );
+										echo '<br />';
+										_e( 'Please ', 'event_espresso' );?>
+										<a href="contact" title="<?php _e( 'contact us', 'event_espresso' );?>">
+											<?php _e( 'contact us ', 'event_espresso' );?>
+										</a>
+										<?php
+										_e( 'if you would like to know if spaces are still available.', 'event_espresso' );
+										break;
+
+									case 'REGISTRATION_NOT_OPEN':
+										// if today's date is after $reg_end_date
+										// if today's date is prior to $reg_start_date
+										_e( 'We are sorry but this event is not yet open for registration.', 'event_espresso' );
+										echo '<br />';
+										__( 'You will be able to register starting ', 'event_espresso' ) . ' ' . event_espresso_no_format_date( $reg_start_date, 'F d, Y' );
+										break;
+
+									default:
+										// catches all other cases
+										// will probably just say this event is not open for registration
+										__( 'This event is not open for registration.', 'event_espresso' );
+										break;
+								}
+								?>
+							</div>
+							<div class="span1">
+								<i class="icon-warning-sign"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php
+		}
+		?>
 	</div>
+	<?php
+	if( $is_active['status'] == 'REGISTRATION_OPEN' ) {
+	?>
 	<!-- CTLT END -->		
 				<div id="event-reg-form-groups">
 				
@@ -297,7 +306,8 @@ if ($reg_form_only == false) {
 				<p class="event_form_submit" id="event_form_submit-<?php echo $event_id; ?>">
 					<input class="btn_event_form_submit btn" id="event_form_field-<?php echo $event_id; ?>" type="submit" name="Submit" value="<?php _e('Submit', 'event_espresso'); ?>">
 				</p>
-				
+	
+		<?php } ?>			
 	<?php } ?>
 
 	    </form>
