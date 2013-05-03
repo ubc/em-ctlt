@@ -207,4 +207,12 @@ if (!function_exists('multi_register_attendees')) {
 	}
 
 }
+?>
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('div.mer-event-submit input[name="payment_page"]').removeClass('btn_event ui-priority-primary ui-state-hover ui-state-default ui-state-focus ui-corner-all');
+		$('div.mer-event-submit input[name="payment_page"]').addClass('btn');
+	});
+</script>
+<?php
 

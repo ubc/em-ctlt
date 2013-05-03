@@ -8,6 +8,8 @@ events
 
 == changelog ==
 
+v0.14 - added payment page templates and formatted to be more consistent with other pages
+
 v0.13.2 - fixed a ui bug where the add to cart button will still appear for events that are full
         - fixed a bug in the series pages where event waitlist appears with the main events as well
 
