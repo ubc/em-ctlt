@@ -68,7 +68,7 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 								</div>
 								<div class="span8">
 									<?php
-									/*if ( $num_attendees >= $registration_limit ) {
+									/*\\if ( $num_attendees >= $registration_limit ) {
 										?>
 										<div class="espresso_event_full event-display-boxes" id="espresso_event_full-<?php echo $r->id; ?>">
 											<div class="event-messages">
