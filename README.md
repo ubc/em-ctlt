@@ -8,6 +8,9 @@ events
 
 == changelog ==
 
+v0.15 - made major changes to the file stucture
+      - added a gateways folder (this folder handles the files regarding payments)
+      
 v0.14 - added payment page templates and formatted to be more consistent with other pages
 
 v0.13.2 - fixed a ui bug where the add to cart button will still appear for events that are full
