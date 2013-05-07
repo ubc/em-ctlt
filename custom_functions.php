@@ -204,3 +204,38 @@ function ctlt_display_event_espresso_search( $url ) {
 	//Load scripts
 	add_action('wp_footer', 'ee_load_jquery_autocomplete_scripts');
 }
+/*
+Function Name: Espresso Include JS for Templates
+Author: Julien Law
+Contact: julienlaw@alumni.ubc.ca
+Website:
+Description: Just a simple funciton to enqueue scripts for custom templates
+Requirements: Needs the custom files addon
+*/
+function espresso_include_js_for_templates() {
+
+	/*wp_register_script( 'reCopy', ( EVENT_ESPRESSO_PLUGINFULLURL . "scripts/reCopy.js"), false, '1.1.0' );
+	wp_print_scripts( 'reCopy' );
+
+	wp_register_script( 'jquery.validate.js', ( EVENT_ESPRESSO_PLUGINFULLURL . "scripts/jquery.validate.min.js" ), false, '1.8.1' );
+	wp_print_scripts( 'jquery.validate.js' );
+
+	wp_register_script( 'validation', ( EVENT_ESPRESSO_PLUGINFULLURL . "scripts/validation.js" ), false, EVENT_ESPRESSO_VERSION );
+	wp_print_scripts( 'validation' );*/
+
+	wp_register_script( 'ee_pagination_plugin', ( EVENT_ESPRESSO_PLUGINFULLURL . "scripts/jquery.pajinate.min.js" ), false, EVENT_ESPRESSO_VERSION );
+	wp_enqueue_script( 'ee_pagination_plugin' );
+
+	/*wp_register_script( 'ee_pagination', ( EVENT_ESPRESSO_PLUGINFULLURL . "scripts/pagination.js" ), false, EVENT_ESPRESSO_VERSION );
+	$data = array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) );
+	wp_localize_script( 'ee_pagination', 'ee_pagination', $data );
+	wp_print_scripts( 'ee_pagination' );*/
+	// registering scripts and styles here for sorting the table
+	wp_register_script( 'ctlt_event_espresso_sort_table', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/espresso_sort_table.js', array('jquery'), '1.0', true );
+	wp_register_script( 'ctlt_table_sorter_library', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/jquery.tablesorter.js', array('jquery'), '1.0', true );
+	wp_register_style( 'ctlt_table_sorter_style', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/css/ctlt_event_espresso_list.css' );
+	// add the above scripts and styles to the table so that the jQuery sorting function can be used
+	wp_enqueue_script( 'ctlt_event_espresso_sort_table' );
+	wp_enqueue_script( 'ctlt_table_sorter_library' );
+	wp_enqueue_style( 'ctlt_table_sorter_style' );
+}

@@ -27,12 +27,19 @@ if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."espresso_table.php")){
 
 /** CTLT START **/
 // custom template file for showing all the categories in a table
+// Eg. [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="current"] to display upcoming events 
+// Eg. [CTLT_ESPRESSO_CATEGORY_DISPLAY event_type="past"] to display past events
 if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_display.php")){
 	require_once(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_display.php");
 }
 // custom template file for showing the registration page for categories
 if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_registration.php")){
 	require_once(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_registration.php");
+}
+// custom template file for showing past events
+// Eg. [CTLT_PAST_EVENT_LIST events_per_page=""] events_per_page is an optional parameter where you input the number of events you wish to display per page
+if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."past_event_list.php")){
+	require_once(EVENT_ESPRESSO_TEMPLATE_DIR."past_event_list.php");
 }
 /** CTLT END **/
 

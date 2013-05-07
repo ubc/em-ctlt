@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.12
+ * Version: 0.16
  */
 //This is the event list template page.
 //This is a template file for displaying an event lsit on a page.
@@ -71,16 +71,20 @@ $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' )
 				</a>
 				<div class="media-body">
 					<h4 class="media-heading">
-						<div id="event_date-<?php echo $event_id; ?>"><a title="<?php echo stripslashes_deep( $event_name ); ?>"  class="a_event_title" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep( $event_name ); ?></a></div>
+						<div id="event_date-<?php echo $event_id; ?>">
+							<a title="<?php echo stripslashes_deep( $event_name ); ?>"  class="a_event_title" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>">
+								<?php echo stripslashes_deep( $event_name ); ?>
+							</a>
+						</div>
 					</h4>
 					<div class="container-fluid">
 						<div class="span4">
-							<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> 
-							<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> <br />
+							<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> <!-- displays the date -->
+							<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> <br /> <!-- displays the ical icon -->
 							<i class="icon-time"></i>
-							<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br />
-							<i class="icon-folder-open"></i> <?php echo $display_category_name; ?> <br />
-							<i class="icon-user"></i> <?php echo $num_attendees . '/' . $reg_limit; ?>
+							<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br /> <!-- displays the event time -->
+							<i class="icon-folder-open"></i> <?php echo $display_category_name; ?> <br /> <!-- displays the category/series -->
+							<i class="icon-user"></i> <?php echo $num_attendees . '/' . $reg_limit; ?> <!-- displays the number of attendees -->
 						</div>
 						<div class="span5">
 							<?php
@@ -136,5 +140,3 @@ $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' )
 		</div>
 	</div>
 	
-<!--</div> / .event-data-display -->
-<!--</div> / .event-display-boxes -->

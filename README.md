@@ -8,6 +8,12 @@ events
 
 == changelog ==
 
+v0.16 - added a past events shortcode to display a list of all the past events inside custom_shortcodes.php
+      - added some javascript to handle pagination for the past events (ajax-paging.js)
+      - added a function to handle all the script enqueuing in custom_functions.php
+      - new files: past_event_list.php and past_event_list_display.php
+      - cleaned up some useless lines of code in ctlt_espresso_category_display.php, event_list.php and event_list_display.php
+
 v0.15 - made some changes so that the registration page will still show up when an event is expired but registration is disabled
 
 v0.15 - made major changes to the file stucture

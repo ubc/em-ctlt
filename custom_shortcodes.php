@@ -173,4 +173,22 @@ function ctlt_bootstrap_espresso_event_search() {
     return $buffer;
 }
 add_shortcode( 'CTLT_BOOTSTRAP_EVENT_SEARCH', 'ctlt_bootstrap_espresso_event_search' );
+
+/*
+Shortcode Name: CTLT Past Event List
+Author: Julien Law
+Contact: julienlaw@alumni.ubc.ca
+Website:
+Description: Shortcode to display a list of past events
+Usage Example: [CTLT_PAST_EVENT_LIST events_per_page=""] events_per_page is an optional parameter where you input the number of events you wish to display per page
+Notes: This file should be stored in your "/wp-content/uploads/espresso/" directory.
+*/
+function ctlt_past_event_list( $attributes ) {
+	ob_start();
+	ctlt_display_past_events( $attributes );
+	$buffer = ob_get_contents();
+	ob_end_clean();
+	return $buffer;
+}
+add_shortcode( 'CTLT_PAST_EVENT_LIST', 'ctlt_past_event_list');
 /** CTLT END **/

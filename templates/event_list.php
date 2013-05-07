@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Version: 0.12
+ * Version: 0.16
  */
 
 //This is a template file for displaying a list of events on a page. These functions are used with the [ESPRESSO_EVENTS] shortcode.
@@ -135,7 +135,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		//Venue sql
 		isset($org_options['use_venue_manager']) && $org_options['use_venue_manager'] == 'Y' ? $sql .= " LEFT JOIN " . EVENTS_VENUE_REL_TABLE . " vr ON vr.event_id = e.id LEFT JOIN " . EVENTS_VENUE_TABLE . " v ON v.id = vr.venue_id " : '';
 		
-		//Venue sql
+		//Staff sql
 		isset($org_options['use_personnel_manager']) && $org_options['use_personnel_manager'] == 'Y' ? $sql .= " LEFT JOIN " . EVENTS_PERSONNEL_REL_TABLE . " str ON str.event_id = e.id LEFT JOIN " . EVENTS_PERSONNEL_TABLE . " st ON st.id = str.person_id " : '';
 		
 		$sql .= " LEFT JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id= e.id ";
@@ -448,14 +448,6 @@ if (!function_exists('event_espresso_get_event_details')) {
 							break;
 					}
 				}
-			?>
-			<?php
-		}
-		if( count($events) > 0 ) {
-			?>
-					<!--</tbody>
-				</table>-->
-			<?php
 		}
 		echo "</div>";
 		echo "</div>";
