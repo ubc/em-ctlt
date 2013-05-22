@@ -64,9 +64,9 @@ $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' )
 				<div class="container-fluid">
 					<div class="span4">
 						<i class="icon-calendar"></i> <?php echo event_date_display( $start_date, get_option( 'date_format' ) ) ?> <!-- displays the date -->
-						<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ) ?> <br /> <!-- displays the ical icon -->
+						<?php echo apply_filters( 'filter_hook_espresso_display_ical', $all_meta ); ?> <br /> <!-- displays the ical icon -->
 						<i class="icon-time"></i>
-						<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ) ?></span> <br /> <!-- displays the event time -->
+						<span class="label label-inverse"> <?php echo espresso_event_time( $event_id, 'start_time' ) . ' - ' . espresso_event_time( $event_id, 'end_time' ); ?></span> <br /> <!-- displays the event time -->
 						<i class="icon-folder-open"></i> <?php echo $display_category_name; ?> <br /> <!-- displays the category/series -->
 						<i class="icon-user"></i> <?php echo $num_attendees . '/' . $reg_limit; ?> <!-- displays the number of attendees -->
 					</div>
@@ -83,7 +83,7 @@ $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' )
 							}
 							$output_desc = implode( " ", $output_desc );
 						}
-						echo $output_desc;
+						echo espresso_format_content( $output_desc );
 						?>						
 					</div>
 					<div class="span3">

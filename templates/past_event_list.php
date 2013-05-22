@@ -11,12 +11,13 @@ Requirements: past_event_list_display.php, past_event_list.php, custom_shortcode
 Notes: This file should be stored in your "/wp-content/uploads/espresso/templates/" folder and you should have downloaded the custom files addon from your event espresso account
 */
 
-ctlt_past_event_enqueue_pagination();
+//ctlt_past_event_enqueue_pagination();
+
 add_action( 'wp_ajax_past_events_pagination', 'ctlt_past_event_pagination' );			// ajax functions for pagination
 add_action( 'wp_ajax_nopriv_past_events_pagination', 'ctlt_past_event_pagination' );
 
 function ctlt_display_past_events( $attributes ) {
-
+	ctlt_past_event_enqueue_pagination();
 	global $wpdb, $org_options, $events_in_session;
 
 	$template_name = ( 'past_event_list_display.php' );
@@ -147,9 +148,9 @@ function ctlt_display_past_events( $attributes ) {
 		$espresso_paginate .= '<ul>';
 		$espresso_paginate .= '<li><a href="#" current_page=1 class="event_paginate ' . $prev_no_more . '">&laquo;</a></li>';
 		$espresso_paginate .= '<li><a href="#" current_page=' . $prev . ' class="event_paginate ' . $prev_no_more . '">&lt;</a></li>';
-		if ( $start > 1 ) {
+		/*if ( $start > 1 ) {
 			$espresso_paginate .= '<span class="ellipse less">...</span>';
-		}
+		}*/
 		for ( $i = $start; $i <= $end; $i++ ) {
 			$start_bold = '';
 			$end_bold = '';
@@ -159,9 +160,9 @@ function ctlt_display_past_events( $attributes ) {
 			}
 			$espresso_paginate .= '<li><a class="page_link event_paginate ' . $active_page . '" current_page=' . $i . ' href="#">' . $start_bold . $i . $end_bold . '</a></li>';
 		}
-		if ( $end < $total_pages ) {
+		/*if ( $end < $total_pages ) {
 			$espresso_paginate .= '<span class="ellipse more">...</span>';
-		}
+		}*/
 		$espresso_paginate .= '<li><a href="#" current_page=' . $next . ' class="event_paginate ' . $next_no_more . '">&gt;</a></li>';
 		$espresso_paginate .= '<li><a href="#" current_page=' . $total_pages . ' class="event_paginate ' . $next_no_more . '">&raquo;</a></li>';
 		$espresso_paginate .= '</ul>';
@@ -307,7 +308,7 @@ function ctlt_display_past_events( $attributes ) {
 		echo $espresso_paginate; // output the pagination links
 	}
 	if( $use_wrapper ) {
-		echo "</div>";
+		echo "</div> <!-- end wrapper -->";	// end wrapper
 	}
 	// Check to see how many database queries were performed
 	// echo '<p>Database Queries: ' . get_num_queries() . '</p>';

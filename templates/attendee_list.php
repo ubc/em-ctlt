@@ -60,7 +60,7 @@ if (!function_exists('event_espresso_show_attendess')) {
 
 		<h2 class="event_title ui-widget-header ui-corner-top">
 	<?php _e('Attendee Listing For: ','event_espresso'); ?>
-	<?php echo $event_name . $event_status?></h2>
+	<?php echo $event_name . espresso_event_status($event_id);?></h2>
 
 		<div class="event-data-display ui-widget-content ui-corner-bottom">
 

@@ -256,11 +256,11 @@ if (!function_exists('event_espresso_get_event_details')) {
 			
 			$espresso_paginate = '<div class="pagination pagination-centered">';
 			$espresso_paginate .= '<ul>';
-			$espresso_paginate .= '<li><a href="#" current_page=1 class="event_paginate $prev_no_more">&laquo;</a></li>';
-			$espresso_paginate .= '<li><a href="#" current_page=' . $prev . ' class="event_paginate $prev_no_more ">&lt;</a></li>';
-			if ( $start > 1 ) {
+			$espresso_paginate .= '<li><a href="#" current_page=1 class="event_paginate ' . $prev_no_more . '">&laquo;</a></li>';
+			$espresso_paginate .= '<li><a href="#" current_page=' . $prev . ' class="event_paginate ' . $prev_no_more . '">&lt;</a></li>';
+			/*if ( $start > 1 ) {
 				$espresso_paginate .= '<span class="ellipse less">...</span>';
-			}
+			}*/
 			for ( $i = $start; $i <= $end; $i++ ) {
 				$start_bold = '';
 				$end_bold = '';
@@ -268,18 +268,18 @@ if (!function_exists('event_espresso_get_event_details')) {
 					$start_bold = '<b>';
 					$end_bold 	= '</b>';
 				}
-				$espresso_paginate .= '<li><a class="page_link event_paginate $active_page" current_page=$i href="#">' . $start_bold . $i . $end_bold . '</a></li>';
+				$espresso_paginate .= '<li><a class="page_link event_paginate ' . $active_page . '" current_page=' . $i . ' href="#">' . $start_bold . $i . $end_bold . '</a></li>';
 			}
-			if ( $end < $total_pages ) {
+			/*if ( $end < $total_pages ) {
 				$espresso_paginate .= '<span class="ellipse more">...</span>';
-			}
-			$espresso_paginate .= '<li><a href="#" current_page=' . $next . ' class="event_paginate $next_no_more">&gt;</a></li>';
-			$espresso_paginate .= '<li><a href="#" current_page=' . $total_pages . ' class="event_paginate $next_no_more">&raquo;</a></li>';
+			}*/
+			$espresso_paginate .= '<li><a href="#" current_page=' . $next . ' class="event_paginate ' . $next_no_more . '">&gt;</a></li>';
+			$espresso_paginate .= '<li><a href="#" current_page=' . $total_pages . ' class="event_paginate ' . $next_no_more . '">&raquo;</a></li>';
 			$espresso_paginate .= '</ul>';
-			$espresso_paginate .= '</div>';
+			$espresso_paginate .= '</div>';	// wns pagination
 		}
-		echo do_shortcode('[CTLT_BOOTSTRAP_EVENT_SEARCH]');
-		echo "<div id='event_content' class='event_content'>";
+		//echo do_shortcode('[CTLT_BOOTSTRAP_EVENT_SEARCH]');
+		echo "<div id='event_content' class='event_content'>"; 
 		if ( count($events) < 1) {
 			//echo $sql;
 			echo __('No events available...', 'event_espresso');
@@ -449,13 +449,13 @@ if (!function_exists('event_espresso_get_event_details')) {
 					}
 				}
 		}
-		echo "</div>";
-		echo "</div>";
+		echo "</div>"; // end event_content
+		echo "</div>"; // end event_container_pagination
 		if ( isset( $espresso_paginate ) ) {
 			echo $espresso_paginate; // spit out the pagination links
 		}
 		if ( $use_wrapper ) {
-			echo "</div>";
+			echo "</div>";	// end event_wrapper
 		}
 		//Check to see how many database queries were performed
 		//echo '<p>Database Queries: ' . get_num_queries() .'</p>';

@@ -28,7 +28,7 @@ wp_enqueue_style( 'ctlt_table_sorter_style' );
 function ctlt_display_event_espresso_category_registration($event_type) {
 	// need to find a way to make this more secure
 
-	$conditional = ( $event_type === 'past' ) ? '<' : '>';
+	$conditional = ( $event_type === 'past' ) ? '<' : '=>';
 
 	//var_dump($conditional);
 
@@ -40,7 +40,10 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 	LEFT JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id
 	WHERE e.is_active = 'Y' ";
 	$sql .= ( $url_cat_id != 0 ) ? "AND c.id = '" . $url_cat_id . "' " : "AND ISNULL(c.id) ";
-	$sql .= "AND e.end_date " . $conditional . " CURDATE()
+	$sql .= " AND e.event_status != 'S' "; // do not show waitlist (secondary) events
+	$sql .= " AND e.event_status != 'D' "; // do not show deleted events
+	$sql .= " AND e.end_date " . $conditional . " CURDATE() ";
+	$sql .= " AND ese.start_time " . $conditional . " CURTIME() 
 	ORDER BY date(e.start_date), ese.start_time";
 
 	ctlt_event_espresso_get_category_registration_view( $sql );
