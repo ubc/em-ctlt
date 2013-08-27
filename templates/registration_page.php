@@ -245,6 +245,11 @@ if (!function_exists('register_attendees')) {
                 'google_map_link' => $google_map_link,
             );
 			
+            if( class_exists( 'CTLT_Espresso_Controls' ) ) {
+                $CTLT_Espresso_Controls_object = CTLT_Espresso_Controls::get_instance();
+                $admin_notes = $CTLT_Espresso_Controls_object->frontend_get_data();
+            }
+
 			//print_r($all_meta);
 			//This function gets the status of the event.
 			$is_active = array();

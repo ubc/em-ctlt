@@ -179,6 +179,190 @@ if ($reg_form_only == false) {
 		?>
 			</div>
 		</div>
+		<?php if( current_user_can( 'activate_plugins' ) && class_exists( 'CTLT_Espresso_Controls' ) ) { ?>
+		<div class="row-fluid">
+			<div class="span12">
+				<h3>Admin Requests</h3>
+				<div class="accordion" id ="admin-requests-accordion">
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#admin-requests-accordion" href="#handouts">
+								Handouts
+							</a>
+						</div>
+						<div id="handouts" class="accordion-body collapse">
+							<div class="accordion-inner">
+								<dl>
+									<dt>Handout Status</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_handouts_radio'] ) ? $admin_notes['_ctlt_espresso_handouts_radio'] : '&nbsp;'; ?></dd>
+									<dt>Handout File</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_handouts_upload'] ) ? $admin_notes['_ctlt_espresso_handouts_upload'] : '&nbsp;'; ?></dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#admin-requests-accordion" href="#room-setup">
+								Room Setup
+							</a>
+						</div>
+						<div id="room-setup" class="accordion-body collapse">
+							<div class="accordion-inner">
+								<dl>
+									<dt>Room Setup Style</dt>
+									<dd><?php echo $admin_notes['_ctlt_espresso_room_setup']; ?></dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#admin-requests-accordion" href="#additional-information">
+								Additional Information
+							</a>
+						</div>
+						<div id="additional-information" class="accordion-body collapse">
+							<div class="accordion-inner">
+								<dl>
+									<dt>Room Setup Notes</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_room_setup_notes'] ) ? $admin_notes['_ctlt_espresso_room_setup_notes'] : '&nbsp;'; ?></dd>
+									<dt>A/V and Computer Requirements</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_av_computer_requirements'] ) ? $admin_notes['_ctlt_espresso_av_computer_requirements'] : '&nbsp;'; ?></dd>
+									<dt>Admin Support Notes</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_admin_support_notes'] ) ? $admin_notes['_ctlt_espresso_admin_support_notes'] : '&nbsp;'; ?></dd>
+									<dt>Marketing and Communication Support Notes</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_marketing_communication'] ) ? $admin_notes['_ctlt_espresso_marketing_communication'] : '&nbsp;'; ?></dd>
+									<dt>Catering Notes</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_catering_notes'] ) ? $admin_notes['_ctlt_espresso_catering_notes'] : '&nbsp;'; ?></dd>
+									<dt>Room Setup Assistance</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_room_setup_assistance'] ) ? $admin_notes['_ctlt_espresso_room_setup_assistance'] : '&nbsp;'; ?></dd>
+									<dt>Signs for Event</dt>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_signs_for_event'] ) ? $admin_notes['_ctlt_espresso_signs_for_event'] : '&nbsp;'; ?></dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#admin-requests-accordion" href="#additional-requirements">
+								Additional Requirements
+							</a>
+						</div>
+						<div id="additional-requirements" class="accordion-body collapse">
+							<div class="accordion-inner">
+								<dl>
+									<dt>Computers</dt>
+									<dd>
+										<dl>
+											<dt>Computer</dt>
+											<dd><?php echo !empty( $admin_notes['_ctlt_espresso_computers'] ) ? $admin_notes['_ctlt_espresso_computers'] : '&nbsp'; ?></dd>
+											<dt>Cables</dt>
+											<dd><?php echo !empty( $admin_notes['_ctlt_espresso_cables'] ) ? $admin_notes['_ctlt_espresso_cables'] : '&nbsp;'; ?></dd>
+											<dt>Laptops</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_laptop_checkbox'];
+												echo '<br/> Quantity: ';
+												echo $admin_notes['_ctlt_espresso_laptop_textbox']; ?>
+											</dd>
+											<dt>Headsets</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_headset_checkbox'];
+												echo '<br/> Quantity: ';
+												echo $admin_notes['_ctlt_espresso_headset_textbox']; ?>
+											</dd>
+											<dt>Clickers</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_clicker_checkbox'];
+												echo '<br/> Quantity: ';
+												echo $admin_notes['_ctlt_espresso_clicker_textbox']; ?>
+											</dd>
+											<dt>Virtual Participation</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_virtual_checkbox'];
+												echo '<br/> URL: ';
+												echo $admin_notes['_ctlt_espresso_virtual_textbox_website'];
+												echo '<br/> Login: ';
+												echo $admin_notes['_ctlt_espresso_virtual_textbox_login']; ?>
+											</dd>
+											<dt>URL's on Computers</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_url_checkbox'];
+												echo '<br/> URL: ';
+												echo $admin_notes['_ctlt_espresso_url_textbox']; ?>
+											</dd>
+											<dt>Folder with Files</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_folder_checkbox']; 
+												echo $admin_notes['_ctlt_espresso_folder_checkbox'] === 'yes' ? ' Event organizer will send administrators the files' : '&nbsp;'; ?></dd>
+											<dt>Additional Software</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_software_checkbox'];
+												echo '<br/> Name: '; 
+												echo $admin_notes['_ctlt_espresso_software_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_software_textbox'] )? $admin_notes['_ctlt_espresso_software_textbox'] : '&nbsp;'; ?>
+											</dd>
+											<dt>Login Information</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_login_checkbox']; 
+												echo '<br/> Username: '; 
+												echo $admin_notes['_ctlt_espresso_login_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_login_textbox_name'] ) ? $admin_notes['_ctlt_espresso_login_textbox_name'] : '&nbsp;'; 
+												echo '<br/> Password: '; 
+												echo $admin_notes['_ctlt_espresso_login_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_login_textbox_password'] ) ? $admin_notes['_ctlt_espresso_login_textbox_password'] : '&nbsp;'; ?>
+											</dd>
+											<dt>Audio Recording</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_audio_checkbox'];
+												echo '<br/> Headcount: ';
+												echo $admin_notes['_ctlt_espresso_audio_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_audio_textbox'] ) ? $admin_notes['_ctlt_espresso_audio_textbox'] : '&nbsp;'; ?>
+											</dd>
+											<dt>Projectors</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_projector_checkbox'];
+												echo '<br/> Quantity: ';
+												echo $admin_notes['_ctlt_espresso_projector_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_projector_textbox'] ) ? $admin_notes['_ctlt_espresso_projector_textbox'] : '&nbsp;'; ?>
+											</dd>
+											<dt>Speakers</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_speakers_checkbox']; ?></dd>
+										</dl>
+									</dd>
+									<dt>Equipment</dt>
+									<dd>
+										<dl>
+											<dt>Slide Advancer</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_slide_advancer']; ?></dd>
+											<dt>Laser Pointer</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_laser_pointer']; ?></dd>
+											<dt>Smart Projector</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_smart_projecter']; ?></dd>
+											<dt>USB Stick</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_usb_stick']; ?></dd>
+											<dt>A/V Technician</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_av_technician']; ?></dd>
+										</dl>
+									</dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+					<div class="accordion-group">
+						<div class="accordion-heading">
+							<a class="accordion-toggle" data-toggle="collapse" data-parent="#admin-requests-accordion" href="#costs">
+								Costs
+							</a>
+						</div>
+						<div id="costs" class="accordion-body collapse">
+							<div class="accordion-inner">
+								<dl>
+									<dt>Facilitator Pay (Total)</dt>
+									<dd><?php echo '$' . $admin_notes['_ctlt_espresso_facilitator_pay']; ?></dd>
+									<dt>TA Pay (Total)</dt>
+									<dd><?php echo '$' . $admin_notes['_ctlt_espresso_ta_pay']; ?></dd>
+									<dt>Room Cost</dt>
+									<dd><?php echo '$' . $admin_notes['_ctlt_espresso_room_cost']; ?></dd>
+									<dt>Ad Cost</dt>
+									<dd><?php echo '$' . $admin_notes['_ctlt_espresso_ad_cost']; ?></dd>
+									<dt>Food Cost</dt>
+									<dd><?php echo '$' . $admin_notes['_ctlt_espresso_food_cost']; ?></dd>
+									<dt>Other Cost</dt>
+									<dd><?php echo '$' . $admin_notes['_ctlt_espresso_other_cost']; ?></dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php } ?>
 		<?php
 		if( $is_active['status'] != 'REGISTRATION_OPEN') {
 			?>
