@@ -28,12 +28,15 @@ wp_enqueue_style( 'ctlt_table_sorter_style' );
 function ctlt_display_event_espresso_category_registration($event_type) {
 	// need to find a way to make this more secure
 
-	$conditional = ( $event_type === 'past' ) ? '<' : '=>';
+	$conditional = ( strtolower( $event_type ) === 'past' ) ? '<' : '>=';
 
 	//var_dump($conditional);
 
 	$url_cat_id = $_GET['category_id'];
 	global $wpdb;
+	$date = date( "Y-m-d", time() );
+    $time = date( "H:i", time() );
+	
 	$sql = "SELECT e.*, IFNULL(c.category_name, 'Uncategorized') AS category_name, c.category_desc, c.id AS cat_id,  c.display_desc, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e
 	LEFT JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
 	LEFT JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
@@ -42,9 +45,9 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 	$sql .= ( $url_cat_id != 0 ) ? "AND c.id = '" . $url_cat_id . "' " : "AND ISNULL(c.id) ";
 	$sql .= " AND e.event_status != 'S' "; // do not show waitlist (secondary) events
 	$sql .= " AND e.event_status != 'D' "; // do not show deleted events
-	$sql .= " AND e.end_date " . $conditional . " CURDATE() ";
-	$sql .= " AND ese.start_time " . $conditional . " CURTIME() 
-	ORDER BY date(e.start_date), ese.start_time";
+	$sql .= " AND ( e.end_date " . $conditional . " '" . $date . "' ";
+	$sql .= " OR ( e.end_date = '" . $date . "' AND ese.end_time " . $conditional . " '" . $time . "' ) ) ";
+	$sql .= " ORDER BY date(e.start_date), ese.start_time;";
 
 	ctlt_event_espresso_get_category_registration_view( $sql );
 }
@@ -60,6 +63,8 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 	}
 	$template_name = ( 'ctlt_espresso_category_registration_display.php' );
 	$path = locate_template( $template_name );
+
+	//print( $sql );
 
 	global $wpdb, $org_options;
 	$events = $wpdb->get_results( $sql );

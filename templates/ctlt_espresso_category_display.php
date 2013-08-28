@@ -16,19 +16,20 @@ function ctlt_display_event_espresso_category($event_type){
     global $wpdb;
 
     // if $event_type is identical to 'past' then assign '<' to $conditional otherwise '>'
-    $conditional = ( $event_type === 'past' ) ? '<' : '=>';
-
+    $conditional = ( strtolower( $event_type ) === 'past' ) ? '<' : '>=';
+    $date = date( "Y-m-d", time() );
+    $time = date( "H:i", time() );
     $sql = "SELECT e.id, min(e.start_date) AS start_date, IFNULL(c.category_name, 'Uncategorized') AS category_name, c.category_desc, IFNULL(c.id, 0) AS cat_id, ese.start_time FROM " . EVENTS_DETAIL_TABLE . " e 
             LEFT JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id
             LEFT JOIN " . EVENTS_CATEGORY_REL_TABLE . " r ON r.event_id = e.id
             LEFT JOIN " . EVENTS_CATEGORY_TABLE . " c ON c.id = r.cat_id 
-            WHERE e.is_active = 'Y'
-            AND e.end_date " . $conditional . " CURDATE()
-            AND ese.start_time " . $conditional . " CURTIME()
-            AND e.event_status != 'S'
-            AND e.event_status != 'D'
-            GROUP BY c.category_name, c.category_desc, c.id
-            ORDER BY start_date, ese.start_time";
+            WHERE e.is_active = 'Y' ";
+    $sql .= "AND (e.end_date " . $conditional . "'" . $date . "' ";
+    $sql .= "OR (e.end_date = '" . $date ."' AND ese.end_time " . $conditional . "'" . $time . "' )) ";
+    $sql .= "AND e.event_status != 'S' ";
+    $sql .= "AND e.event_status != 'D' ";
+    $sql .= "GROUP BY c.category_name, c.category_desc, c.id ";
+    $sql .= "ORDER BY start_date, ese.start_time";
 
     ctlt_event_espresso_get_category_list_table($sql);
 }
@@ -47,6 +48,8 @@ function ctlt_event_espresso_get_category_list_table($sql){
     $category_names = $wpdb->category_name;
     $category_descs = $wpdb->category_desc;
     
+    //print( $sql );
+
     if ($num_rows > 0) {
         foreach ($events as $event) {
             $event_id = $event->id;
