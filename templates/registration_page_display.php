@@ -196,7 +196,7 @@ if ($reg_form_only == false) {
 									<dt>Handout Status</dt>
 									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_handouts_radio'] ) ? $admin_notes['_ctlt_espresso_handouts_radio'] : '&nbsp;'; ?></dd>
 									<dt>Handout File</dt>
-									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_handouts_upload'] ) ? $admin_notes['_ctlt_espresso_handouts_upload'] : '&nbsp;'; ?></dd>
+									<dd><?php echo !empty( $admin_notes['_ctlt_espresso_handouts_upload'] ) ? wp_get_attachment_link( $admin_notes['_ctlt_espresso_handouts_upload'] ) : '&nbsp;'; ?></dd>
 								</dl>
 							</div>
 						</div>
