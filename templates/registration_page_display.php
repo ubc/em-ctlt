@@ -161,16 +161,17 @@ if ($reg_form_only == false) {
 							do_action('espresso_seating_chart_select', $event_id);
 								
 						}
-					}			
+					}
+				}		
 	?>
 	<!-- CTLT START -->
 			</div>
 			<div class="span8">
+				<p class="section-title">
+					<?php _e('Description:', 'event_espresso') ?>
+				</p>
 		<?php
 		if ($display_desc == "Y") { //Show the description or not ?>
-		<p class="section-title">
-			<?php _e('Description:', 'event_espresso') ?>
-		</p>
 		<div class="event_description clearfix">
 			<?php echo espresso_format_content($event_desc); //Code to show the actual description. The Wordpress function "wpautop" adds formatting to your description.   ?>
 		</div>
@@ -448,6 +449,7 @@ if ($reg_form_only == false) {
 	</div>
 	<?php
 	if( $is_active['status'] == 'REGISTRATION_OPEN' ) {
+		if ($display_reg_form == 'Y') {
 	?>
 	<!-- CTLT END -->		
 				<div id="event-reg-form-groups">
