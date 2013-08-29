@@ -34,8 +34,8 @@ $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' )
 if( $event_status != 'S' ) {
 ?>
 	<div class="row-fluid">
-		<div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
-			<div class="media" style="padding: 10px;">
+		<div class="span12 ctlt-espresso-display-event">
+			<div class="media ctlt-espresso-display-padding">
 				<a class="pull-left" href="<?php echo $post_url?>">
 					<?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url '] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
 				</a>

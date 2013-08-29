@@ -1,9 +1,11 @@
 <?php if (!defined('EVENT_ESPRESSO_VERSION')) { exit('No direct script access allowed'); }
 do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
 ?>
 <div class="espresso_payment_overview event-display-boxes ui-widget" >
 	<div class="ui-widget-content ui-corner-all" >
-		<h3 class="event_title" style="border-bottom: 1px solid #aaa; margin-top: 3px; padding-bottom: 5px;">
+		<h3 class="event_title ctlt-espresso-title-underline">
 			<?php _e('Payment Overview', 'event_espresso'); ?>
 		</h3>
 		<div class="event-data-display">

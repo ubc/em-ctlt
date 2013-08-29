@@ -48,8 +48,8 @@ $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' )
 ?>
 
 <div class="row-fluid">
-	<div class="span12" style="border: 1px solid #aaa; border-radius: 4px; margin-bottom: 10px;">
-		<div class="media" style="padding: 10px;">
+	<div class="span12 ctlt-espresso-display-event">
+		<div class="media ctlt-espresso-display-padding">
 			<a class="pull-left" title="<?php echo stripslashes_deep( $event_name ); ?>" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>">
 				<?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
 			</a>

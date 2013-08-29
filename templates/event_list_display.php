@@ -25,6 +25,10 @@
 //Print out the array of event status options
 //print_r (event_espresso_get_is_active($event_id));
 //Here we can create messages based on the event status. These variables can be echoed anywhere on the page to display your status message.
+
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 $status = event_espresso_get_is_active(0,$event_meta);
 $status_display = ' - ' . $status['display_custom'];
 $status_display_ongoing = $status['status'] == 'ONGOING' ? ' - ' . $status['display_custom'] : '';
@@ -64,8 +68,8 @@ if( empty( $display_category_name ) ) {
 $num_attendees = get_number_of_attendees_reg_limit( $event_id, 'num_attendees' ); // gets the number of attendees
 ?>
 <div class="row-fluid">
-	<div class="span12" style="border: 1px solid #aaa; border-radius: 4px; margin-bottom: 10px;">
-		<div class="media" style="padding: 10px;">
+	<div class="span12 ctlt-espresso-display-padding">
+		<div class="media ctlt-espresso-display-padding">
 			<a class="pull-left" title="<?php echo stripslashes_deep( $event_name ); ?>" id="a_event_title-<?php echo $event_id; ?>" href="<?php echo $registration_url; ?>">
 				<?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
 			</a>

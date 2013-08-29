@@ -19,16 +19,16 @@ Notes: This file should be stored in your "/wp-content/uploads/espresso/template
 // registering scripts and styles here for sorting the table
 wp_register_script( 'ctlt_event_espresso_sort_table', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/js/espresso_sort_table.js', array('jquery'), '1.0', true );
 wp_register_script( 'ctlt_table_sorter_library', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/js/jquery.tablesorter.js', array('jquery'), '1.0', true );
-wp_register_style( 'ctlt_table_sorter_style', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
 // add the above scripts and styles to the table so that the jQuery sorting function can be used
 wp_enqueue_script( 'ctlt_event_espresso_sort_table' );
 wp_enqueue_script( 'ctlt_table_sorter_library' );
-wp_enqueue_style( 'ctlt_table_sorter_style' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
 
 function ctlt_display_event_espresso_category_registration($event_type) {
 	// need to find a way to make this more secure
 
-	$conditional = ( strtolower( $event_type ) === 'past' ) ? '<' : '>=';
+	$conditional = ( strtolower( $event_type ) === 'past' ) ? '<' : '>='; // This determines whether to grab the rows that are past 
 
 	//var_dump($conditional);
 
@@ -44,7 +44,7 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 	WHERE e.is_active = 'Y' ";
 	$sql .= ( $url_cat_id != 0 ) ? "AND c.id = '" . $url_cat_id . "' " : "AND ISNULL(c.id) ";
 	$sql .= " AND e.event_status != 'S' "; // do not show waitlist (secondary) events
-	$sql .= " AND e.event_status != 'D' "; // do not show deleted events
+	$sql .= " AND e.event_status != 'D' "; // do not show "deleted" events
 	$sql .= " AND ( e.end_date " . $conditional . " '" . $date . "' ";
 	$sql .= " OR ( e.end_date = '" . $date . "' AND ese.end_time " . $conditional . " '" . $time . "' ) ) ";
 	$sql .= " ORDER BY date(e.start_date), ese.start_time;";
@@ -54,8 +54,7 @@ function ctlt_display_event_espresso_category_registration($event_type) {
 
 // Events Category Registration form listing
 function ctlt_event_espresso_get_category_registration_view( $sql ) {
-	/*$cat_sql = "SELECT IFNULL(category_name, 'Uncategorized') as category_name, category_desc FROM " . EVENTS_CATEGORY_TABLE . "
-	WHERE id = '" . $_GET['category_id'] . "'";*/
+	
 	event_espresso_session_start();
 	if( !isset($_SESSION['event_espresso_sessionid'])) {
 		$sessionid = (mt_rand(100,999).time());
@@ -78,8 +77,7 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 		$multi_reg = true;
 	}
 	$description = ( $cat_id != 0 ) ? espresso_format_content( $cat_desc ) : espresso_format_content( "The events in here do not belong to any particular series." );
-	// TODO: generate content and the category information
-	//	var_dump( $cat_name );
+	
 	?>
 	<h3><?php echo $cat_name;?></h3>
 	<p class="section-title">

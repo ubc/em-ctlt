@@ -3,6 +3,9 @@
  * version: 0.11
  */
 
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 
 		function event_espresso_shopping_cart() {
@@ -58,7 +61,7 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 		?>
 				<div class="multi_reg_cart_block event-display-boxes ui-widget ui-corner-all" id="multi_reg_cart_block-<?php echo $r->id ?>">
 					<div class="ui-widget-content ui-corner-all">
-						<h3 class="event_title" style="border-bottom: 1px solid #aaa"><?php echo stripslashes_deep( $r->event_name ); ?> <span class="remove-cart-item"> <img class="ee_delete_item_from_cart" id="cart_link_<?php echo $r->id; ?>" alt="Remove this item from your cart" src="<?php echo EVENT_ESPRESSO_PLUGINFULLURL ?>images/icons/remove.gif" /> </span> </h3>
+						<h3 class="event_title ctlt-espresso-title-underline"><?php echo stripslashes_deep( $r->event_name ); ?> <span class="remove-cart-item"> <img class="ee_delete_item_from_cart" id="cart_link_<?php echo $r->id; ?>" alt="Remove this item from your cart" src="<?php echo EVENT_ESPRESSO_PLUGINFULLURL ?>images/icons/remove.gif" /> </span> </h3>
 						<div class="event-data-display">
 							<div class="row-fluid">
 								<div class="span4">

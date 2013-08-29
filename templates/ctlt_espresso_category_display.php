@@ -11,7 +11,10 @@ Requirements: ctlt_espresso_category_registration.php, ctlt_espresso_category_re
 Notes: This file should be stored in your "/wp-content/uploads/espresso/templates/" folder and you should have downloaded the custom files addon from your event espresso account page
 */
 
-// This function generates the SQL query statement and determines if the shortcode parameter is for past or current events
+/**
+ * ctlt_display_event_espresso_category function
+ * This function generates the SQL query statement and determines if the shortcode parameter is for past or current events
+ */ 
 function ctlt_display_event_espresso_category($event_type){
     global $wpdb;
 
@@ -61,8 +64,8 @@ function ctlt_event_espresso_get_category_list_table($sql){
             $description = ( $cat_id != 0 ) ? espresso_format_content( $cat_desc ) : espresso_format_content( "The events in here do not belong to any particular series." );
             ?>
             <div class="row-fluid">
-                <div class="span12" style="border: 1px solid #ccc; border-radius: 4px; margin-bottom: 10px;">
-                    <div class="media" style="padding: 10px;">
+                <div class="span12 ctlt-espresso-display-event">
+                    <div class="media ctlt-espresso-display-padding">
                         <a class="pull-left" href="<?php echo $url; ?>">
                            <?php echo apply_filters( 'filter_hook_espresso_display_featured_image', $event_id, !empty( $event_meta['event_thumbnail_url'] ) ? $event_meta['event_thumbnail_url'] : '' ); ?>
                         </a>
@@ -88,6 +91,10 @@ function ctlt_event_espresso_get_category_list_table($sql){
     }
 }
 
+/**
+ * ctlt_espresso_category_url function
+ * This function generates the URL for the event category
+ */
 function ctlt_espresso_category_url( $cat_id = 0, $cat_name = NULL ) {
     global $org_options;
     if ( $cat_id >= 0 && !empty($cat_name) ) {

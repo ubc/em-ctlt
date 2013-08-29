@@ -2,6 +2,10 @@
 //This is the registration form.
 //This is a template file for displaying a registration form for an event on a page.
 //There should be a copy of this file in your wp-content/uploads/espresso/ folder.
+
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 global $this_event_id;
 $this_event_id = $event_id;
 $num_attendees = ' - ' . $_SESSION['espresso_session']['events_in_session'][$event_id]['attendee_quantitiy'] . __(' attendees', 'event_espresso');
@@ -10,7 +14,7 @@ $display_description_on_multi_reg_page = isset( $org_options['display_descriptio
 ?>
 <div id="event_espresso_registration_form" class="event-display-boxes multi-reg-page ui-widget ui-corner-all">
 	<div class="ui-widget-content ui-corner-all">
-		<h3 class="event_title" id="event_title-<?php echo $event_id; ?>" style="border-bottom: 1px solid #aaa">
+		<h3 class="event_title ctlt-espresso-title-underline" id="event_title-<?php echo $event_id; ?>" >
 			<?php echo stripslashes_deep($event_name) ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?>
 		</h3>
 		<div class="multi_regis_form_fields event-data-display" id="multi_regis_form_fields-<?php echo $event_id . '-' . $meta['price_id']; ?>">
@@ -91,11 +95,11 @@ $display_description_on_multi_reg_page = isset( $org_options['display_descriptio
 							if ( $event_counter == 1 && $event_count > 1 || ($meta['attendee_quantity'] > 1 && $event_meta['additional_attendee_reg_info'] > 1) ) {
 								?>
 								<div class="event-messages ui-state-highlight">
-									<p class="instruct" style="position:relative;padding:1em;">
-										<span class="copy-all-button-wrapper" style="position:relative;z-index:10;">									
+									<p class="instruct instruct-spacing">
+										<span class="copy-all-button-wrapper copy-all-button-spacing">									
 											<?php _e('Copy above information to all forms?', 'event_espresso'); ?> <button type="button" class="btn" value="<?php echo $event_id . '|' . $meta['price_id']; ?>"><?php _e('Yes', 'event_espresso'); ?></button>										
 										</span>
-										<span class="copy-all-button-success" style="display:none;position:absolute; top:.2em; left:0;padding:1em; border-radius:3px;z-index:1;background:#DCF3D9;"></span>
+										<span class="copy-all-button-success copy-all-button-sucess-style-modification"></span>
 									</p>
 								</div>
 								<?php
