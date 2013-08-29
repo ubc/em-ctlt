@@ -179,7 +179,7 @@ if ($reg_form_only == false) {
 		?>
 			</div>
 		</div>
-		<?php if( current_user_can( 'activate_plugins' ) && class_exists( 'CTLT_Espresso_Controls' ) ) { ?>
+		<?php if( current_user_can( 'espresso_event_manager' ) && class_exists( 'CTLT_Espresso_Controls' ) ) { ?>
 		<div class="row-fluid">
 			<div class="span12">
 				<h3>Admin Requests</h3>
@@ -328,6 +328,35 @@ if ($reg_form_only == false) {
 											<dd><?php echo $admin_notes['_ctlt_espresso_usb_stick']; ?></dd>
 											<dt>A/V Technician</dt>
 											<dd><?php echo $admin_notes['_ctlt_espresso_av_technician']; ?></dd>
+										</dl>
+									</dd>
+									<dt>Conference Miscellaneous Information</dt>
+									<dd>
+										<dl>
+											<dt>Video Capture</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_video_capture_checkbox']; ?></dd>
+											<dt>Live Streaming</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_live_stream_checkbox'];
+												echo '<br/> URL: ';
+												echo $admin_notes['_ctlt_espresso_live_stream_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_live_stream_textbox'] ) ? $admin_notes['_ctlt_espresso_live_stream_textbox'] : '&nbsp;'; ?>
+											</dd>
+											<dt>Video Conference</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_video_conference_checkbox'];
+												echo '<br/> IP Address: ';
+												echo $admin_notes['_ctlt_espresso_video_conference_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_video_conference_textbox_ip'] ) ? $admin_notes['_ctlt_espresso_video_conference_textbox_ip'] : '&nbsp;'; 
+												echo '<br/> Contact Number: ';
+												echo $admin_notes['_ctlt_espresso_video_conference_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_video_conference_textbox_number'] ) ? $admin_notes['_ctlt_espresso_video_conference_textbox_number'] : '&nbsp;'; ?>
+											</dd>
+											<dt>Phone Conference</dt>
+											<dd><?php echo $admin_notes['_ctlt_espresso_phone_conference_checkbox'];
+												echo '<br/> Phone Number: ';
+												echo $admin_notes['_ctlt_espresso_phone_conference_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_phone_conference_textbox_phone'] ) ? $admin_notes['_ctlt_espresso_phone_conference_textbox_phone'] : '&nbsp;';
+												echo '<br/> Conference Number: ';
+												echo $admin_notes['_ctlt_espresso_phone_conference_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_phone_conference_textbox_teleconference'] ) ? $admin_notes['_ctlt_espresso_phone_conference_textbox_teleconference'] : '&nbsp;';
+												echo '<br/> Access Code: ';
+												echo $admin_notes['_ctlt_espresso_phone_conference_checkbox'] === 'yes' && !empty( $admin_notes['_ctlt_espresso_phone_conference_textbox_access_code'] ) ? $admin_notes['_ctlt_espresso_phone_conference_textbox_access_code'] : '&nbsp;';
+												?>
+											</dd>
 										</dl>
 									</dd>
 								</dl>
