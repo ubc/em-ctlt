@@ -16,6 +16,9 @@ Notes: This file should be stored in your "/wp-content/uploads/espresso/template
 add_action( 'wp_ajax_past_events_pagination', 'ctlt_past_event_pagination' );			// ajax functions for pagination
 add_action( 'wp_ajax_nopriv_past_events_pagination', 'ctlt_past_event_pagination' );
 
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 function ctlt_display_past_events( $attributes ) {
 	ctlt_past_event_enqueue_pagination();
 	global $wpdb, $org_options, $events_in_session;

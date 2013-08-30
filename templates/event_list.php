@@ -9,6 +9,9 @@
 //This file should be stored in your "/wp-content/uploads/espresso/templates/" directory.
 //Note: All of these functions can be overridden using the "Custom Files" addon. The custom files addon also contains sample code to display ongoing events
 
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 if (!function_exists('display_all_events')) {
 	function display_all_events() {
 		event_espresso_get_event_details(array());
@@ -26,6 +29,8 @@ if (!function_exists('event_espresso_get_event_details_ajx')) {
 	function event_espresso_get_event_details_ajx($attributes) {
 	}
 }
+
+
 
 //Events Listing - Shows the events on your page.
 if (!function_exists('event_espresso_get_event_details')) {

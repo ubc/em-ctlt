@@ -6,11 +6,14 @@ do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');
 //This page gets all of the varaibles from includes/process-registration/payment_page.php
 //Payment confirmation block
 $attendee_num = 1;
+
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
 ?>
 	<form id="form1" name="form1" method="post" action="<?php echo home_url()?>/?page_id=<?php echo $event_page_id?>">
 		<div class="event-conf-block event-display-boxes ui-widget" >
 			<div class="ui-widget-content ui-corner-all">
-				<h3 class="event_title" style="border-bottom: 1px solid #aaa; margin-top: 3px; padding-bottom: 5px;">
+				<h3 class="event_title ctlt-espresso-title-underline">
 					<?php _e( 'Verify Registration', 'event_espresso' ); ?>
 				</h3>
 				<div class="event-data-display">
@@ -127,7 +130,7 @@ $attendee_num = 1;
 		
 			<div id="additional-conf-info" class="event-display-boxes">
 				<div class="ui-widget-content ui-corner-all">
-					<h3 class="event_title" style="border-bottom: 1px solid #aaa; margin-top: 3px; padding-bottom: 5px;"><?php echo stripslashes_deep($attendee_name)?></h3>
+					<h3 class="event_title ctlt-espresso-title-underline"><?php echo stripslashes_deep($attendee_name)?></h3>
 					<div id="additional-conf-info" class="event-data-display">
 						<table id="event_espresso_attendee_verify_questions" class="event-display-tables grid">
 							<?php foreach ($questions as $question) { ?>

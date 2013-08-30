@@ -26,9 +26,6 @@
 //print_r (event_espresso_get_is_active($event_id));
 //Here we can create messages based on the event status. These variables can be echoed anywhere on the page to display your status message.
 
-wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
-wp_enqueue_style( 'ctlt-espresso-template-css' );
-
 $status = event_espresso_get_is_active(0,$event_meta);
 $status_display = ' - ' . $status['display_custom'];
 $status_display_ongoing = $status['status'] == 'ONGOING' ? ' - ' . $status['display_custom'] : '';

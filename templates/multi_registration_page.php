@@ -1,5 +1,9 @@
 <?php
 //Note: This entire function can be overridden using the "Custom Files" addon
+
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 if (!function_exists('multi_register_attendees')) {
 
 	function multi_register_attendees( $single_event_id = NULL, $event_id_sc =0, $meta = array(), $event = FALSE ) {
