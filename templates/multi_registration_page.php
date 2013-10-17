@@ -1,5 +1,9 @@
 <?php
 //Note: This entire function can be overridden using the "Custom Files" addon
+
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
+
 if (!function_exists('multi_register_attendees')) {
 
 	function multi_register_attendees( $single_event_id = NULL, $event_id_sc =0, $meta = array(), $event = FALSE ) {
@@ -178,7 +182,7 @@ if (!function_exists('multi_register_attendees')) {
 						?>
 							<p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer">
 								<a id="a_register_link-<?php echo $overflow_event_id ?>" 
-									class="a_register_link" 
+									class="btn" 
 									href="<?php echo espresso_reg_url($overflow_event_id); ?>" 
 									title="<?php echo stripslashes_deep($event_name) ?>"
 								>
@@ -207,4 +211,12 @@ if (!function_exists('multi_register_attendees')) {
 	}
 
 }
+?>
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('div.mer-event-submit input[name="payment_page"]').removeClass('btn_event ui-priority-primary ui-state-hover ui-state-default ui-state-focus ui-corner-all');
+		$('div.mer-event-submit input[name="payment_page"]').addClass('btn');
+	});
+</script>
+<?php
 

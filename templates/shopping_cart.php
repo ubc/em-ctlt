@@ -1,4 +1,10 @@
 <?php
+/*
+ * version: 0.11
+ */
+
+wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
+wp_enqueue_style( 'ctlt-espresso-template-css' );
 
 if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 
@@ -13,7 +19,7 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 
 			if ( count( $events_in_session ) > 0 ){
 				foreach ( $events_in_session as $event ) {
-					//echo '<h4>$event[id] : ' . $event['id'] . '  <br /><span style="font-size:10px;font-weight:normal;">' . __FILE__ . '<br />line no: ' . __LINE__ . '</span></h4>';
+					// echo $event['id'];
 					if ( is_numeric( $event['id'] ) )
 						$events_IN[] = $event['id'];
 				}
@@ -22,12 +28,13 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 
 			$sql = "SELECT e.* FROM " . EVENTS_DETAIL_TABLE . " e ";
 			$sql = apply_filters( 'filter_hook_espresso_shopping_cart_SQL_select', $sql );
+			//$sql .= " JOIN " . EVENTS_START_END_TABLE . " ese ON ese.event_id = e.id";
 			$sql .= " WHERE e.id in ($events_IN) ";
 			$sql .= " AND e.event_status != 'D' ";
 			$sql .= " ORDER BY e.start_date ";
+//echo '<h4>$sql : ' . $sql . '  <br /><span style="font-size:10px;font-weight:normal;">' . __FILE__ . '<br />line no: ' . __LINE__ . '</span></h4>';
 
 			$result = $wpdb->get_results( $sql );
-
 ?>
 
 <form action='?page_id=<?php echo $org_options['event_page_id']; ?>&regevent_action=load_checkout_page' method='post' id="event_espresso_shopping_cart">
@@ -35,8 +42,6 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 <?php
 		$counter = 1; //Counter that will keep track of the first events
 		foreach ( $result as $r ){
-			
-			$r = apply_filters( 'filter_hook_espresso_shopping_cart_event', $r );
 			
 			//Check to see if the Members plugin is installed.
 			if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() ) {
@@ -51,43 +56,49 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 				$num_attendees = get_number_of_attendees_reg_limit( $r->id, 'num_attendees' ); //Get the number of attendees
 				$available_spaces = get_number_of_attendees_reg_limit( $r->id, 'available_spaces' ); //Gets a count of the available spaces
 				$number_available_spaces = get_number_of_attendees_reg_limit( $r->id, 'number_available_spaces' ); //Gets the number of available spaces
+				$registration_limit = get_number_of_attendees_reg_limit( $r->id, 'reg_limit' );
 				//echo "<pre>$r->id, $num_attendees,$available_spaces,$number_available_spaces</pre>";
 		?>
-				<div class="multi_reg_cart_block event-display-boxes ui-widget"  id ="multi_reg_cart_block-<?php echo $r->id ?>">
+				<div class="multi_reg_cart_block event-display-boxes ui-widget ui-corner-all" id="multi_reg_cart_block-<?php echo $r->id ?>">
+					<div class="ui-widget-content ui-corner-all">
+						<h3 class="event_title ctlt-espresso-title-underline"><?php echo stripslashes_deep( $r->event_name ); ?> <span class="remove-cart-item"> <img class="ee_delete_item_from_cart" id="cart_link_<?php echo $r->id; ?>" alt="Remove this item from your cart" src="<?php echo EVENT_ESPRESSO_PLUGINFULLURL ?>images/icons/remove.gif" /> </span> </h3>
+						<div class="event-data-display">
+							<div class="row-fluid">
+								<div class="span4">
+									<i class="icon-calendar"></i> <?php echo event_date_display( $r->start_date, get_option( 'date_format' ) ); ?> <br />
+									<i class="icon-time"></i> <?php echo espresso_event_time( $r->id, 'start_time' ); ?> - <?php echo espresso_event_time( $r->id, 'end_time' ); ?> <br />
+									<i class="icon-user"></i> <?php echo $num_attendees . '/' . $registration_limit; ?>
+								</div>
+								<div class="span8">
+									<?php
+									/*\\if ( $num_attendees >= $registration_limit ) {
+										?>
+										<div class="espresso_event_full event-display-boxes" id="espresso_event_full-<?php echo $r->id; ?>">
+											<div class="event-messages">
+												<p class="event_full"><strong><?php _e('We are sorry but this event has reached the maximum number of attendees!', 'event_espresso' ); ?></strong></p>
+												<p class="event_full"><strong><?php _e('Please check back in the event someone cancels.', 'event_espresso' ); ?></strong></p>
+											</div>
+										<?php
+										if( ( $num_attendees >= $registration_limit ) && ( $r->allow_overflow == 'Y' && $r->overflow_event_id != 0 ) ) {
+											?>
+											<p>If you still wish to attend this event, you can join the waiting list and you will be assigned a spot as soon as one is available on a first come first serve basis.</p>
+											<p id="register_link-<?php echo $r->overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $r->overflow_event_id ?>" href="<?php echo espresso_reg_url( $r->overflow_event_id ); ?>" title="<?php echo stripslashes_deep( $r->event_name ) ?>"><?php _e( 'Join Waiting List', 'event_espresso' ); ?></a></p>
+											<?php
+										}
+									}
+									else {*/
+										echo event_espresso_group_price_dropdown( $r->id, 0, 1, $_SESSION['espresso_session']['events_in_session'][$r->id]['price_id'] );
+									//}
+									?>
+								</div>
+							</div>
 		
-					<h3 class="event_title ui-widget-header ui-corner-top"><?php echo stripslashes_deep( $r->event_name ) ?> <span class="remove-cart-item"> <img class="ee_delete_item_from_cart" id="cart_link_<?php echo $r->id ?>" alt="Remove this item from your cart" src="<?php echo EVENT_ESPRESSO_PLUGINFULLURL ?>images/icons/remove.gif" /> </span> </h3>
-						<div class="event-data-display ui-widget-content ui-corner-bottom">
-							<table id="cart-reg-details" class="event-display-tables">
-								<thead>
-									<tr>
-										<th><?php _e( 'Date', 'event_espresso' ); ?></th>
-										<th><?php _e( 'Time', 'event_espresso' ); ?></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>
-											<?php echo event_date_display( $r->start_date, get_option( 'date_format' ) ) ?>
-											<?php /*_e( ' to ', 'event_espresso' ); ?> <?php echo event_date_display( $r->end_date, get_option( 'date_format' ) )*/ ?>
-										</td>
-										<td>
-											<?php echo event_espresso_time_dropdown( $r->id, 0, 1, $_SESSION['espresso_session']['events_in_session'][$r->id]['start_time_id'] ); ?>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="2">
-											<?php echo event_espresso_group_price_dropdown( $r->id, 0, 1, $_SESSION['espresso_session']['events_in_session'][$r->id]['price_id']); ?>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-		
-						<input type="hidden" name="event_name[<?php echo $r->id; ?>]" value="<?php echo $r->event_name; ?>" />
-						<input type="hidden" name="use_coupon[<?php echo $r->id; ?>]" value="<?php echo $r->use_coupon_code; ?>" />
-						<input type="hidden" name="use_groupon[<?php echo $r->id; ?>]" value="<?php echo $r->use_groupon_code; ?>" />
-						<?php do_action_ref_array( 'action_hook_espresso_add_to_multi_reg_cart_block', array( $r ) ); ?>
-						
-					</div><!-- / .event-data-display -->
+							<input type="hidden" name="event_name[<?php echo $r->id; ?>]" value="<?php echo $r->event_name; ?>" />
+							<input type="hidden" name="use_coupon[<?php echo $r->id; ?>]" value="<?php echo $r->use_coupon_code; ?>" />
+							<input type="hidden" name="use_groupon[<?php echo $r->id; ?>]" value="<?php echo $r->use_groupon_code; ?>" />
+							<?php do_action_ref_array( 'action_hook_espresso_add_to_multi_reg_cart_block', array( $r ) ); ?>
+						</div><!-- / .event-data-display -->
+					</div>
 				</div><!-- / .event-display-boxes -->
 		
 				<?php
@@ -128,10 +139,11 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 			
              <div id="event_espresso_notifications" class="clearfix event-data-display" style=""></div> 			
 
-			<div id="event_espresso_total_wrapper" class="clearfix event-data-display">					
+			<div id="event_espresso_total_wrapper" class="clearfix event-data-display">	
+					
 				<?php do_action( 'action_hook_espresso_shopping_cart_before_total' ); ?>				
 				<span class="event_total_price">
-					<?php echo __( 'Total ', 'event_espresso' ) . $org_options['currency_symbol'];?> <span id="event_total_price"><?php echo $_SESSION['espresso_session']['grand_total'];?></span>
+					<?php _e( 'Total ', 'event_espresso' ) . $org_options['currency_symbol'];?> <span id="event_total_price"><?php echo $_SESSION['espresso_session']['grand_total'];?></span>
 				</span>
 				<?php do_action( 'action_hook_espresso_shopping_cart_after_total' ); ?>
 				<p id="event_espresso_refresh_total">
@@ -141,7 +153,7 @@ if ( !function_exists( 'event_espresso_shopping_cart' ) ){
 
 			
 			<p id="event_espresso_submit_cart">
-				<input type="submit" class="submit btn_event_form_submit ui-priority-primary ui-state-default ui-state-hover ui-state-focus ui-corner-all" name="Continue" id="event_espresso_continue_registration" value="<?php _e( 'Enter Attendee Information', 'event_espresso' ); ?>&nbsp;&raquo;" />
+				<input type="submit" class="btn" name="Continue" id="event_espresso_continue_registration" value="<?php _e( 'Enter Attendee Information', 'event_espresso' ); ?>&nbsp;&raquo;" />
 			</p>
 			
 		</div><!-- / .mer-event-submit -->

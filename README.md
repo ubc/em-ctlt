@@ -8,7 +8,7 @@ events
 
 == changelog ==
 
-v.0.17 - changed
+v.0.17 - changed formatting of registration_display, event_list_display, payment_page, and confirmation_display to better conform to CLF standards
 
 v0.16 - added a past events shortcode to display a list of all the past events inside custom_shortcodes.php
       - added some javascript to handle pagination for the past events (ajax-paging.js)
