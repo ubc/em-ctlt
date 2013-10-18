@@ -468,7 +468,7 @@ span.span_event_time_label,
 span.span_event_time_value {
     display: inline-block !important;
     margin-left: 0px !important;
-    width: 150px !important;
+    width: 200px !important;
     float: none !important;
 }
 
