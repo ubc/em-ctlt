@@ -49,7 +49,7 @@ $this_event_id = $event_id;
 		<?php //echo $status_display_not_open; //Turn this on to display the secondary message. ?>
 		<?php //echo $status_display_open; //Turn this on to display the not open message. ?>
 		<?php //echo $status_display_custom_closed; //Turn this on to display the closed message. ?>
-        <span class="test"><?php echo event_date_display($start_date, get_option('date_format')) ?></span>ss
+        <span class="test"><?php echo event_date_display($start_date, get_option('date_format')) ?></span>
 	</h3>
 	<?php /* Venue details. Un-comment to display. */ ?>
 	<?php echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':'' ?>
