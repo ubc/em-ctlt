@@ -161,5 +161,3 @@ $this_event_id = $event_id;
         <hr /> <?php
 	}
 	?>
-	
-</div><!-- / .event-data-display -->
