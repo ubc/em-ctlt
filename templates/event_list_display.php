@@ -39,8 +39,8 @@ $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' -
 global $this_event_id;
 $this_event_id = $event_id;
 ?>
-    <div class="test2">
-        <div class="test3">
+    <div class="ctlt_event_list_wrapper">
+        <div class="ctlt_event_list_date">
         <?php
             if($test != event_date_display($start_date, get_option('date_format'))) { ?>
                     <h4><?php echo event_date_display($start_date, get_option('date_format')); ?></h4>
@@ -48,7 +48,7 @@ $this_event_id = $event_id;
             $test = event_date_display($start_date, get_option('date_format'));
         ?>
         </div>
-    <div class="test4">
+    <div class="ctlt_event_list_details">
 	<h4 id="event_title-<?php echo $event_id ?>"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 		<?php /* These are custom messages that can be displayed based on the event status. Just un-comment the one you want to use. */ ?>
 		<?php //echo $status_display; //Turn this on to display the overall status of the event.  ?>

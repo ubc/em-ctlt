@@ -462,30 +462,57 @@ input.price-name-input{
 	margin-left: 180px;
 }
 
-.test2 {
+/*
+BEGIN CTLT CODE TO CUSTOMIZE EVENT_LIST_DISPLAY AND REGISTRATION_PAGE_DISPLAY
+*/
+
+.ctlt_event_list_wrapper {
     display: block;
-    background: blue;
     width: 100%;
     clear: both;
 }
 
-.test3 {
+.ctlt_event_list_date {
     float: left;
     width: 25%;
 }
 
-.test4 {
+.ctlt_event_list_details {
     float: right;
     width: 75%;
 }
 
-.test4 p {
+.ctlt_event_list_details p {
     margin: 0px;
 }
 
-.test4 h4 {
+.ctlt_event_list_details h4 {
     margin-bottom: 0px;
 }
+
+.reg-quest-title,
+.reg-quest-title+input+div,
+.reg-quest-title+input+div+input+div,
+.reg-quest-title+input+div+input+div+input+div {
+    background: blue;
+    display: none;
+}
+
+#event-reg-form-groups {
+    margin-top: 20px;
+}
+
+.event_form_field select {
+    margin-top: -5px;
+}
+
+label.error {
+    margin-left: 10px;
+}
+
+/*
+END CTLT CODE
+*/
 
 span.span_event_date_label,
 span.span_event_date_value,
