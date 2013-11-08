@@ -7,7 +7,7 @@ do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');
 //Payment confirmation block
 $attendee_num = apply_filters('action_hook_espresso_confirmation_page_primary_attendee_count',1);
 ?>
-	<form id="form1" name="form1" method="post" action="<?php echo get_permalink($org_options['event_page_id']);?>">
+	<form style="display: none" id="form1" name="form1" method="post" action="<?php echo get_permalink($org_options['event_page_id']);?>">
 		<h3><?php _e('Confirm Registration','event_espresso'); ?></h3>
 			<table  id="event_espresso_attendee_verify">
 				<tr>
@@ -129,3 +129,20 @@ $attendee_num = apply_filters('action_hook_espresso_confirmation_page_primary_at
 		<input type="hidden" name="event_id" id="event_id-<?php echo $event_id;?>" value="<?php echo $event_id;?>">
 		<?php wp_nonce_field('reg_nonce', 'reg_form_nonce'); ?>
 </form>
+
+<p>Submitting your registration...</p>
+
+<script type="text/javascript">
+    window.onload=function(){
+        var auto = setTimeout(function(){ autoRefresh(); }, 0);
+
+        function submitform(){
+          document.forms["form1"].submit();
+        }
+
+        function autoRefresh(){
+           clearTimeout(auto);
+           auto = setTimeout(function(){ submitform(); autoRefresh(); }, 0);
+        }
+    }
+</script>

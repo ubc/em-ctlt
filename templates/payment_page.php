@@ -17,6 +17,9 @@ do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');
 	    			<b><?php echo stripslashes_deep($event_name) ?></b>
 			</p>
 		</div>
+        <p>
+           <span class="span_event_date_label">Add to Calendar:</span><?php echo apply_filters('filter_hook_espresso_display_ical', $all_meta); ?></span>
+        </p>
 	  	<p>
 			<span class="section-title"><?php _e('Your Registration ID: ', 'event_espresso'); ?></span> <?php echo $registration_id ?>
 	 	</p>

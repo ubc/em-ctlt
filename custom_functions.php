@@ -239,3 +239,78 @@ function espresso_include_js_for_templates() {
 	wp_enqueue_script( 'ctlt_table_sorter_library' );
 	wp_enqueue_style( 'ctlt_table_sorter_style' );
 }
+
+/*
+Function Name: CTLT Login Redirect
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Redirects non-admin users to the page from which they were referred to the login page; redirects new users and admin users to the admin panel.
+Requirements: none
+*/
+function CTLT_login_direct( $redirect_to, $request, $user ){
+    //is there a user to check?
+    global $user;
+    if( isset( $user->roles ) && is_array( $user->roles ) ) {
+        //check for admins
+        if( in_array( "administrator", $user->roles ) ) {
+            // redirect them to the default place
+            return home_url();
+        } else {
+            return home_url();
+        }
+    }
+    else {
+        return home_url();
+    }
+}
+add_filter("login_redirect", "CTLT_login_direct", 10, 3);
+
+/*
+Function Name: CTLT Profile Fields Hiding
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Hides profile fields in Profile page for WordPress users
+Requirements: none
+*/
+function remove_profile_fields( $hook ) {
+    ?>
+    <style type="text/css">
+        form#your-profile h3,
+        form#your-profile p+h3+table,
+        form#your-profile p+h3+table+h3+table+h3+table+h3+table,
+        form#your-profile p+h3+table+h3+table+h3+table+h3+table+h3+a+table,
+        form#your-profile label[for=url],
+        form#your-profile #url { display:none!important;visibility:hidden!important; }
+        form#your-profile table { margin: 0; }
+    </style>
+    <?php
+}
+add_action( 'admin_print_styles-profile.php', 'remove_profile_fields' );
+add_action( 'admin_print_styles-user-edit.php', 'remove_profile_fields' );
+
+/*
+Function Name: CTLT Modify Contact Methods
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Adds contact methods to Profile page for WordPress users
+Requirements: none
+*/
+function modify_contact_methods($profile_fields) {
+
+	// Add new fields
+    $profile_fields['event_espresso_phone_number'] = 'Phone Number <span class="description">(required)</span>';
+	$profile_fields['event_espresso_organization'] = 'Insitution <span class="description">(required)</span>';
+	$profile_fields['event_espresso_faculty'] = 'Faculty <span class="description">(required)</span>';
+	$profile_fields['event_espresso_department'] = 'Department <span class="description">(required)</span>';
+    
+    unset($contactmethods['aim']);
+    unset($contactmethods['jabber']);
+    unset($contactmethods['yim']);
+
+    
+	return $profile_fields;
+}
+add_filter('user_contactmethods', 'modify_contact_methods');

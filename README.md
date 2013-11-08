@@ -8,6 +8,10 @@ events
 
 == changelog ==
 
+CTLT Changes
+
+v.0.18 - made further changes to event_list, event_list_display, registration_page_display, registration_page, payment_page, and confirmation_display for user specifications
+
 v.0.17 - changed formatting of registration_display, event_list_display, payment_page, and confirmation_display to better conform to CLF standards
 
 v0.16 - added a past events shortcode to display a list of all the past events inside custom_shortcodes.php

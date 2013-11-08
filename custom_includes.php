@@ -41,6 +41,7 @@ if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."ctlt_espresso_category_registration
 if (file_exists(EVENT_ESPRESSO_TEMPLATE_DIR."past_event_list.php")){
 	require_once(EVENT_ESPRESSO_TEMPLATE_DIR."past_event_list.php");
 }
+// custom template file for showing current events, grouped by date
 /** CTLT END **/
 
 //Ongoing Events

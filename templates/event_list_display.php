@@ -39,7 +39,17 @@ $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' -
 global $this_event_id;
 $this_event_id = $event_id;
 ?>
-	<h3 id="event_title-<?php echo $event_id ?>"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
+    <div class="test2">
+        <div class="test3">
+        <?php
+            if($test != event_date_display($start_date, get_option('date_format'))) { ?>
+                    <h4><?php echo event_date_display($start_date, get_option('date_format')); ?></h4>
+            <?php }
+            $test = event_date_display($start_date, get_option('date_format'));
+        ?>
+        </div>
+    <div class="test4">
+	<h4 id="event_title-<?php echo $event_id ?>"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
 		<?php /* These are custom messages that can be displayed based on the event status. Just un-comment the one you want to use. */ ?>
 		<?php //echo $status_display; //Turn this on to display the overall status of the event.  ?>
 		<?php //echo $status_display_ongoing; //Turn this on to display the ongoing message. ?>
@@ -49,10 +59,18 @@ $this_event_id = $event_id;
 		<?php //echo $status_display_not_open; //Turn this on to display the secondary message. ?>
 		<?php //echo $status_display_open; //Turn this on to display the not open message. ?>
 		<?php //echo $status_display_custom_closed; //Turn this on to display the closed message. ?>
-        <span class="test"><?php echo event_date_display($start_date, get_option('date_format')) ?></span>
-	</h3>
+	</h4>
 	<?php /* Venue details. Un-comment to display. */ ?>
-	<?php echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':'' ?>
+    <?php if($end_date != $start_date) { ?>
+        <?php echo '<p>' . espresso_event_time($event_id, 'start_date') . ' - ' . espresso_event_time($event_id, 'end_date') . '</p>'; ?>
+    <?php } ?>
+    
+    <?php echo '<p>' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time');
+        echo $venue_title != ''?'; ':'';
+        echo $venue_url != ''?'<a href="'.$venue_url.'">':'';
+        echo $venue_title != ''? stripslashes_deep($venue_title) :'';
+        echo $venue_url != ''?'</a>':''; ?>
+    <?php echo '</p>'?>
 	<?php // echo $venue_address != ''?'<p id="event_venue_address-'.$event_id.'" class="event_venue_address">'.stripslashes_deep($venue_address).'</p>':''?>
 	<?php // echo $venue_address2 != ''?'<p id="event_venue_address2-'.$event_id.'" class="event_venue_address2">'.stripslashes_deep($venue_address2).'</p>':''?>
 	<?php // echo $venue_city != ''?'<p id="event_venue_city-'.$event_id.'" class="event_venue_city">'.stripslashes_deep($venue_city).'</p>':''?>
@@ -102,8 +120,8 @@ $this_event_id = $event_id;
 			<?php
 		}
 	} else {
-		if ($display_reg_form == 'Y' && $externalURL == '') {
-			?>			<p id="available_spaces-<?php echo $event_id ?>" class="spaces-available"><span class="section-title"><?php _e('Available Spaces:', 'event_espresso') ?></span> <?php echo get_number_of_attendees_reg_limit($event_id, 'available_spaces') ?></p>
+		if ($display_reg_form == 'Y' && $externalURL == '' && $reg_limit < 999999) {
+			?>			<p id="available_spaces-<?php echo $event_id ?>" class="spaces-available"><span class="section-title"><?php _e('Available Spaces:', 'event_espresso') ?></span> <?php echo get_number_of_attendees_reg_limit($event_id, 'available_spaces') ?> / <?php echo get_number_of_attendees_reg_limit($event_id, 'reg_limit') ?></p>
 			<?php
 		}
 
@@ -156,8 +174,8 @@ $this_event_id = $event_id;
             <?php
             }
         } else { ?>
-            <p>Please create or login with your CWL account to register for this event.</p>
         <?php } ?>
-        <hr /> <?php
+        </div>
+        </div><?php
 	}
 	?>

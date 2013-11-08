@@ -289,11 +289,13 @@ if (!function_exists('event_espresso_get_event_details')) {
 			//echo $sql;
 			echo __('No events available...', 'event_espresso');
 		}
+        $test = 1;
 		foreach ($events as $event) {
 			?>
-			<?php			
+			<?php
 			$event_id = $event->id;
 			$event_name = $event->event_name;
+            $event_url = $event->venue_url;
 			$event_desc = stripslashes_deep($event->event_desc);
 			$event_identifier = $event->event_identifier;
 			$active = $event->is_active;
@@ -337,6 +339,8 @@ if (!function_exists('event_espresso_get_event_details')) {
 
 				//Leaving these variables intact, just in case people want to use them
 				$venue_title = empty($event->venue_name) ? '' : $event->venue_name;
+                $venue_url = unserialize($event->venue_meta);
+                $venue_url = $venue_url["website"];
 				$venue_address = $event_address;
 				$venue_address2 = $event_address2;
 				$venue_city = $event_city;

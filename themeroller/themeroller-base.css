@@ -205,8 +205,8 @@ span.google-map-link {
 	padding-bottom: 20px;
 }
 #event-reg-form-groups .event_questions {
-	margin: 10px 0;
-	padding: .5em;
+	margin: 0px 0;
+	padding: 0em;
 }
 #event-reg-form-groups .event_questions .reg-quest-title {
 	font-weight: bold;
@@ -373,7 +373,7 @@ ul#espresso_payment_buttons li form {
 */
 
 .event_espresso_form_wrapper form p {
-	margin: 3px;
+	margin: 0px;
 	position: relative;
 }
 .event_espresso_form_wrapper form p.note {
@@ -462,6 +462,31 @@ input.price-name-input{
 	margin-left: 180px;
 }
 
+.test2 {
+    display: block;
+    background: blue;
+    width: 100%;
+    clear: both;
+}
+
+.test3 {
+    float: left;
+    width: 25%;
+}
+
+.test4 {
+    float: right;
+    width: 75%;
+}
+
+.test4 p {
+    margin: 0px;
+}
+
+.test4 h4 {
+    margin-bottom: 0px;
+}
+
 span.span_event_date_label,
 span.span_event_date_value,
 span.span_event_time_label,
@@ -470,12 +495,6 @@ span.span_event_time_value {
     margin-left: 0px !important;
     width: 200px !important;
     float: none !important;
-}
-
-span.test {
-    font-weight: normal;
-    font-size: 20px;
-    margin-left: 10px;
 }
 
 .span_event_date_label,

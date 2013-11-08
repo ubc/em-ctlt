@@ -12,7 +12,7 @@
     ?>
         <h4 id="event_title-<?php echo $event_id; ?>">
             <?php echo $event_name ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?> <?php echo $is_active['status'] == 'PENDING' ? ' - <span class="expired_event">Event is Pending</span>' : ''; ?> <?php echo $is_active['status'] == 'DRAFT' ? ' - <span class="expired_event">Event is a Draft</span>' : ''; ?>
-        </h4>
+        Registration</h4>
         
     <?php 
         $ui_corner = 'ui-corner-bottom';
@@ -24,7 +24,6 @@
         <?php /* Venue details. Un-comment first and last lines & any venue details you wish to display or use the provided shortcodes. */ ?>
         <?php // echo '<div id="venue-details-display">'; ?>
         <?php // echo '<p class="section-title">' . __('Venue Details', 'event_espresso') . '</p>'; ?>
-        <?php // echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':''?>
         <?php // echo $venue_address != ''?'<p id="event_venue_address-'.$event_id.'" class="event_venue_address">'.stripslashes_deep($venue_address).'</p>':''?>
         <?php // echo $venue_address2 != ''?'<p id="event_venue_address2-'.$event_id.'" class="event_venue_address2">'.stripslashes_deep($venue_address2).'</p>':''?>
         <?php // echo $venue_city != ''?'<p id="event_venue_city-'.$event_id.'" class="event_venue_city">'.stripslashes_deep($venue_city).'</p>':''?>
@@ -35,15 +34,16 @@
         <?php /* end venue details block */ ?>
 
         <?php if ($display_desc == "Y") { //Show the description or not ?>
-        <p class="section-title">
-            <?php _e('Description:', 'event_espresso') ?>
-        </p>
         <div>
-            <?php echo espresso_format_content($event_desc); //Code to show the actual description. The Wordpress function "wpautop" adds formatting to your description.   ?>
+            <p><?php echo espresso_format_content($event_desc); //Code to show the actual description. The Wordpress function "wpautop" adds formatting to your description.   ?></p>
             
         </div>
         <?php
         }//End display description
+
+        echo $venue_url != ''?'<a href="'.$venue_url.'">':'';
+        echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':'';
+        echo $venue_url != ''?'</a>':'';
 
         if ( is_user_logged_in() ) {
 
@@ -121,27 +121,11 @@
                         do_action('action_hook_espresso_social_display_buttons', $event_id);
         ?>
 
-                    <p class="start_date">
-                        <?php if ($end_date !== $start_date) { ?>
-                        <span class="span_event_date_label">
-                        <?php _e('Start Date:', 'event_espresso'); ?>
-                        </span>
-                        <?php } else { ?>
-                        <span class="span_event_date_label">
-                        <?php _e('Date:', 'event_espresso'); ?>
-                        </span>
-                        <?php } ?>
-                        <span class="span_event_date_value">
-                        <?php echo event_date_display($start_date, get_option('date_format')); ?>
-                        </span>
+                    <p><?php echo event_date_display($start_date, get_option('date_format')); ?>
         <?php if ($end_date !== $start_date) : ?>
-                        <br/>
-                        <span class="span_event_date_label">
-                            <?php _e('End Date:', 'event_espresso'); ?>
-                        </span> 
-                        <span class="span_event_date_value"><?php echo event_date_display($end_date, get_option('date_format')); ?></span>
+                    - <?php echo event_date_display($end_date, get_option('date_format')); ?>
         <?php endif; ?>
-                    </p>
+                    <p><?php echo espresso_event_time($event_id, 'start_time'); ?> - <?php echo espresso_event_time($event_id, 'end_time'); ?></p>
         <?php
                     }
 
@@ -155,12 +139,8 @@
                             if (isset($time_selected) && $time_selected == true) {//If the customer is coming from a page where the time was preselected.
                                 echo event_espresso_display_selected_time($time_id); //Optional parameters start, end, default
                             } else {
-                                echo event_espresso_time_dropdown($event_id);
                             }//End time selected
         ?>
-                    </p>
-                    <p>
-                       <span class="span_event_date_label">Add to Calendar:</span><?php echo apply_filters('filter_hook_espresso_display_ical', $all_meta); ?></span>
                     </p>
         <?php
 
@@ -190,8 +170,18 @@
                             // Seating chart selector
                             do_action('espresso_seating_chart_select', $event_id);
                                 
-                        }						
+                        }
+            
+                    // CTLT: Get user information
+                    $user_info = get_userdata(get_current_user_id());
         ?>
+
+                    <h4>Registration Details: <?php ?></h4>
+                    <p><strong>Name:</strong> <?php  echo $user_info->user_lastname .  ", " . $user_info-> user_firstname . ""; ?></p>
+                    <p><strong>Institution:</strong> <?php  echo $user_info->event_espresso_organization . ""; ?></p>
+                    <p><strong>Faculty:</strong> <?php  echo $user_info->event_espresso_faculty . ""; ?></p>
+                    <p><strong>Department:</strong> <?php  echo $user_info->event_espresso_department . ""; ?></p>
+                    <p>To change your registration information, please visit your <a href="<?php echo get_edit_user_link( $user_id ); ?>">profile page</a>. </p>
 
                     <div id="event-reg-form-groups">
                         
@@ -200,7 +190,7 @@
                         echo event_espresso_add_question_groups( $question_groups, '', NULL, FALSE, array( 'attendee_number' => 1 ), 'ee-reg-page-questions' );
         ?>
                     </div>
-                    
+
         <?php					
                         //Coupons
         ?>
@@ -258,7 +248,8 @@
                         //End use captcha  
         ?>
                     <p class="event_form_submit" id="event_form_submit-<?php echo $event_id; ?>">
-                        <input class="btn" id="event_form_field-<?php echo $event_id; ?>" type="submit" name="Submit" value="<?php _e('Submit', 'event_espresso'); ?>">
+                    <br />
+                        <input class="btn" id="event_form_field-<?php echo $event_id; ?>" type="submit" name="Submit" value="<?php _e('Confirm Registration', 'event_espresso'); ?>">
                     </p>
                     
         <?php } ?>
@@ -280,5 +271,6 @@
     </div>
     </div>
 <?php } else { ?>
-    <p>Please create or login with your CWL account to register for this event.</p>
-<?php } ?>
+    <p>To register:</p>
+    <?php wp_loginout();
+} ?>

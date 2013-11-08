@@ -121,7 +121,7 @@ if (!function_exists('register_attendees')) {
             $overflow_event_id = $data->event->overflow_event_id;
             
             //Venue details
-            $venue_title = $data->event->venue_title;
+            $venue_titl = $data->event->venue_title;
             $venue_url = $data->event->venue_url;
             $venue_image = $data->event->venue_image;
             $venue_phone = $data->event->venue_phone;
@@ -146,6 +146,8 @@ if (!function_exists('register_attendees')) {
 
                 //Leaving these variables intact, just in case people wnat to use them
                 $venue_title = $data->event->venue_name;
+                $venue_url = unserialize($data->event->venue_meta);
+                $venue_url = $venue_url["website"];
                 $venue_address = $data->event->venue_address;
                 $venue_address2 = $data->event->venue_address2;
                 $venue_city = $data->event->venue_city;
