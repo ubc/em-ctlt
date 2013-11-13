@@ -241,32 +241,6 @@ function espresso_include_js_for_templates() {
 }
 
 /*
-Function Name: CTLT Login Redirect
-Author: Nathan Sidles
-Contact: nsidles@gmail.com
-Website:
-Description: Redirects non-admin users to the page from which they were referred to the login page; redirects new users and admin users to the admin panel.
-Requirements: none
-*/
-function CTLT_login_direct( $redirect_to, $request, $user ){
-    //is there a user to check?
-    global $user;
-    if( isset( $user->roles ) && is_array( $user->roles ) ) {
-        //check for admins
-        if( in_array( "administrator", $user->roles ) ) {
-            // redirect them to the default place
-            return home_url();
-        } else {
-            return home_url();
-        }
-    }
-    else {
-        return home_url();
-    }
-}
-add_filter("login_redirect", "CTLT_login_direct", 10, 3);
-
-/*
 Function Name: CTLT Profile Fields Hiding
 Author: Nathan Sidles
 Contact: nsidles@gmail.com
@@ -302,7 +276,7 @@ function modify_contact_methods($profile_fields) {
 
 	// Add new fields
     $profile_fields['event_espresso_phone_number'] = 'Phone Number <span class="description">(required)</span>';
-	$profile_fields['event_espresso_organization'] = 'Insitution <span class="description">(required)</span>';
+	$profile_fields['event_espresso_organization'] = 'Institution <span class="description">(required)</span>';
 	$profile_fields['event_espresso_faculty'] = 'Faculty <span class="description">(required)</span>';
 	$profile_fields['event_espresso_department'] = 'Department <span class="description">(required)</span>';
     

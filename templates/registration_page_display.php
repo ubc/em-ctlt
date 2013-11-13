@@ -268,9 +268,8 @@
             }			
     ?>
     <p class="edit-link-footer"><?php echo espresso_edit_this($event_id) ?></p>
+    <?php } else { ?>
+        <p>To register: <?php wp_loginout("https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?></p>
+    <?php } ?>
     </div>
     </div>
-<?php } else { ?>
-    <p>To register:</p>
-    <?php wp_loginout();
-} ?>
