@@ -50,34 +50,37 @@ $this_event_id = $event_id;
         </div>
     <div class="ctlt_event_list_details">
 	<h4 id="event_title-<?php echo $event_id ?>"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
-		<?php /* These are custom messages that can be displayed based on the event status. Just un-comment the one you want to use. */ ?>
-		<?php //echo $status_display; //Turn this on to display the overall status of the event.  ?>
-		<?php //echo $status_display_ongoing; //Turn this on to display the ongoing message. ?>
-		<?php //echo $status_display_deleted; //Turn this on to display the deleted message. ?>
-		<?php //echo $status_display_secondary; //Turn this on to display the waitlist message. ?>
-		<?php //echo $status_display_reg_closed; //Turn this on to display the registration closed message. ?>
-		<?php //echo $status_display_not_open; //Turn this on to display the secondary message. ?>
-		<?php //echo $status_display_open; //Turn this on to display the not open message. ?>
-		<?php //echo $status_display_custom_closed; //Turn this on to display the closed message. ?>
+    <?php
+        if($cancellation_status == TRUE)
+            echo '- CANCELLED';
+    ?>
 	</h4>
-	<?php /* Venue details. Un-comment to display. */ ?>
+    <?php if($categories != NULL) {
+    ?>
+        <p class="ctlt-event-category">
+        <?php foreach($categories as $category) {
+                $category_id = $category->id;
+                $category_name = $category->category_name;
+                $category_url = add_query_arg('category_id', $category_id, get_permalink($categories_url) );
+                $category_url = add_query_arg('category_name', $category, $category_url );
+                echo '<a href="'. $category_url .'">' . $category_name . '</a>';
+                if ($category != end($categories))
+                    echo ', ';
+        } ?>
+        </p>
+    <?php } ?>
+    <?php echo '<p class="ctlt-event-block">'; ?>
     <?php if($end_date != $start_date) { ?>
-        <?php echo '<p>' . espresso_event_time($event_id, 'start_date') . ' - ' . espresso_event_time($event_id, 'end_date') . '</p>'; ?>
+        <?php echo espresso_event_time($event_id, 'start_date') . ' - ' . espresso_event_time($event_id, 'end_date') . '; '; ?>
     <?php } ?>
     
-    <?php echo '<p>' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time');
-        echo $venue_title != ''?'; ':'';
+    <?php echo espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time') . '';
+        echo $venue_title != ''?'':'';
         echo $venue_url != ''?'<a href="'.$venue_url.'">':'';
-        echo $venue_title != ''? stripslashes_deep($venue_title) :'';
+        echo $venue_title != ''? '<br />' . stripslashes_deep($venue_title) . '</p>' : '</p>';
         echo $venue_url != ''?'</a>':''; ?>
-    <?php echo '</p>'?>
-	<?php // echo $venue_address != ''?'<p id="event_venue_address-'.$event_id.'" class="event_venue_address">'.stripslashes_deep($venue_address).'</p>':''?>
-	<?php // echo $venue_address2 != ''?'<p id="event_venue_address2-'.$event_id.'" class="event_venue_address2">'.stripslashes_deep($venue_address2).'</p>':''?>
-	<?php // echo $venue_city != ''?'<p id="event_venue_city-'.$event_id.'" class="event_venue_city">'.stripslashes_deep($venue_city).'</p>':''?>
-	<?php // echo $venue_state != ''?'<p id="event_venue_state-'.$event_id.'" class="event_venue_state">'.stripslashes_deep($venue_state).'</p>':''?>
-	<?php // echo $venue_zip != ''?'<p id="event_venue_zip-'.$event_id.'" class="event_venue_zip">'.stripslashes_deep($venue_zip).'</p>':''?>
-	<?php // echo $venue_country != ''?'<p id="event_venue_country-'.$event_id.'" class="event_venue_country">'.stripslashes_deep($venue_country).'</p>':''
-	$event->event_cost = empty($event->event_cost) ? '' : $event->event_cost;
+	<?php
+        $event->event_cost = empty($event->event_cost) ? '' : $event->event_cost;
 	?>
 
 	<div class="event-meta">
@@ -132,7 +135,7 @@ $this_event_id = $event_id;
 		//echo event_espresso_get_status($event_id);
 		//print_r( event_espresso_get_is_active($event_id));
 
-        if( is_user_logged_in() ) {
+        if( is_user_logged_in() && $cancellation_status == FALSE ) {
             if ($multi_reg && event_espresso_get_status($event_id) == 'ACTIVE'/* && $display_reg_form == 'Y'*/) {
             // Uncomment && $display_reg_form == 'Y' in the line above to hide the add to cart link/button form the event list when the registration form is turned off.
 
@@ -152,7 +155,7 @@ $this_event_id = $event_id;
             }else{
                 $cart_link = false;
             }
-            if ($display_reg_form == 'Y') {
+            if ($display_reg_form == 'Y' && $status['status'] != 'EXPIRED') {
                 //Check to see if the Members plugin is installed.
                 $member_options = get_option('events_member_settings');
                 if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y' || $member_options['member_only_all'] == 'Y') ) {
@@ -174,6 +177,9 @@ $this_event_id = $event_id;
             <?php
             }
         } else { ?>
+         <p id="register_link-<?php echo $event_id ?>" class="register-link-footer">
+                    <a class="btn" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('View Details', 'event_espresso'); ?></a> <?php echo isset($cart_link) && $externalURL == '' ? $cart_link : ''; ?>
+                </p>
         <?php } ?>
         </div>
         </div><?php

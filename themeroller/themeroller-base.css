@@ -483,18 +483,28 @@ BEGIN CTLT CODE TO CUSTOMIZE EVENT_LIST_DISPLAY AND REGISTRATION_PAGE_DISPLAY
 }
 
 .ctlt_event_list_details p {
-    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.ctlt_event_list_details p.ctlt-event-block {
+    margin-bottom: 10px;
+}
+
+.ctlt_event_list_details p.ctlt-event-category {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #2f5d7c;
 }
 
 .ctlt_event_list_details h4 {
-    margin-bottom: 0px;
+    margin-bottom: 10px;
+    line-height: 125%;
 }
 
 .reg-quest-title,
 .reg-quest-title+input+div,
 .reg-quest-title+input+div+input+div,
 .reg-quest-title+input+div+input+div+input+div {
-    background: blue;
     display: none;
 }
 
@@ -508,6 +518,19 @@ BEGIN CTLT CODE TO CUSTOMIZE EVENT_LIST_DISPLAY AND REGISTRATION_PAGE_DISPLAY
 
 label.error {
     margin-left: 10px;
+}
+
+.ctlt_event_details_block {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border: 1px;
+    border-style: solid;
+    width: 50%;
+    padding : 10px;
+}
+
+h1.page-title.entry-title {
+    display: none;
 }
 
 /*

@@ -74,7 +74,7 @@ function ctlt_event_espresso_get_category_list_table($sql){
                                 <a href="<?php echo $url; ?>"><?php echo $cat_name; ?></a>
                             </h4>
                             <p>
-                                <i class="icon-calendar"></i> <?php echo event_date_display( $event_date, get_option( 'date_format' ) ) ?>
+                                Next event: <?php echo event_date_display( $event_date, get_option( 'date_format' ) ) ?>
                                 <br />
                                 <div class="event-desc">
                                     <?php echo $description; ?>

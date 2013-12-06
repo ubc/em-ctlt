@@ -253,7 +253,6 @@ function remove_profile_fields( $hook ) {
     <style type="text/css">
         form#your-profile h3,
         form#your-profile p+h3+table,
-        form#your-profile p+h3+table+h3+table+h3+table+h3+table,
         form#your-profile p+h3+table+h3+table+h3+table+h3+table+h3+a+table,
         form#your-profile label[for=url],
         form#your-profile #url { display:none!important;visibility:hidden!important; }

@@ -293,6 +293,16 @@ if (!function_exists('event_espresso_get_event_details')) {
 		foreach ($events as $event) {
 			?>
 			<?php
+            // Retrieve the category name based on the event category
+            $sql = "SELECT category_name, id FROM " . EVENTS_CATEGORY_TABLE . " WHERE id IN (" . $event->category_id . ")";
+            $categories = $wpdb->get_results( $sql );
+            $cancellation_status = FALSE;
+            foreach($categories as $category) {
+                if(strtolower($category->category_name) == "cancelled")
+                    $cancellation_status = TRUE;
+            }
+            $categories_url = get_page_by_title( 'Event Categories' );
+            $categories_url =  $categories_url->ID;
 			$event_id = $event->id;
 			$event_name = $event->event_name;
             $event_url = $event->venue_url;
@@ -316,8 +326,13 @@ if (!function_exists('event_espresso_get_event_details')) {
 			$display_reg_form = $event->display_reg_form;
 			$allow_overflow = $event->allow_overflow;
 			$overflow_event_id = $event->overflow_event_id;
-            $event_desc = explode('<!--more-->', $event_desc);
-            $event_desc = $event_desc[0];
+            $event_desc_evaluator = strpos($event_desc, '<!--more-->');
+            if( $event_desc_evaluator == false ) {
+                $event_desc = '';
+            } else {
+                $event_desc = explode('<!--more-->', $event_desc);
+                $event_desc = $event_desc[0];
+            }
 			global $event_meta;
 			$event_meta = unserialize($event->event_meta);
 			$event_meta['is_active'] = $event->is_active;

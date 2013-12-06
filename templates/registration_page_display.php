@@ -10,9 +10,9 @@
     //This tells the system to hide the event title if we only need to display the registration form.
     if ($reg_form_only == false) { 
     ?>
-        <h4 id="event_title-<?php echo $event_id; ?>">
+        <h3 id="event_title-<?php echo $event_id; ?>">
             <?php echo $event_name ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?> <?php echo $is_active['status'] == 'PENDING' ? ' - <span class="expired_event">Event is Pending</span>' : ''; ?> <?php echo $is_active['status'] == 'DRAFT' ? ' - <span class="expired_event">Event is a Draft</span>' : ''; ?>
-        Registration</h4>
+        Registration</h3>
         
     <?php 
         $ui_corner = 'ui-corner-bottom';
@@ -101,33 +101,13 @@
     ?>
         <div class="event_espresso_form_wrapper">
             <form method="post" action="<?php echo get_permalink( $event_page_id );?>" id="registration_form">
-        <?php
-                    
-                //This hides the date/times and location when usign custom post types or the ESPRESSO_REG_FORM shortcode
-                    if ( $reg_form_only == false ){	
-                            
-                        /* Display the address and google map link if available */
-                        if ($location != '' && (empty($org_options['display_address_in_regform']) || $org_options['display_address_in_regform'] != 'N')) {
-        ?>
-                    <p class="event_address" id="event_address-<?php echo $event_id ?>"><span class="section-title"><?php echo __('Address:', 'event_espresso'); ?></span> <br />
-                        <span class="address-block">
-                            <?php echo stripslashes_deep($venue_title); ?><br />
-                            <?php echo stripslashes_deep($location); ?><br />
-                            <span class="google-map-link"><?php echo $google_map_link; ?></span>
-                        </span>
-                    </p>
-        <?php
-                        }
-                        do_action('action_hook_espresso_social_display_buttons', $event_id);
-        ?>
-
+                    <h4>Event Details:</h4>
                     <p><?php echo event_date_display($start_date, get_option('date_format')); ?>
         <?php if ($end_date !== $start_date) : ?>
                     - <?php echo event_date_display($end_date, get_option('date_format')); ?>
         <?php endif; ?>
                     <p><?php echo espresso_event_time($event_id, 'start_time'); ?> - <?php echo espresso_event_time($event_id, 'end_time'); ?></p>
         <?php
-                    }
 
                 // * * This section shows the registration form if it is an active event * *
 
@@ -175,14 +155,7 @@
                     // CTLT: Get user information
                     $user_info = get_userdata(get_current_user_id());
         ?>
-
-                    <h4>Registration Details: <?php ?></h4>
-                    <p><strong>Name:</strong> <?php  echo $user_info->user_lastname .  ", " . $user_info-> user_firstname . ""; ?></p>
-                    <p><strong>Institution:</strong> <?php  echo $user_info->event_espresso_organization . ""; ?></p>
-                    <p><strong>Faculty:</strong> <?php  echo $user_info->event_espresso_faculty . ""; ?></p>
-                    <p><strong>Department:</strong> <?php  echo $user_info->event_espresso_department . ""; ?></p>
-                    <p>To change your registration information, please visit your <a href="<?php echo get_edit_user_link( $user_id ); ?>">profile page</a>. </p>
-
+                    
                     <div id="event-reg-form-groups">
                         
         <?php
@@ -208,7 +181,7 @@
                         if ( $use_groupon_code == 'Y' && function_exists( 'event_espresso_groupon_registration_page' )) {
                             echo event_espresso_groupon_registration_page($use_groupon_code, $event_id);
                         }
-                        //End groupons display					
+                        //End groupons display
         ?>
                     <input type="hidden" name="regevent_action" id="regevent_action-<?php echo $event_id; ?>" value="post_attendee">
                     <input type="hidden" name="event_id" id="event_id-<?php echo $event_id; ?>" value="<?php echo $event_id; ?>">

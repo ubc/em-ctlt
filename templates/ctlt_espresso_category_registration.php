@@ -80,9 +80,6 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 	
 	?>
 	<h3><?php echo $cat_name;?></h3>
-	<p class="section-title">
-		<?php _e('Series Description: ', 'event_espresso'); ?>
-	</p>
 	<div class="event_description clearfix">
 		<?php echo $description; ?>
 	</div>
@@ -112,16 +109,13 @@ function ctlt_event_espresso_get_category_registration_view( $sql ) {
 				$display_reg_form = $event->display_reg_form;
 				$allow_overflow = $event->allow_overflow;
 				$overflow_event_id = $event->overflow_event_id;
-				if( !empty($event_desc) ) {
-					$event_desc = explode( " ", $event_desc, 15 );
-					if( count( $event_desc ) > 14 ) {
-						$event_desc = array_reverse( $event_desc );
-						array_shift( $event_desc );
-						$event_desc = array_reverse( $event_desc );
-						$event_desc[14] = "...";
-					}
-					$event_desc = implode( " ", $event_desc );
-				}
+				            $event_desc_evaluator = strpos($event_desc, '<!--more-->');
+                if( $event_desc_evaluator == false ) {
+                    $event_desc = '';
+                } else {
+                    $event_desc = explode('<!--more-->', $event_desc);
+                    $event_desc = $event_desc[0];
+                }
 				$post_url = get_site_url() . '?page_id=' . $org_options['event_page_id'] . '&regevent_action=register&event_id=' . $event_id;
 				
 				if( empty( $path ) ) {
