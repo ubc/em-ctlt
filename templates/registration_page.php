@@ -95,7 +95,31 @@ if (!function_exists('register_attendees')) {
             global $this_event_id;
             $event_id = $data->event->id;
             $this_event_id = $event_id;
-
+            
+            $cancellation_status = FALSE;
+            $categories = null;
+            // Retrieve the category ids associated with the event
+            $sql = "SELECT category_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = " . $event_id;
+            $category_ids = $wpdb->get_results( $sql );
+            
+            
+            if( is_null( $category_ids[0]->category_id ) == FALSE) {
+                // Retrieve the category name based on the event category
+                $sql = "SELECT category_name, id FROM " . EVENTS_CATEGORY_TABLE . " WHERE id IN (" . $category_ids[0]->category_id . ")";
+                $categories = $wpdb->get_results( $sql );
+                $cancellation_status = FALSE;
+                $counter = 0;
+                foreach($categories as $category) {
+                    if(strtolower($category->category_name) == "cancelled") {
+                        unset($categories[$counter]);
+                        $cancellation_status = TRUE;
+                    }
+                    $counter++;
+                }
+                $categories_url = get_page_by_title( 'Event Categories' );
+                $categories_url =  $categories_url->ID;
+            }
+            
             $event_name = stripslashes_deep($data->event->event_name);
             $event_desc = stripslashes_deep($data->event->event_desc);
             $display_desc = $data->event->display_desc;
@@ -294,7 +318,7 @@ if (!function_exists('register_attendees')) {
 					//echo "<pre>".print_r($member_options,true)."</pre>";
                     //If enough spaces exist then show the form
                     //Check to see if the Members plugin is installed.
-                    if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y' || $member_options['member_only_all'] == 'Y') ) {
+                    if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y') ) {
                         event_espresso_user_login();
                     } else {
                         //Serve up the registration form

@@ -191,4 +191,27 @@ function ctlt_past_event_list( $attributes ) {
 	return $buffer;
 }
 add_shortcode( 'CTLT_PAST_EVENT_LIST', 'ctlt_past_event_list');
+
+function ctlt_event_materials_list() {
+    ob_start();
+    $events = ctlt_display_event_materials_list();
+	ob_end_clean();
+    
+    $materials_list = "";
+    $upload_base_dir = wp_upload_dir()['baseurl'] . "/";
+    
+    foreach($events as $event) {
+        $materials_list .= "<p>";
+        $materials_list .= "<strong>" . $event->event_name . "</strong> - ";
+        $materials_list .= date("F j, Y", strtotime("$event->start_date"));
+        $materials_list .= "<br />";
+        $materials_list .= '<a href="' . $upload_base_dir . $event->attachment_url . '">Media</a> (right-click to download)';
+        $materials_list .= "</p>";
+    }
+    
+    return $materials_list;
+}
+add_shortcode( 'CTLT_EVENT_MATERIALS_LIST', 'ctlt_event_materials_list');
+
+
 /** CTLT END **/

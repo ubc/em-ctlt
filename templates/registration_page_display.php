@@ -12,7 +12,27 @@
     ?>
         <h3 id="event_title-<?php echo $event_id; ?>">
             <?php echo $event_name ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?> <?php echo $is_active['status'] == 'PENDING' ? ' - <span class="expired_event">Event is Pending</span>' : ''; ?> <?php echo $is_active['status'] == 'DRAFT' ? ' - <span class="expired_event">Event is a Draft</span>' : ''; ?>
-        Registration</h3>
+        Registration
+        <?php
+            if($cancellation_status == TRUE) {
+                echo '- CANCELLED';
+            }
+        ?>
+        </h3>
+        <p class="ctlt-event-category">
+        <?php
+            if( is_null( $category_ids[0]->category_id ) == FALSE) {
+                foreach($categories as $category) {
+                    $category_id = $category->id;
+                    $category_name = $category->category_name;
+                    $category_url = add_query_arg('category_id', $category_id, get_permalink($categories_url) );
+                    $category_url = add_query_arg('category_name', $category, $category_url );
+                    echo '<a href="'. $category_url .'">' . $category_name . '</a>';
+                    if ($category != end($categories))
+                        echo ', ';
+                }
+        } ?>
+        </p>
         
     <?php 
         $ui_corner = 'ui-corner-bottom';
@@ -225,7 +245,9 @@
                         <input class="btn" id="event_form_field-<?php echo $event_id; ?>" type="submit" name="Submit" value="<?php _e('Confirm Registration', 'event_espresso'); ?>">
                     </p>
                     
-        <?php } ?>
+        <?php }
+            do_action('action_hook_espresso_social_display_buttons', $event_id);
+        ?>
 
             </form>
         </div>
@@ -242,7 +264,9 @@
     ?>
     <p class="edit-link-footer"><?php echo espresso_edit_this($event_id) ?></p>
     <?php } else { ?>
-        <p>To register: <?php wp_loginout("https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?></p>
+
+        <?php echo '<p>To register: <a id="cwl-login-buttom" href="https://em.ctlt.ubc.ca/wp-login.php?redirect_to=' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']. '"><img class="alignnone size-full wp-image-1187" src="https://em.ctlt.ubc.ca/wp-content/uploads/2013/09/cwl_login.png" alt="" width="83" height="35" /></a></p>';
+        ?>
     <?php } ?>
     </div>
     </div>

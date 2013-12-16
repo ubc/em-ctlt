@@ -135,7 +135,7 @@ $this_event_id = $event_id;
 		//echo event_espresso_get_status($event_id);
 		//print_r( event_espresso_get_is_active($event_id));
 
-        if( is_user_logged_in() && $cancellation_status == FALSE ) {
+        if( is_user_logged_in() && $cancellation_status == FALSE && date('Y-m-d') <= $registration_end ) {
             if ($multi_reg && event_espresso_get_status($event_id) == 'ACTIVE'/* && $display_reg_form == 'Y'*/) {
             // Uncomment && $display_reg_form == 'Y' in the line above to hide the add to cart link/button form the event list when the registration form is turned off.
 
@@ -160,7 +160,7 @@ $this_event_id = $event_id;
                 $member_options = get_option('events_member_settings');
                 if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y' || $member_options['member_only_all'] == 'Y') ) {
                     echo '<p class="ee_member_only">'.__('Member Only Event', 'event_espresso').'</p>';
-                }else{
+                } else {
                 ?>
                     <p id="register_link-<?php echo $event_id ?>" class="register-link-footer">
                         <a class="btn" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Register', 'event_espresso'); ?></a>

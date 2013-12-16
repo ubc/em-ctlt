@@ -248,6 +248,23 @@ Website:
 Description: Hides profile fields in Profile page for WordPress users
 Requirements: none
 */
+function ctlt_display_event_materials_list() {
+    
+    global $wpdb;
+    $sql = "SELECT * FROM (SELECT start_date, event_name, do_not_handout, MAX(CASE WHEN meta_key = '_wp_attached_file' THEN meta_value END) as 'attachment_url' FROM (SELECT event_name, event_id, start_date, MAX(CASE WHEN meta_key = '_ctlt_espresso_handouts_upload' THEN meta_value END) as 'attachment_key', MAX(CASE WHEN meta_key = '_ctlt_espresso_do_not_handout' THEN meta_value END) as 'do_not_handout' FROM (SELECT id, event_name, start_date FROM " . EVENTS_DETAIL_TABLE . ") AS first_results INNER JOIN " . CTLT_ESPRESSO_EVENTS_META . " ON " . CTLT_ESPRESSO_EVENTS_META . ".event_id = first_results.id GROUP BY event_id) AS second_results INNER JOIN " . $wpdb->prefix . "postmeta ON " . $wpdb->prefix . "postmeta.post_id = second_results.attachment_key GROUP BY post_id ORDER BY start_date) as third_results WHERE do_not_handout != 'yes' OR do_not_handout IS NULL";
+    $events = $wpdb->get_results($sql);
+    
+    return $events;
+}
+
+/*
+Function Name: CTLT Profile Fields Hiding
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Hides profile fields in Profile page for WordPress users
+Requirements: none
+*/
 function remove_profile_fields( $hook ) {
     ?>
     <style type="text/css">

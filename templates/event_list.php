@@ -273,7 +273,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 					$start_bold = '<b>';
 					$end_bold 	= '</b>';
 				}
-				$espresso_paginate .= '<li><a class="page_link event_paginate ' . $active_page . '" current_page=' . $i . ' href="#">' . $start_bold . $i . $end_bold . '</a></li>';
+				$espresso_paginate .= '<li><a class="page_link event_paginate" current_page=' . $i . ' href="#">' . $start_bold . $i . $end_bold . '</a></li>';
 			}
 			/*if ( $end < $total_pages ) {
 				$espresso_paginate .= '<span class="ellipse more">...</span>';
@@ -294,15 +294,22 @@ if (!function_exists('event_espresso_get_event_details')) {
 			?>
 			<?php
             // Retrieve the category name based on the event category
-            $sql = "SELECT category_name, id FROM " . EVENTS_CATEGORY_TABLE . " WHERE id IN (" . $event->category_id . ")";
-            $categories = $wpdb->get_results( $sql );
             $cancellation_status = FALSE;
-            foreach($categories as $category) {
-                if(strtolower($category->category_name) == "cancelled")
-                    $cancellation_status = TRUE;
+            $categories = null;
+            if(is_null($event->category_id) == FALSE) {
+                $sql = "SELECT category_name, id FROM " . EVENTS_CATEGORY_TABLE . " WHERE id IN (" . $event->category_id . ")";
+                $categories = $wpdb->get_results( $sql );
+                $counter = 0;
+                foreach($categories as $category) {
+                    if(strtolower($category->category_name) == "cancelled") {
+                        unset($categories[$counter]);
+                        $cancellation_status = TRUE;
+                    }
+                    $counter++;
+                }
+                $categories_url = get_page_by_title( 'Event Categories' );
+                $categories_url =  $categories_url->ID;
             }
-            $categories_url = get_page_by_title( 'Event Categories' );
-            $categories_url =  $categories_url->ID;
 			$event_id = $event->id;
 			$event_name = $event->event_name;
             $event_url = $event->venue_url;
@@ -484,7 +491,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		}
 		//Check to see how many database queries were performed
 		//echo '<p>Database Queries: ' . get_num_queries() .'</p>';
-		espresso_registration_footer();
+		// espresso_registration_footer();
 	}
 
 }
