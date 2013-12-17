@@ -198,14 +198,14 @@ function ctlt_event_materials_list() {
 	ob_end_clean();
     
     $materials_list = "";
-    $upload_base_dir = wp_upload_dir()['baseurl'] . "/";
+    $upload_base_dir = wp_upload_dir();
     
     foreach($events as $event) {
         $materials_list .= "<p>";
         $materials_list .= "<strong>" . $event->event_name . "</strong> - ";
         $materials_list .= date("F j, Y", strtotime("$event->start_date"));
         $materials_list .= "<br />";
-        $materials_list .= '<a href="' . $upload_base_dir . $event->attachment_url . '">Media</a> (right-click to download)';
+        $materials_list .= '<a href="' . $upload_base_dir['baseurl'] . '/' . $event->attachment_url . '">Media</a> (right-click to download)';
         $materials_list .= "</p>";
     }
     

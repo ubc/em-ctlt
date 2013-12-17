@@ -472,6 +472,11 @@ BEGIN CTLT CODE TO CUSTOMIZE EVENT_LIST_DISPLAY AND REGISTRATION_PAGE_DISPLAY
     clear: both;
 }
 
+p.ctlt-event-category {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
 .ctlt_event_list_date {
     float: left;
     width: 25%;
