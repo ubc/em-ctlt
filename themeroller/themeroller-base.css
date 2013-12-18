@@ -537,6 +537,14 @@ h1.page-title.entry-title {
     display: none;
 }
 
+span.ctlt_cancelled {
+    color: red;
+}
+
+.event-display-boxes {
+    margin-top: 20px;
+}
+
 /*
 END CTLT CODE
 */

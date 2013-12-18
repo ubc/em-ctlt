@@ -52,7 +52,7 @@ $this_event_id = $event_id;
 	<h4 id="event_title-<?php echo $event_id ?>"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
     <?php
         if($cancellation_status == TRUE)
-            echo '- CANCELLED';
+            echo '<span class="ctlt_cancelled">- CANCELLED</span>';
     ?>
 	</h4>
     <?php if($categories != NULL) {
@@ -119,7 +119,7 @@ $this_event_id = $event_id;
 		?>
 		<p id="available_spaces-<?php echo $event_id ?>" class="available-spaces"><span class="section-title"><?php _e('Available Spaces:', 'event_espresso') ?> </span><?php echo get_number_of_attendees_reg_limit($event_id, 'available_spaces', 'All Seats Reserved') ?></p>
 		<?php if ($overflow_event_id != '0' && $allow_overflow == 'Y') { ?>
-			<p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="a_register_link ui-button ui-button-big ui-priority-primary ui-state-default ui-state-hover ui-state-focus ui-corner-all" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Join Waiting List', 'event_espresso'); ?></a></p>
+			<p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Join Waiting List', 'event_espresso'); ?></a></p>
 			<?php
 		}
 	} else {
@@ -171,7 +171,7 @@ $this_event_id = $event_id;
             } else { 
         ?>
                 <p id="register_link-<?php echo $event_id ?>" class="register-link-footer">
-                    <a class="a_register_link ui-button ui-button-big ui-priority-primary ui-state-default ui-state-hover ui-state-focus ui-corner-all" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('View Details', 'event_espresso'); ?></a> <?php echo isset($cart_link) && $externalURL == '' ? $cart_link : ''; ?>
+                    <a class="btn" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('View Details', 'event_espresso'); ?></a> <?php echo isset($cart_link) && $externalURL == '' ? $cart_link : ''; ?>
                 </p>
                 
             <?php
@@ -181,7 +181,6 @@ $this_event_id = $event_id;
                     <a class="btn" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('View Details', 'event_espresso'); ?></a> <?php echo isset($cart_link) && $externalURL == '' ? $cart_link : ''; ?>
                 </p>
         <?php } ?>
-        </div>
-        </div><?php
-	}
-	?>
+    <?php } ?>
+    </div>
+</div>

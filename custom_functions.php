@@ -270,7 +270,7 @@ function remove_profile_fields( $hook ) {
     <style type="text/css">
         form#your-profile h3,
         form#your-profile p+h3+table,
-        form#your-profile p+h3+table+h3+table+h3+table+h3+table+h3+a+table,
+        form#your-profile p+h3+table+h3+table+h3+table+h3+table+table+h3+a+table,
         form#your-profile label[for=url],
         form#your-profile #url { display:none!important;visibility:hidden!important; }
         form#your-profile table { margin: 0; }
@@ -288,19 +288,106 @@ Website:
 Description: Adds contact methods to Profile page for WordPress users
 Requirements: none
 */
-function modify_contact_methods($profile_fields) {
+function modify_contact_methods($contactmethods) {
 
 	// Add new fields
-    $profile_fields['event_espresso_phone_number'] = 'Phone Number <span class="description">(required)</span>';
-	$profile_fields['event_espresso_organization'] = 'Institution <span class="description">(required)</span>';
-	$profile_fields['event_espresso_faculty'] = 'Faculty <span class="description">(required)</span>';
-	$profile_fields['event_espresso_department'] = 'Department <span class="description">(required)</span>';
+    $contactmethods['event_espresso_phone_number'] = 'Phone Number <span class="description">(required)</span>';
     
     unset($contactmethods['aim']);
     unset($contactmethods['jabber']);
     unset($contactmethods['yim']);
 
     
-	return $profile_fields;
+	return $contactmethods;
 }
 add_filter('user_contactmethods', 'modify_contact_methods');
+
+
+/*
+Function Name: CTLT Profile Fields
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Adds profile fields for organization/department/unit
+Requirements: none
+*/
+
+add_action( 'show_user_profile', 'ctlt_profile_fields' );
+add_action( 'edit_user_profile', 'ctlt_profile_fields' );
+
+function ctlt_profile_fields( $user ) {
+
+    $ini_url = "UserInfo.ini";
+    $departments = parse_ini_file($ini_url, true);
+
+
+    ?>
+
+    <table class="form-table">
+		<tr>
+			<th><label for="event_espresso_organization">Organization <span class="description">(required)</span></label></th>
+			<td>
+				<input type="text" name="event_espresso_organization" id="event_espresso_organization" value="<?php echo esc_attr( get_the_author_meta( 'event_espresso_organization', $user->ID ) ); ?>" class="regular-text" /><br />
+				<span class="description">Please enter the organization with which you are associated.</span>
+			</td>
+		</tr>
+        <tr>
+			<th><label for="event_espresso_faculty">Faculty <span class="description">(required)</span></label></th>
+			<td>
+                <select name="event_espresso_faculty" id="event_espresso_faculty">
+                    <option value=""></option>
+                    <?php
+                        foreach( $departments['faculty'] as $department ) {
+                            echo '<option value="' . $department . '" ';
+                            if($department == esc_attr( get_the_author_meta( 'event_espresso_faculty', $user->ID ) ) ) {
+                                echo 'selected="selected"';
+                            }
+                            echo '>' . $department . '</option>';
+                        }
+                    ?>
+                </select>
+				<span class="description">Please enter the UBC Faculty with which you are associated.</span>
+			</td>
+		</tr>
+        <tr>
+			<th><label for="event_espresso_department">Department <span class="description">(required)</span></label></th>
+			<td>
+				<input type="text" name="event_espresso_department" id="event_espresso_department" value="<?php echo esc_attr( get_the_author_meta( 'event_espresso_department', $user->ID ) ); ?>" class="regular-text" /><br />
+				<span class="description">Please enter the UBC department with which you are associated.</span>
+			</td>
+		</tr>
+        <tr>
+			<th><label for="event_espresso_other_unit">Other Unit <span class="description">(if none of the above apply)</span></label></th>
+			<td>
+				<input type="text" name="event_espresso_other_unit" id="event_espresso_other_unit" value="<?php echo esc_attr( get_the_author_meta( 'event_espresso_other_unit', $user->ID ) ); ?>" class="regular-text" /><br />
+			</td>
+		</tr>
+	</table>
+<?php }
+
+/*
+Function Name: CTLT Save Contact Methods
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Saves profile fields for organization/department/unit
+Requirements: none
+*/
+
+add_action( 'personal_options_update', 'ctlt_save_extra_profile_fields' );
+add_action( 'edit_user_profile_update', 'ctlt_save_extra_profile_fields' );
+
+function ctlt_save_extra_profile_fields( $user_id ) {
+
+	if ( !current_user_can( 'edit_user', $user_id ) )
+		return false;
+    
+	update_usermeta( $user_id, 'event_espresso_organization', $_POST['event_espresso_organization'] );
+    update_usermeta( $user_id, 'event_espresso_faculty', $_POST['event_espresso_faculty'] );
+    update_usermeta( $user_id, 'event_espresso_department', $_POST['event_espresso_department'] );
+    update_usermeta( $user_id, 'event_espresso_other_unit', $_POST['event_espresso_other_unit'] );
+}
+
+
+
+

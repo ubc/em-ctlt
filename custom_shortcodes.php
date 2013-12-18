@@ -192,6 +192,15 @@ function ctlt_past_event_list( $attributes ) {
 }
 add_shortcode( 'CTLT_PAST_EVENT_LIST', 'ctlt_past_event_list');
 
+/*
+Shortcode Name: CTLT Event Materials List
+Author: Nathan Sidles
+Contact: nsidles@ubc.ca
+Website:
+Description: Shortcode to display a list of event materials
+Usage Example: [CTLT_EVENT_MATERIALS_LIST]
+Notes: This file should be stored in your "/wp-content/uploads/espresso/" directory.
+*/
 function ctlt_event_materials_list() {
     ob_start();
     $events = ctlt_display_event_materials_list();

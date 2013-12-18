@@ -294,41 +294,20 @@ if (!function_exists('register_attendees')) {
             }
             //This is the start of the registration form. This is where you can start editing your display.
             //(Shows the regsitration form if enough spaces exist)
-            if ($num_attendees >= $reg_limit) {
-                ?>
-                <div class="espresso_event_full event-display-boxes" id="espresso_event_full-<?php echo $event_id; ?>">
-                    <h3 class="event_title"><?php echo stripslashes_deep($event_name) ?></h3>
-                    <div class="event-messages">
-                        <p class="event_full"><strong><?php _e('We are sorry but this event has reached the maximum number of attendees!', 'event_espresso'); ?></strong></p>
-                        <p class="event_full"><strong><?php _e('Please check back in the event someone cancels.', 'event_espresso'); ?></strong></p>
-                        <p class="num_attendees"><?php _e('Current Number of Attendees:', 'event_espresso'); ?> <?php echo $num_attendees ?></p>
-                    </div>
-                <?php
-                $num_attendees = get_number_of_attendees_reg_limit($event_id, 'num_attendees'); //Get the number of attendees. Please visit http://eventespresso.com/forums/?p=247 for available parameters for the get_number_of_attendees_reg_limit() function.
-                if (($num_attendees >= $reg_limit) && ($allow_overflow == 'Y' && $overflow_event_id != 0)) {
-                    ?>
-                        <p>If you still wish to attend this event, you can join the waiting list and you will be assigned a spot as soon as one is available on a first come first serve basis.</p>
-                        <p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Join Waiting List', 'event_espresso'); ?></a></p>
-                    <?php } ?>
-                </div>
-
-                    <?php
+                $member_options = get_option('events_member_settings');
+                //echo "<pre>".print_r($member_options,true)."</pre>";
+                //If enough spaces exist then show the form
+                //Check to see if the Members plugin is installed.
+                if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y') ) {
+                    event_espresso_user_login();
                 } else {
-					$member_options = get_option('events_member_settings');
-					//echo "<pre>".print_r($member_options,true)."</pre>";
-                    //If enough spaces exist then show the form
-                    //Check to see if the Members plugin is installed.
-                    if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y') ) {
-                        event_espresso_user_login();
+                    //Serve up the registration form
+                    if ( empty( $path ) ) {
+                      require( $template_name );
                     } else {
-                        //Serve up the registration form
-						if ( empty( $path ) ) {
-						  require( $template_name );
-						} else {
-						  require( $path );
-						}
+                      require( $path );
                     }
-                }//End if ($num_attendees >= $reg_limit) (Shows the regsitration form if enough spaces exist)
+                }
             } else {//If there are no results from the query, display this message
                  echo '<h3>'.__('This event has expired or is no longer available.', 'event_espresso').'</h3>';
             }

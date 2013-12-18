@@ -15,7 +15,7 @@
         Registration
         <?php
             if($cancellation_status == TRUE) {
-                echo '- CANCELLED';
+                echo '<span class="ctlt_cancelled">- CANCELLED</span>';
             }
         ?>
         </h3>
@@ -118,6 +118,24 @@
             break;
 
             default: //This will display the registration form
+                if($cancellation_status == FALSE) {
+                    if ($num_attendees >= $reg_limit) {
+                    ?>
+                    <div class="espresso_event_full event-display-boxes" id="espresso_event_full-<?php echo $event_id; ?>">
+                            <p class="event_full"><strong><?php _e('We are sorry but this event has reached the maximum number of attendees!', 'event_espresso'); ?></strong></p>
+                            <p class="event_full"><strong><?php _e('Please check back in the event someone cancels.', 'event_espresso'); ?></strong></p>
+                            <p class="num_attendees"><?php _e('Current Number of Attendees:', 'event_espresso'); ?> <?php echo $num_attendees ?></p>
+                    <?php
+                    $num_attendees = get_number_of_attendees_reg_limit($event_id, 'num_attendees'); //Get the number of attendees. Please visit http://eventespresso.com/forums/?p=247 for available parameters for the get_number_of_attendees_reg_limit() function.
+                    if (($num_attendees >= $reg_limit) && ($allow_overflow == 'Y' && $overflow_event_id != 0)) {
+                        ?>
+                            <p>If you still wish to attend this event, you can join the waiting list and you will be assigned a spot as soon as one is available on a first come first serve basis.</p>
+                            <p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Join Waiting List', 'event_espresso'); ?></a></p>
+                        <?php } ?>
+                    </div>
+
+                        <?php
+                    } else {
     ?>
         <div class="event_espresso_form_wrapper">
             <form method="post" action="<?php echo get_permalink( $event_page_id );?>" id="registration_form">
@@ -252,7 +270,9 @@
             </form>
         </div>
         
-    <?php 
+    <?php
+                            }
+                        }
                     break;
                     
                 }
