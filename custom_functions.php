@@ -399,7 +399,7 @@ Requirements: none
 add_action( 'wp', 'ctlt_automatic_email_schedule' );
 function ctlt_automatic_email_schedule() {
 	if ( ! wp_next_scheduled( 'ctlt_daily_event_hook' ) ) {
-		wp_schedule_event( time(), 'hourly', 'ctlt_daily_event_hook');
+		wp_schedule_event( time(), 'daily', 'ctlt_daily_event_hook');
 	}
 }
 
