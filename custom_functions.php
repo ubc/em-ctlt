@@ -241,11 +241,11 @@ function espresso_include_js_for_templates() {
 }
 
 /*
-Function Name: CTLT Profile Fields Hiding
+Function Name: CTLT Display Event Materials List
 Author: Nathan Sidles
 Contact: nsidles@gmail.com
 Website:
-Description: Hides profile fields in Profile page for WordPress users
+Description: Displays a list of materials for events that choose to make them available.
 Requirements: none
 */
 function ctlt_display_event_materials_list() {
@@ -319,8 +319,7 @@ function ctlt_profile_fields( $user ) {
 
     $ini_url = "UserInfo.ini";
     $departments = parse_ini_file($ini_url, true);
-
-
+    
     ?>
 
     <table class="form-table">
@@ -388,6 +387,183 @@ function ctlt_save_extra_profile_fields( $user_id ) {
     update_usermeta( $user_id, 'event_espresso_other_unit', $_POST['event_espresso_other_unit'] );
 }
 
+/*
+Function Name: CTLT Automatic Email Reminders
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Sends out a standardized reminder email to all registered participants a day before an event occurs
+Requirements: none
+*/
 
+add_action( 'wp', 'ctlt_automatic_email_schedule' );
+function ctlt_automatic_email_schedule() {
+	if ( ! wp_next_scheduled( 'ctlt_daily_event_hook' ) ) {
+		wp_schedule_event( time(), 'hourly', 'ctlt_daily_event_hook');
+	}
+}
 
+add_action( 'ctlt_daily_event_hook', 'ctlt_automatic_email_reminders' );
 
+function ctlt_automatic_email_reminders() {
+	
+    global $wpdb;
+    
+    $date =  mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
+    
+    $sql = "SELECT third_results.id, event_name, start_date, end_date, venue_id, start_time, end_time, name, address, address2, city, state, zip, country, category_id FROM (";
+    $sql .= "SELECT second_results.id, event_name, start_date, end_date, venue_id, start_time, end_time, category_id FROM (";
+    $sql .= "SELECT first_results.id, event_name, start_date, end_date, venue_id, category_id FROM (";
+    $sql .= "SELECT id, event_name, start_date, end_date, category_id FROM " . $wpdb->prefix . "events_detail WHERE event_status = 'A' AND start_date = '" . date('Y-m-d', $date) . "') as first_results ";
+    $sql .= "LEFT JOIN " . $wpdb->prefix . "events_venue_rel ON first_results.id = " . $wpdb->prefix . "events_venue_rel.event_id) as second_results ";
+    $sql .= "LEFT JOIN " . $wpdb->prefix . "events_start_end ON second_results.id = " . $wpdb->prefix . "events_start_end.event_id) as third_results ";
+    $sql .= "LEFT JOIN " . $wpdb->prefix . "events_venue ON " . $wpdb->prefix . "events_venue.id = third_results.venue_id ";
+    
+    $daily_events = $wpdb->get_results( $sql, ARRAY_A );
+
+    foreach( $daily_events as $daily_event ) {
+    
+        $daily_event_subject = "";
+        $daily_event_message = "You are currently registered for " . $daily_event['event_name'] . ".\r\n\r\n The event starts tomorrow at " . $daily_event['start_time'];
+        if( $daily_event['name'] != '' ) {
+            $daily_event_message .= " at " . $daily_event['name'];
+            if( $daily_event['address'] != '') {
+                $daily_event_message .= " (" . $daily_event['address'];
+                if( $daily_event['address2'] != '') {
+                    $daily_event_message .= "; " . $daily_event['address2'];
+                    if( $daily_event['city'] != '' && $daily_event['state'] != '' ) {
+                        $daily_event_message .= "; " . $daily_event['city'] . ", " . $daily_event['state'];
+                    }
+                }
+                $daily_event_message .= ")";
+            }
+        }
+        $daily_event_message .= ".\r\n\r\n";
+        $daily_event_message .= "If you have any questions, please contact us at " . get_option('admin_email') . ".";
+        $daily_event_message .= "\r\n\r\n";
+        $daily_event_message .= "Sincerely,";
+        $daily_event_message .= "\r\n\r\n";
+        $daily_event_message .= get_option('blogname');
+        
+        $daily_event_subject = $daily_event['event_name'] . " Reminder";
+        
+        $headers = "From: " . get_option('blogname') . " <" . get_option('admin_email')  . ">\r\n";
+    
+        $sql = "SELECT fname, lname, email FROM " . $wpdb->prefix . "events_attendee WHERE event_id = " . $daily_event['id'] . " AND payment_status = 'Completed'";
+        $event_registrants = $wpdb->get_results( $sql, ARRAY_A );
+        foreach( $event_registrants as $event_registrant ) {
+            $event_registrant_name = $event_registrant['fname'];
+            $event_registrant_email = $event_registrant['email'];
+            $event_registrant_personalized_message = "Dear " . $event_registrant_name . ",\r\n\r\n" . $daily_event_message;
+            wp_mail($event_registrant_email, $daily_event_subject, $event_registrant_personalized_message, $headers);
+        }
+    }
+}
+
+/*
+Function Name: CTLT Automatic Waitlist Event Creation
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Automatically creates a waitlist event for events
+Requirements: none
+*/
+
+add_action( 'action_hook_espresso_insert_event_success', 'ctlt_automatic_waitlist_event', 10, 1 );
+
+function ctlt_automatic_waitlist_event($main_event) {
+
+    if( $main_event['_ctlt_espresso_event_waitlisting'] != 'on' ) {
+        global $wpdb;
+
+        $main_event_id = $main_event['event_id'];
+        $waitlist_event_id = $main_event['event_id']+1;
+        $waitlist_event_name = $main_event['event'] . " Waiting List";
+
+        require_once( ABSPATH . "/wp-content/plugins/event-espresso/includes/event-management/copy_event.php" );
+        copy_event();
+        
+        $wpdb->update(EVENTS_DETAIL_TABLE, array( 'allow_overflow' => 'Y', 'overflow_event_id' => $waitlist_event_id ), array( 'ID' => $main_event_id ), array( '%s', '%d' ) );
+        $wpdb->update(EVENTS_DETAIL_TABLE, array( 'event_status' => 'S', 'event_name' => $waitlist_event_name, 'reg_limit' => '999999' ), array( 'ID' => $waitlist_event_id ), array( '%s', '%s', '%d' ) );
+    }
+    
+}
+
+/*
+Function Name: CTLT Automatic Waitlist Transfer
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Automatically creates a waitlist event for events
+Requirements: none
+*/
+
+add_action( 'action_hook_espresso_after_delete_attendee_event_list', 'ctlt_automatic_waitlist_transfer_deletion_by_admin', 10, 2 );
+
+function ctlt_automatic_waitlist_transfer_deletion_by_admin( $attendee_id, $event_id ) {
+    
+    global $wpdb;
+    
+    $sql = "SELECT SUM(quantity) AS quantity FROM " . EVENTS_ATTENDEE_TABLE . " WHERE (payment_status='Completed' OR payment_status='Pending' OR payment_status='Refund') AND event_id = '%d'";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+    
+    $current_attendees = $sql_results[0]->quantity;
+    
+    $sql = "SELECT reg_limit, overflow_event_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = '%d'";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+    
+    $max_attendees = $sql_results[0]->reg_limit;
+    $overflow_event_id = $sql_results[0]->overflow_event_id;
+    
+    $sql = "SELECT id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = %d LIMIT 1";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
+    
+    $waitlisted_attendee = $sql_results[0]->id;
+    
+    if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
+        $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
+        $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+    }
+    
+}
+
+add_action( 'action_hook_espresso_after_registration_cancellation', 'ctlt_automatic_waitlist_transfer_for_user', 10, 1 );
+
+function ctlt_automatic_waitlist_transfer_for_user( $attendee_id ) {
+    
+    global $wpdb;
+    
+    $sql = "SELECT event_id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE id = '%d'";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $attendee_id ) );
+    
+    $event_id = $sql_results[0]->event_id;
+    
+    $sql = "SELECT SUM(quantity) AS quantity FROM " . EVENTS_ATTENDEE_TABLE . " WHERE (payment_status='Completed' OR payment_status='Pending' OR payment_status='Refund') AND event_id = '%d'";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+    
+    $current_attendees = $sql_results[0]->quantity;
+    
+    $sql = "SELECT reg_limit, overflow_event_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = '%d'";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+    
+    $max_attendees = $sql_results[0]->reg_limit;
+    $overflow_event_id = $sql_results[0]->overflow_event_id;
+    
+    $sql = "SELECT id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = %d LIMIT 1";
+    
+    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
+    
+    $waitlisted_attendee = $sql_results[0]->id;
+    
+    if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
+        $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
+        $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+    }
+    
+}

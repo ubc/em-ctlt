@@ -545,6 +545,10 @@ span.ctlt_cancelled {
     margin-top: 20px;
 }
 
+.pagination-centered {
+    clear: both;
+}
+
 /*
 END CTLT CODE
 */

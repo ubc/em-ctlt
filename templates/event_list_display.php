@@ -38,6 +38,7 @@ $status_display_open = $status['status'] == 'REGISTRATION_OPEN' ? ' - ' . $statu
 $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' - <span class="espresso_closed">' . __('Regsitration is closed', 'event_espresso') . '</span>' : '';
 global $this_event_id;
 $this_event_id = $event_id;
+
 ?>
     <div class="ctlt_event_list_wrapper">
         <div class="ctlt_event_list_date">

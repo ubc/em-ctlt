@@ -69,7 +69,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			'sort'						=> 'ASC',
 			'css_class'					=> 'NULL',
 			'current_page'				=> 1,
-			'events_per_page'			=> 5,
+			'events_per_page'			=> 2,
 			'num_page_links_to_display'	=> 10,
 			'use_wrapper'				=> true
 		);
