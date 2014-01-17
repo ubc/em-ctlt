@@ -398,9 +398,7 @@ Requirements: none
 
 add_action( 'wp', 'ctlt_automatic_email_schedule' );
 function ctlt_automatic_email_schedule() {
-	if ( ! wp_next_scheduled( 'ctlt_daily_event_hook' ) ) {
-		wp_schedule_event( time(), 'daily', 'ctlt_daily_event_hook');
-	}
+	wp_clear_scheduled_hook( 'ctlt_daily_event_hook' );
 }
 
 add_action( 'ctlt_daily_event_hook', 'ctlt_automatic_email_reminders' );
