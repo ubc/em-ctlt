@@ -39,8 +39,6 @@ $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' -
 global $this_event_id;
 $this_event_id = $event_id;
 
-print_r(get_option('cron'));
-
 ?>
     <div class="ctlt_event_list_wrapper">
         <div class="ctlt_event_list_date">
