@@ -116,7 +116,7 @@ $attendee_num = apply_filters('action_hook_espresso_confirmation_page_primary_at
                 <?php
                 }
                 ?>
-			</table>
+			</table>e
 			<p class="espresso_confirm_registration">
 			<input class="btn" style="margin-left: 0px" type="submit" name="confirm" id="confirm" value="<?php _e('Confirm Registration', 'event_espresso'); ?>&nbsp;&raquo;" />
 		    </p>

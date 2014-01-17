@@ -490,11 +490,11 @@ function ctlt_automatic_waitlist_event($main_event) {
 }
 
 /*
-Function Name: CTLT Automatic Waitlist Transfer
+Function Name: CTLT Automatic Waitlist Transfer for Administrative Deletion
 Author: Nathan Sidles
 Contact: nsidles@gmail.com
 Website:
-Description: Automatically creates a waitlist event for events
+Description: Automatically transfers people into events when a site administrator deletes them
 Requirements: none
 */
 
@@ -529,6 +529,15 @@ function ctlt_automatic_waitlist_transfer_deletion_by_admin( $attendee_id, $even
     }
     
 }
+
+/*
+Function Name: CTLT Automatic Waitlist Transfer for User Deletion
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Automatically transfers people into events when they delete themselves
+Requirements: events-members plugin
+*/
 
 add_action( 'action_hook_espresso_after_registration_cancellation', 'ctlt_automatic_waitlist_transfer_for_user', 10, 1 );
 
