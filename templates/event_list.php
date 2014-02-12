@@ -9,9 +9,6 @@
 //This file should be stored in your "/wp-content/uploads/espresso/templates/" directory.
 //Note: All of these functions can be overridden using the "Custom Files" addon. The custom files addon also contains sample code to display ongoing events
 
-wp_register_style( 'ctlt-espresso-template-css', trailingslashit(EVENT_ESPRESSO_UPLOAD_URL) . 'templates/css/ctlt_event_espresso_list.css' );
-wp_enqueue_style( 'ctlt-espresso-template-css' );
-
 if (!function_exists('display_all_events')) {
 	function display_all_events() {
 		event_espresso_get_event_details(array());
@@ -86,7 +83,12 @@ if (!function_exists('event_espresso_get_event_details')) {
 		
 		if (!empty($event_category_id)){
 			$category_identifier = $event_category_id;
-		}
+		} else if ( $_GET["category_name"] ) {
+            $category_name = $_GET["category_name"];
+            $sql = "SELECT id FROM " . EVENTS_CATEGORY_TABLE . " WHERE category_name = '%s' LIMIT 1";
+            $sql = $wpdb->get_results( $wpdb->prepare( $sql, $category_name ) );
+            $category_identifier = $sql[0]->id;
+        }
 
 		//BEGIN CATEGORY MODIFICATION : using events_detail_table.category_id instead of events_category_table.category_identifier in order to filter events with one OR MORE categories
 		//Let's check if there's one or more categories specified for the events of the event list (based on the use of "," as a separator) and store them in the $cat array.
@@ -115,7 +117,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 			$category_sql = ($category_id !== NULL  && !empty($category_id))? " AND e.category_id IN (" . $category_id . ") ": '';
 		
 		} else {
-			$category_sql = ($category_identifier !== NULL  && !empty($category_identifier))? " AND c.category_identifier = '" . $category_identifier . "' ": '';
+			$category_sql = ($category_identifier !== NULL  && !empty($category_identifier))? " AND FIND_IN_SET (" . $category_identifier . ", category_id ) > 0": '';
 		}
 		
 		//END CATEGORY MODIFICATION
@@ -149,7 +151,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		
 		//Category sql
 		$sql .= $category_sql;
-		
+        
 		//Staff sql
 		$sql .= ($staff_id !== NULL  && !empty($staff_id))? " AND st.id = '" . $staff_id . "' ": '';
 		
@@ -165,7 +167,6 @@ if (!function_exists('event_espresso_get_event_details')) {
 		$sql .= isset($use_venue_id) && $use_venue_id == true ? " AND v.id = '".$venue_id."' " : '';
 		
 		$sql .= $show_secondary == 'false' ? " AND e.event_status != 'S' " : '';
-		$sql .= $show_deleted == 'false' ? " AND e.event_status != 'D' " : " AND e.event_status = 'D' ";
 		if  ($show_deleted == 'true'){
 			$allow_override = 1;
 		}
@@ -293,24 +294,55 @@ if (!function_exists('event_espresso_get_event_details')) {
 		foreach ($events as $event) {
 			?>
 			<?php
+            
             // Retrieve the category name based on the event category
-            $cancellation_status = FALSE;
             $categories = null;
-            if(is_null($event->category_id) == FALSE) {
+            if( is_null($event->category_id) == FALSE ) {
                 $sql = "SELECT category_name, id FROM " . EVENTS_CATEGORY_TABLE . " WHERE id IN (" . $event->category_id . ")";
                 $categories = $wpdb->get_results( $sql );
-                $counter = 0;
-                foreach($categories as $category) {
-                    if(strtolower($category->category_name) == "cancelled") {
-                        unset($categories[$counter]);
-                        $cancellation_status = TRUE;
-                    }
-                    $counter++;
+                $categories_url = get_page_by_title( 'Series' );
+                if( $categories_url != null ) {
+                    $categories_url = $categories_url->ID;
                 }
-                $categories_url = get_page_by_title( 'Event Categories' );
-                $categories_url =  $categories_url->ID;
             }
+            
 			$event_id = $event->id;
+            
+            // Retrieve the admin information
+            if( class_exists( 'CTLT_Espresso_Controls' ) ) {
+                $sql = "SELECT meta_key, meta_value FROM " . CTLT_ESPRESSO_EVENTS_META . " WHERE event_id='%d' AND meta_key = '_ctlt_espresso_event_contiguous' ";
+                $admin_notes = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ), ARRAY_A );
+                if($admin_notes != null) {
+                    $admin_notes = $admin_notes[0];
+                    $ctlt_noncontiguous = $admin_notes['meta_value'];
+                } else {
+                    $ctlt_noncontiguous = 'no';
+                }
+            }
+            
+            // Retrieve member data, compare events for which they are registered against the current event. If they match, set $already_registered to true.
+            $already_registered = FALSE;
+            if( is_user_logged_in() ) {
+                $attendee_ids = $wpdb->get_results( $wpdb->prepare( "SELECT attendee_id FROM ". EVENTS_MEMBER_REL_TABLE . " WHERE user_id = '%d'", get_current_user_id() ) );
+                $cs_attendee_ids = array();
+                $sql = "SELECT event_id FROM " .    EVENTS_ATTENDEE_TABLE . " WHERE payment_status != 'Cancelled' AND id IN (";
+                foreach( $attendee_ids as $attendee_id ) {
+                    array_push($cs_attendee_ids, $attendee_id->attendee_id);
+                    $sql .= "%s";
+                    if ( $attendee_id != end( $attendee_ids ) ) {
+                        $sql .= ",";
+                    }
+                }
+                $sql .= ")";
+                $attended_event_ids = $wpdb->get_results( $wpdb->prepare( $sql, $cs_attendee_ids ) );
+                foreach( $attended_event_ids as $attended_event_id ) {
+                    if( $event_id == $attended_event_id->event_id ) {
+                        $already_registered = TRUE;
+                    }
+                }
+            }
+            
+            
 			$event_name = $event->event_name;
             $event_url = $event->venue_url;
 			$event_desc = stripslashes_deep($event->event_desc);
@@ -452,7 +484,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 							//Uncomment the following two lines to show events that are not active and the active status array
 							//print_r( event_espresso_get_is_active($event_id));
 							//include('event_list_display.php');
-							break;
+							
 
 						case 'PENDING':
 							if (current_user_can('administrator') || function_exists('espresso_member_data') && espresso_can_view_event($event_id) == true) {

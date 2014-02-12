@@ -120,6 +120,8 @@ global $wpdb;
 
                 //Leaving these variables intact, just in case people wnat to use them
                 $venue_title = $data->event->venue_name;
+                $venue_url = unserialize($data->event->venue_meta);
+                $venue_url = $venue_url["website"];
                 $venue_address = $data->event->venue_address;
                 $venue_address2 = $data->event->venue_address2;
                 $venue_city = $data->event->venue_city;
@@ -233,53 +235,19 @@ global $wpdb;
 //This function gets the status of the event.
                 $is_active = array();
                 $is_active = event_espresso_get_is_active(0, $all_meta); }
-
-/**
- * this is the original database stuff
- */
-/*
-	$sql  = "SELECT * FROM " .EVENTS_DETAIL_TABLE. " WHERE event_status != 'D' AND id = " . $event_id;
-
-	if ($wpdb->get_results($sql)){
-			$events = $wpdb->get_results($sql);
-			foreach ($events as $event){ //These are the variables that can be used throughout the regsitration page
-					$event_id = $event->id;
-					$event_name = stripslashes_deep($event->event_name);
-					$event_desc = stripslashes_deep($event->event_desc);
-					$display_desc = $event->display_desc;
-					$event_address = $event->address;
-					$event_address2 = $event->address2;
-					$event_city = $event->city;
-					$event_state = $event->state;
-					$event_zip = $event->zip;
-					$event_country = $event->country;
-					$event_description = stripslashes_deep($event->event_desc);
-					$event_identifier = $event->event_identifier;
-					$event_cost = empty($event->event_cost) ? 0 : $event->event_cost;
-					$member_only = $event->member_only;
-					$active = $event->is_active;
-					$reg_limit = $event->reg_limit;
-					$allow_multiple = $event->allow_multiple;
-					$start_date =  $event->start_date;
-					$end_date =  $event->end_date;
-					$reg_limit=$event->reg_limit;
-					$additional_limit = $event->additional_limit;
-
-					$regurl=espresso_reg_url($event_id);
-
-					$google_map_link = espresso_google_map_link(array('address' => $event_address, 'city' => $event_city, 'state' => $event_state, 'zip' => $event_zip, 'country' => $event_country, 'text' => 'Map and Directions', 'type' => 'text'));
-			}//End foreach ($events as $event)
-	} */
 ?>
-<p><?php echo date('l F j, Y',strtotime($start_date)) . " - " . date('l F j, Y',strtotime($end_date)); ?></p>
-<p><?php echo $event_address ?></p>
-<p><img style="padding-right: 5px;" src="<?php echo EVENT_ESPRESSO_PLUGINFULLURL?>/images/map.png" border="0" alt="<?php _e('View Map', 'event_espresso'); ?>" /><?php echo $google_map_link; ?> | <a class="a_register_link" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Register', 'event_espresso'); ?></a></p>
 <?php
 if ($display_desc == 'Y'){ ?>
-<?php /*?><!--more--><?php */ //Uncomment this part to show the Read More link?>
-<?php _e('Description:','event_espresso'); ?>
-<?php // if there's a cart link shortcode in the post, replace the shortcode with one that includes the event_id
-    if (preg_match("/ESPRESSO_CART_LINK/", $event_desc)) { $event_desc = preg_replace('/ESPRESSO_CART_LINK/', 'ESPRESSO_CART_LINK event_id=' . $event_id, $event_desc); } ?>
 <?php echo wpautop($event_desc); ?>
-<p><a class="a_register_link" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Register', 'event_espresso'); ?></a></p>
 <?php }//End display description ?>
+<h4>Event Details:</h4>
+<p><?php echo event_date_display($start_date, get_option('date_format')) . " - " . event_date_display($end_date, get_option('date_format')); ?></p>
+<p><?php echo espresso_event_time($event_id, 'start_time'); ?> - <?php echo espresso_event_time($event_id, 'end_time'); ?></p>
+<p>
+<?php
+echo $venue_url != ''?'<a href="'.$venue_url.'">':'';
+echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':'';
+echo $venue_url != ''?'</a>':'';
+?>
+</p>
+<p><a class="btn" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Register', 'event_espresso'); ?></a></p>

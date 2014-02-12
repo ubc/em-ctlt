@@ -201,9 +201,9 @@ Description: Shortcode to display a list of event materials
 Usage Example: [CTLT_EVENT_MATERIALS_LIST]
 Notes: This file should be stored in your "/wp-content/uploads/espresso/" directory.
 */
-function ctlt_event_materials_list() {
+function ctlt_event_materials_list( $event_id ) {
     ob_start();
-    $events = ctlt_display_event_materials_list();
+    $events = ctlt_display_event_materials_list( $event_id );
 	ob_end_clean();
     
     $materials_list = "";
@@ -213,7 +213,7 @@ function ctlt_event_materials_list() {
         $materials_list .= "<p>";
         $materials_list .= "<strong>" . $event->event_name . "</strong> - ";
         $materials_list .= date("F j, Y", strtotime("$event->start_date"));
-        $materials_list .= "<br />";
+        $upload_base_dir['baseurl'] .= "<br />";
         $materials_list .= '<a href="' . $upload_base_dir['baseurl'] . '/' . $event->attachment_url . '">Media</a> (right-click to download)';
         $materials_list .= "</p>";
     }
@@ -221,6 +221,70 @@ function ctlt_event_materials_list() {
     return $materials_list;
 }
 add_shortcode( 'CTLT_EVENT_MATERIALS_LIST', 'ctlt_event_materials_list');
+
+/*
+Shortcode Name: CTLT Event Search
+Author: Nathan Sidles
+Contact: nsidles@ubc.ca
+Website:
+Description: Shortcode to display a list of event materials
+Usage Example: [CTLT_EVENT_MATERIALS_LIST]
+Notes: This file should be stored in your "/wp-content/uploads/espresso/" directory.
+*/
+function ctlt_autocomplete_search(){
+	global $wpdb, $espresso_manager, $current_user, $org_options;
+	$array = array('ee_search' => 'true');
+	$url = add_query_arg($array, get_permalink($org_options['event_page_id']));
+	ob_start();
+	?>
+	<div id="espresso-search-form-dv" class="ui-widget">
+		<form name="form" method="post" action="<?php echo $url ?>">
+			<input id="ee_autocomplete" name="ee_name" />
+			<input id="ee_search_submit" name="ee_search_submit" class="btn" type="submit" value="Search" />
+			<input id="event_id" name="event_id" type="hidden">
+		</form>
+	</div>
+<?php 
+	$ee_autocomplete_params = array();
+	$SQL = "SELECT e.*";
+	if ( isset($org_options['use_venue_manager']) && $org_options['use_venue_manager'] == 'Y' ) {
+		$SQL .= ", v.city venue_city, v.state venue_state, v.name venue_name, v.address venue_address, v.city venue_city, v.state venue_state, v.zip venue_zip, v.country venue_country, v.meta venue_meta ";		
+	}
+	$SQL .= " FROM " . EVENTS_DETAIL_TABLE . " e ";
+	if ( isset($org_options['use_venue_manager']) && $org_options['use_venue_manager'] == 'Y' ) {
+		$SQL .= " LEFT JOIN " . EVENTS_VENUE_REL_TABLE . " vr ON vr.event_id = e.id LEFT JOIN " . EVENTS_VENUE_TABLE . " v ON v.id = vr.venue_id ";
+	}
+	$SQL .= " WHERE e.is_active = 'Y' ";
+	$SQL .= " AND e.event_status != 'D' AND e.event_status != 'S' ";
+	//echo '<p>$sql = '.$sql.'</p>';							
+	$events = $wpdb->get_results($SQL);
+	$num_rows = $wpdb->num_rows;
+								
+	if ($num_rows > 0) {
+		foreach ($events as $event){
+			$venue_city = !empty($event->venue_city) ? stripslashes_deep($event->venue_city)  : '';
+			$venue_state = !empty($event->venue_state) ?  (!empty($event->venue_city) ? ', ' : '') .stripslashes_deep($event->venue_state)  : '';
+
+			$venue_name = !empty($event->venue_name) ?' @' . stripslashes_deep($event->venue_name)  . ' - ' . $venue_city . $venue_state . ''  : '';
+			//An Array of Objects with label and value properties:
+			$ee_autocomplete_params[] = array( 
+							'url' => espresso_reg_url($event->id), 
+							'value' => stripslashes_deep($event->event_name) . $venue_name, 
+							'id' => $event->id
+					);
+			//echo '{ url:"'.espresso_reg_url($event->id).'", value: "'.stripslashes_deep($event->event_name) . $venue_name .'", id: "'.$event->id.'" },';
+		}
+	}
+	wp_register_script('espresso_autocomplete', (EVENT_ESPRESSO_PLUGINFULLURL . "scripts/espresso_autocomplete.js"), array( 'jquery-ui-autocomplete' ), '1.0.0', TRUE );
+	wp_enqueue_script('espresso_autocomplete');
+	wp_localize_script( 'espresso_autocomplete', 'ee_autocomplete_params', $ee_autocomplete_params );
+	//Load scripts
+	add_action('wp_footer', 'ee_load_jquery_autocomplete_scripts');	
+	$buffer = ob_get_contents();
+	ob_end_clean();
+	return $buffer;		
+}
+add_shortcode('CTLT_EVENT_SEARCH', 'ctlt_autocomplete_search');
 
 
 /** CTLT END **/

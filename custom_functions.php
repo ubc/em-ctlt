@@ -206,7 +206,7 @@ function ctlt_display_event_espresso_search( $url ) {
 }
 /*
 Function Name: Espresso Include JS for Templates
-Author: Julien Law
+Author: Julien Law and Nathan Sidles
 Contact: julienlaw@alumni.ubc.ca
 Website:
 Description: Just a simple funciton to enqueue scripts for custom templates
@@ -248,11 +248,22 @@ Website:
 Description: Displays a list of materials for events that choose to make them available.
 Requirements: none
 */
-function ctlt_display_event_materials_list() {
+function ctlt_display_event_materials_list( $event_id ) {
     
     global $wpdb;
-    $sql = "SELECT * FROM (SELECT start_date, event_name, do_not_handout, MAX(CASE WHEN meta_key = '_wp_attached_file' THEN meta_value END) as 'attachment_url' FROM (SELECT event_name, event_id, start_date, MAX(CASE WHEN meta_key = '_ctlt_espresso_handouts_upload' THEN meta_value END) as 'attachment_key', MAX(CASE WHEN meta_key = '_ctlt_espresso_do_not_handout' THEN meta_value END) as 'do_not_handout' FROM (SELECT id, event_name, start_date FROM " . EVENTS_DETAIL_TABLE . ") AS first_results INNER JOIN " . CTLT_ESPRESSO_EVENTS_META . " ON " . CTLT_ESPRESSO_EVENTS_META . ".event_id = first_results.id GROUP BY event_id) AS second_results INNER JOIN " . $wpdb->prefix . "postmeta ON " . $wpdb->prefix . "postmeta.post_id = second_results.attachment_key GROUP BY post_id ORDER BY start_date) as third_results WHERE do_not_handout != 'yes' OR do_not_handout IS NULL";
-    $events = $wpdb->get_results($sql);
+    $sql = "SELECT * FROM (SELECT start_date, event_name, do_not_handout, MAX(CASE WHEN meta_key = '_wp_attached_file' THEN meta_value END) as 'attachment_url' FROM (SELECT event_name, event_id, start_date, MAX(CASE WHEN meta_key = '_ctlt_espresso_handouts_upload' THEN meta_value END) as 'attachment_key', MAX(CASE WHEN meta_key = '_ctlt_espresso_do_not_handout' THEN meta_value END) as 'do_not_handout' FROM (SELECT id, event_name, start_date FROM " . EVENTS_DETAIL_TABLE;
+    
+    if ($event_id != null) {
+        $sql .= " WHERE id = '%d'";
+    }
+    
+    $sql .= ") AS first_results INNER JOIN " . CTLT_ESPRESSO_EVENTS_META . " ON " . CTLT_ESPRESSO_EVENTS_META . ".event_id = first_results.id GROUP BY event_id) AS second_results INNER JOIN " . $wpdb->prefix . "postmeta ON " . $wpdb->prefix . "postmeta.post_id = second_results.attachment_key GROUP BY post_id ORDER BY start_date) as third_results WHERE do_not_handout != 'yes' OR do_not_handout IS NULL";
+    
+    if( $event_id != null ) {
+        $events = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+    } else {
+        $events = $wpdb->get_results($sql);
+    }
     
     return $events;
 }
@@ -317,7 +328,7 @@ add_action( 'edit_user_profile', 'ctlt_profile_fields' );
 
 function ctlt_profile_fields( $user ) {
 
-    $ini_url = "UserInfo.ini";
+    $ini_url = "templates/UserInfo.ini";
     $departments = parse_ini_file($ini_url, true);
     
     ?>
@@ -381,10 +392,10 @@ function ctlt_save_extra_profile_fields( $user_id ) {
 	if ( !current_user_can( 'edit_user', $user_id ) )
 		return false;
     
-	update_usermeta( $user_id, 'event_espresso_organization', $_POST['event_espresso_organization'] );
-    update_usermeta( $user_id, 'event_espresso_faculty', $_POST['event_espresso_faculty'] );
-    update_usermeta( $user_id, 'event_espresso_department', $_POST['event_espresso_department'] );
-    update_usermeta( $user_id, 'event_espresso_other_unit', $_POST['event_espresso_other_unit'] );
+	update_user_meta( $user_id, 'event_espresso_organization', $_POST['event_espresso_organization'] );
+    update_user_meta( $user_id, 'event_espresso_faculty', $_POST['event_espresso_faculty'] );
+    update_user_meta( $user_id, 'event_espresso_department', $_POST['event_espresso_department'] );
+    update_user_meta( $user_id, 'event_espresso_other_unit', $_POST['event_espresso_other_unit'] );
 }
 
 /*
@@ -399,10 +410,12 @@ Requirements: none
 add_action( 'wp', 'ctlt_automatic_email_schedule' );
 function ctlt_automatic_email_schedule() {
 	wp_clear_scheduled_hook( 'ctlt_daily_event_hook' );
+    if ( ! wp_next_scheduled( 'ctlt_daily_event_hook_2' ) ) {
+		wp_schedule_event( time(), 'daily', 'ctlt_daily_event_hook_2');
+	}
 }
 
-add_action( 'ctlt_daily_event_hook', 'ctlt_automatic_email_reminders' );
-
+add_action( 'ctlt_daily_event_hook_2', 'ctlt_automatic_email_reminders' );
 function ctlt_automatic_email_reminders() {
 	
     global $wpdb;
@@ -471,18 +484,25 @@ add_action( 'action_hook_espresso_insert_event_success', 'ctlt_automatic_waitlis
 
 function ctlt_automatic_waitlist_event($main_event) {
 
-    if( $main_event['_ctlt_espresso_event_waitlisting'] != 'on' ) {
+    if( $main_event['_ctlt_espresso_event_waitlisting'] != 'No Waitlist' ) {
         global $wpdb;
 
         $main_event_id = $main_event['event_id'];
         $waitlist_event_id = $main_event['event_id']+1;
-        $waitlist_event_name = $main_event['event'] . " Waiting List";
+        if( $main_event['_ctlt_espresso_event_waitlisting'] == 'Manual Waitlist' ) {
+            $waitlist_event_name = $main_event['event'] . " Application";
+        } else {
+            $waitlist_event_name = $main_event['event'] . " Waiting List";
+        }
 
         require_once( ABSPATH . "/wp-content/plugins/event-espresso/includes/event-management/copy_event.php" );
         copy_event();
         
         $wpdb->update(EVENTS_DETAIL_TABLE, array( 'allow_overflow' => 'Y', 'overflow_event_id' => $waitlist_event_id ), array( 'ID' => $main_event_id ), array( '%s', '%d' ) );
         $wpdb->update(EVENTS_DETAIL_TABLE, array( 'event_status' => 'S', 'event_name' => $waitlist_event_name, 'reg_limit' => '999999' ), array( 'ID' => $waitlist_event_id ), array( '%s', '%s', '%d' ) );
+        if( $main_event['_ctlt_espresso_event_waitlisting'] == 'Manual Waitlist' ) {
+            $wpdb->update(EVENTS_DETAIL_TABLE, array( 'reg_limit' => '0' ), array( 'id' => $main_event_id ), array( '%d' ) );
+        }
     }
     
 }
@@ -492,7 +512,7 @@ Function Name: CTLT Automatic Waitlist Transfer for Administrative Deletion
 Author: Nathan Sidles
 Contact: nsidles@gmail.com
 Website:
-Description: Automatically transfers people into events when a site administrator deletes them
+Description: Automatically transfers people into events when a site administrator deletes a current registrant
 Requirements: none
 */
 
@@ -508,22 +528,28 @@ function ctlt_automatic_waitlist_transfer_deletion_by_admin( $attendee_id, $even
     
     $current_attendees = $sql_results[0]->quantity;
     
-    $sql = "SELECT reg_limit, overflow_event_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = '%d'";
+    $sql = "SELECT reg_limit, overflow_event_id, end_date FROM " . EVENTS_DETAIL_TABLE . " WHERE id = '%d'";
     
     $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
     
     $max_attendees = $sql_results[0]->reg_limit;
     $overflow_event_id = $sql_results[0]->overflow_event_id;
+    $end_date = $sql_results[0]->end_date;
     
-    $sql = "SELECT id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = %d LIMIT 1";
+    if( $end_date > date ( 'Y-m-d' ) ) {
     
-    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
-    
-    $waitlisted_attendee = $sql_results[0]->id;
-    
-    if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
-        $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
-        $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+        $sql = "SELECT id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = %d";
+        
+        $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
+        
+        $waitlisted_attendee = $sql_results[0]->id;
+        
+        if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
+            $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
+            $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+        }
+        
+        ctlt_transfer_email( $waitlisted_attendee, $event_id );
     }
     
 }
@@ -533,7 +559,7 @@ Function Name: CTLT Automatic Waitlist Transfer for User Deletion
 Author: Nathan Sidles
 Contact: nsidles@gmail.com
 Website:
-Description: Automatically transfers people into events when they delete themselves
+Description: Automatically transfers people into events when a current registrant delete themselves
 Requirements: events-members plugin
 */
 
@@ -543,34 +569,266 @@ function ctlt_automatic_waitlist_transfer_for_user( $attendee_id ) {
     
     global $wpdb;
     
-    $sql = "SELECT event_id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE id = '%d'";
+    $sql = "SELECT event_id, end_date FROM " . EVENTS_ATTENDEE_TABLE . " WHERE id = '%d'";
     
     $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $attendee_id ) );
     
     $event_id = $sql_results[0]->event_id;
+    $end_date = $sql_results[0]->end_date;
     
-    $sql = "SELECT SUM(quantity) AS quantity FROM " . EVENTS_ATTENDEE_TABLE . " WHERE (payment_status='Completed' OR payment_status='Pending' OR payment_status='Refund') AND event_id = '%d'";
+    if( $end_date > date ( 'Y-m-d' ) ) {
     
-    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+        $sql = "SELECT SUM(quantity) AS quantity FROM " . EVENTS_ATTENDEE_TABLE . " WHERE (payment_status='Completed' OR payment_status='Pending' OR payment_status='Refund') AND event_id = '%d'";
+        
+        $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+        
+        $current_attendees = $sql_results[0]->quantity;
+        
+        $sql = "SELECT reg_limit, overflow_event_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = '%d'";
+        
+        $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+        
+        $max_attendees = $sql_results[0]->reg_limit;
+        $overflow_event_id = $sql_results[0]->overflow_event_id;
+        
+        $sql = "SELECT id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = %d LIMIT 1";
+        
+        $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
+        
+        $waitlisted_attendee = $sql_results[0]->id;
+        
+        if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
+            $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
+            $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+        }
+        
+        ctlt_transfer_email( $waitlisted_attendee, $event_id );
+    }
     
-    $current_attendees = $sql_results[0]->quantity;
+}
+
+/*
+Function Name: CTLT Send Automatic Email Cancellation Message
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Automatically sends cancellation email to attendees when the event is deleted
+Requirements:
+*/
+
+add_action( 'action_hook_espresso_delete_event_success', 'ctlt_event_espresso_send_cancellation_notice', 10, 1 );
+
+function ctlt_event_espresso_send_cancellation_notice($event_id) {
+    global $wpdb, $org_options;
+    do_action('action_hook_espresso_log', __FILE__, __FUNCTION__, '');
+    //Define email headers
+    $headers = "";
+    if ($org_options['email_fancy_headers']=='Y') {
+        $headers .= "From: " . $org_options['organization'] . " <" . $org_options['contact_email'] . ">\r\n";
+        $headers .= "Reply-To: " . $org_options['organization'] . "  <" . $org_options['contact_email'] . ">\r\n";
+    } else {
+        $headers .= "From: " . $org_options['contact_email'] . "\r\n";
+        $headers .= "Reply-To: " . $org_options['contact_email'] . "\r\n";
+    }
+    $headers .= "Content-Type: text/html; charset=utf-8\r\n";
+    $message_top = "<html><body>";
+    $message_bottom = "</html></body>";
+
+    $events = $wpdb->get_results("SELECT * FROM " . EVENTS_DETAIL_TABLE . " WHERE id='" . $event_id . "' AND end_date > " . date ( 'Y-m-d' ) );
+    foreach ($events as $event) {
+        $event_name = $event->event_name;
+
+        $attendees = $wpdb->get_results("SELECT email, start_date, end_date FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id ='" . $event_id . "'");
+        foreach ($attendees as $attendee) {
+            $attendee_email = $attendee->email;
+            $start_date = $attendee->start_date;
+            $end_date = $attendee->end_date;
     
-    $sql = "SELECT reg_limit, overflow_event_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = '%d'";
+            $subject = __('Event Cancellation Notice', 'event_espresso');
+            $email_body = '<p>Dear Seminar Registrant,</p>';
+            $email_body .= '<p>Unfortunately we have had to cancel the following seminar for which you were registered:</p>';
+            $email_body .= '<p>' . $event_name;
+            $email_body .= '<br />Date: ' . event_date_display($start_date, get_option('date_format'));
+            if ($end_date !== $start_date) {
+                $email_body .= ' - ' . event_date_display($end_date, get_option('date_format'));
+            }
+            $email_body .= '<br />Time: ' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time'); ;
+            $email_body .= '</p>';
+            $email_body .= '<p>Please check our website at <a href=">' . get_site_url() . '">' . get_site_url() .'</a> for upcoming sessions. Thank you very much for your interest in our sessions at CTLT.</p>';
+            $email_body .= '<p>Regards,';
+            $email_body .= '<br />' . $org_options['organization'] . ' Events Team</p>';
+            $email_body .= '<p>-----------------------------------------------------------------';
+            $email_body .= '<br />' . $org_options['organization'];
+            $email_body .= '<br />' . $org_options['organization_street1'];
+            $email_body .= '<br />' . $org_options['organization_street2'];
+            $email_body .= '<br />' . $org_options['organization_city'];
+            $email_body .= ', ' . $org_options['organization_state'];
+            $email_body .= '</p><p>' . get_site_url() . '</p>';
+            
+            $body = str_replace($tags, $vals, $email_body);
+            wp_mail($attendee_email, stripslashes_deep(html_entity_decode($subject, ENT_QUOTES, "UTF-8")), stripslashes_deep(html_entity_decode(wpautop($email_body), ENT_QUOTES, "UTF-8")), $headers);
+        }
+    }
+}
+
+/*
+Function Name: CTLT Transfer Email
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Automatically sends notification of transfer if attendees are moved from the waitlist to the main event
+Requirements:
+*/
+
+function ctlt_transfer_email( $attendee_id, $event_id ) {
     
-    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ) );
+    global $wpdb, $org_options;
+    do_action('action_hook_espresso_log', __FILE__, __FUNCTION__, '');
+    //Define email headers
+    $headers = "";
+    if ($org_options['email_fancy_headers']=='Y') {
+        $headers .= "From: " . $org_options['organization'] . " <" . $org_options['contact_email'] . ">\r\n";
+        $headers .= "Reply-To: " . $org_options['organization'] . "  <" . $org_options['contact_email'] . ">\r\n";
+    } else {
+        $headers .= "From: " . $org_options['contact_email'] . "\r\n";
+        $headers .= "Reply-To: " . $org_options['contact_email'] . "\r\n";
+    }
+    $headers .= "Content-Type: text/html; charset=utf-8\r\n";
+    $message_top = "<html><body>";
+    $message_bottom = "</html></body>";
+
+    $events = $wpdb->get_results("SELECT * FROM " . EVENTS_DETAIL_TABLE . " WHERE id='" . $event_id . "' AND end_date > " . date ( 'Y-m-d' ) );
+    foreach ($events as $event) {
+        $event_name = $event->event_name;
+
+        $attendees = $wpdb->get_results("SELECT email, start_date, end_date FROM " . EVENTS_ATTENDEE_TABLE . " WHERE id ='" . $attendee_id . "'");
+        foreach ($attendees as $attendee) {
+            $attendee_email = $attendee->email;
+            $start_date = $attendee->start_date;
+            $end_date = $attendee->end_date;
+            
+            $subject = __('Event Registration Success', 'event_espresso');
+            $email_body = '<p>Dear Seminar Registrant,</p>';
+            $email_body .= '<p>Congratulations! You have successfully been transferred from the waitlist for the following event and are now registered:</p>';
+            $email_body .= '<p>' . $event_name;
+            $email_body .= '<br />Date: ' . event_date_display($start_date, get_option('date_format'));
+            if ($end_date !== $start_date) {
+                $email_body .= ' - ' . event_date_display($end_date, get_option('date_format'));
+            }
+            $email_body .= '<br />Time: ' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time'); ;
+            $email_body .= '</p>';
+            $email_body .= '<p>Please check our website at <a href=">' . get_site_url() . '">' . get_site_url() .'</a> for upcoming sessions. Thank you very much for your interest in our sessions at CTLT.</p>';
+            $email_body .= '<p>Regards,';
+            $email_body .= '<br />' . $org_options['organization'] . ' Events Team</p>';
+            $email_body .= '<p>-----------------------------------------------------------------';
+            $email_body .= '<br />' . $org_options['organization'];
+            $email_body .= '<br />' . $org_options['organization_street1'];
+            $email_body .= '<br />' . $org_options['organization_street2'];
+            $email_body .= '<br />' . $org_options['organization_city'];
+            $email_body .= ', ' . $org_options['organization_state'];
+            $email_body .= '</p><p>' . get_site_url() . '</p>';
+            
+            $body = str_replace($tags, $vals, $email_body);
+            wp_mail($attendee_email, stripslashes_deep(html_entity_decode($subject, ENT_QUOTES, "UTF-8")), stripslashes_deep(html_entity_decode(wpautop($email_body), ENT_QUOTES, "UTF-8")), $headers);
+        }
+    }
     
-    $max_attendees = $sql_results[0]->reg_limit;
-    $overflow_event_id = $sql_results[0]->overflow_event_id;
+}
+
+/*
+Function Name: CTLT Event Espresso Update Notice
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Automatically sends event update email to organization contact if an event is updated
+Requirements:
+*/
+
+add_action( 'action_hook_espresso_update_event_success', 'ctlt_event_espresso_update_notice', 10, 1 );
+
+function ctlt_event_espresso_update_notice( $event_info ) {
+
+    if( $event_info['event_status'] == 'A' ) {
+        global $wpdb, $org_options;
+
+        $event_id = $event_info['event_id'];
+        $event_name = $event_info['event'];
+        $registration_start = $event_info['registration_start'];
+        $registration_end = $event_info['registration_end'];
+        $start_date = $event_info['start_date'];
+        $end_date = $event_info['end_date'];
+        $start_time = $event_info['start_time'];
+        $end_time = $event_info['end_time'];
+        $venue_id = $event_info['venue_id'];
+        
+        $sql = "SELECT name FROM " . EVENTS_VENUE_TABLE . " WHERE id = '%d'";
+        $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $venue_id ) );
+        
+        $venue_name = $sql_results[0]->name;
+        
+        $headers = "";
+        if ($org_options['email_fancy_headers']=='Y') {
+            $headers .= "From: " . $org_options['organization'] . " <" . $org_options['contact_email'] . ">\r\n";
+            $headers .= "Reply-To: " . $org_options['organization'] . "  <" . $org_options['contact_email'] . ">\r\n";
+        } else {
+            $headers .= "From: " . $org_options['contact_email'] . "\r\n";
+            $headers .= "Reply-To: " . $org_options['contact_email'] . "\r\n";
+        }
+        $headers .= "Content-Type: text/html; charset=utf-8\r\n";
+        $message_top = "<html><body>";
+        $message_bottom = "</html></body>";
+
+        $subject = __('Event Update Notification', 'event_espresso');
+        $email_body = '<p>Dear Event Management Staff:</p>';
+        $email_body .= '<p>Someone has just updated ' . $event_name . ', Event ID ' . $event_id . '. Its current information is:</p>';
+        $email_body .= '<p>';
+        $email_body .= '<br />Registration Start Date: ' . event_date_display($registration_start, get_option('date_format'));
+        $email_body .= '<br />Registration End Date: ' . event_date_display($registration_end, get_option('date_format'));
+        $email_body .= '<br />Start Date: ' . event_date_display($start_date, get_option('date_format'));
+        $email_body .= '<br />End Date: ' . event_date_display($end_date, get_option('date_format'));
+        $email_body .= '<br />Time: ' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time'); ;
+        $email_body .= '<br /> Venue Name: ' . $venue_name;
+        $email_body .= '</p>';
+        
+        $body = str_replace($tags, $vals, $email_body);
+        wp_mail($org_options['contact_email'], stripslashes_deep(html_entity_decode($subject, ENT_QUOTES, "UTF-8")), stripslashes_deep(html_entity_decode(wpautop($email_body), ENT_QUOTES, "UTF-8")), $headers);
+    }
+}
+
+/*
+Function Name: CTLT Event Update Post Tags
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Updates the WordPress post associated with an event with tags matching the user categories
+Requirements:
+*/
+
+add_action( 'action_hook_espresso_update_event_success', 'ctlt_event_espresso_update_post_tags', 10, 1 );
+add_action( 'action_hook_espresso_insert_event_success', 'ctlt_event_espresso_update_post_tags', 10, 1 );
+
+function ctlt_event_espresso_update_post_tags( $event_info ) {
+
+    $event_tags = $event_info['event_category'];
+    $event_post = $event_info['post_id'];
     
-    $sql = "SELECT id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = %d LIMIT 1";
-    
-    $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
-    
-    $waitlisted_attendee = $sql_results[0]->id;
-    
-    if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
-        $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
-        $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+    if( $event_tags != null ) {
+        global $wpdb;
+        $sql = "SELECT category_name FROM " . EVENTS_CATEGORY_TABLE . " WHERE ";
+        $argument_counter = 0;
+        foreach($event_tags as $event_tag) {
+            if( $argument_counter != 0 ) {
+                $sql .= " OR ";
+            }
+            $sql .= "id = " . $event_tag;
+            $argument_counter++;
+        }
+        $sql_results = $wpdb->get_results( $sql, OBJECT_K );
+        $event_post_tags = array();
+        foreach ($sql_results as $sql_result) {
+            array_push($event_post_tags, $sql_result->category_name);
+        }
+        wp_set_post_tags( $event_post, $event_post_tags );
     }
     
 }

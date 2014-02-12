@@ -38,7 +38,7 @@ $status_display_open = $status['status'] == 'REGISTRATION_OPEN' ? ' - ' . $statu
 $status_display_custom_closed = $status['status'] == 'REGISTRATION_CLOSED' ? ' - <span class="espresso_closed">' . __('Regsitration is closed', 'event_espresso') . '</span>' : '';
 global $this_event_id;
 $this_event_id = $event_id;
-
+    
 ?>
     <div class="ctlt_event_list_wrapper">
         <div class="ctlt_event_list_date">
@@ -52,8 +52,11 @@ $this_event_id = $event_id;
     <div class="ctlt_event_list_details">
 	<h4 id="event_title-<?php echo $event_id ?>"><a title="<?php echo stripslashes_deep($event_name) ?>" class="a_event_title" id="a_event_title-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>"><?php echo stripslashes_deep($event_name) ?></a>
     <?php
-        if($cancellation_status == TRUE)
-            echo '<span class="ctlt_cancelled">- CANCELLED</span>';
+        if( $event_meta['event_status'] == 'D' ) {
+            ?>
+            <span style="color:red">- Cancelled</span>
+            <?php
+        }
     ?>
 	</h4>
     <?php if($categories != NULL) {
@@ -62,10 +65,10 @@ $this_event_id = $event_id;
         <?php foreach($categories as $category) {
                 $category_id = $category->id;
                 $category_name = $category->category_name;
-                $category_url = add_query_arg('category_id', $category_id, get_permalink($categories_url) );
-                $category_url = add_query_arg('category_name', $category, $category_url );
+                $category_url = get_permalink( $org_options['event_page_id'] );
+                $category_url = add_query_arg('category_name', $category_name, $category_url );
                 echo '<a href="'. $category_url .'">' . $category_name . '</a>';
-                if ($category != end($categories))
+                if ( $category != end( $categories ) )
                     echo ', ';
         } ?>
         </p>
@@ -74,11 +77,15 @@ $this_event_id = $event_id;
     <?php if($end_date != $start_date) { ?>
         <?php echo espresso_event_time($event_id, 'start_date') . ' - ' . espresso_event_time($event_id, 'end_date') . '; '; ?>
     <?php } ?>
-    
     <?php echo espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time') . '';
-        echo $venue_title != ''?'':'';
+        if( $ctlt_noncontiguous == 'yes' ) {
+            ?>
+            <br />NOTE: This event occurs on non-contiguous days.
+            <?php
+        }
+        echo $venue_title != ''?'<br />':'';
         echo $venue_url != ''?'<a href="'.$venue_url.'">':'';
-        echo $venue_title != ''? '<br />' . stripslashes_deep($venue_title) . '</p>' : '</p>';
+        echo $venue_title != ''? '' . stripslashes_deep($venue_title) . '</p>' : '</p>';
         echo $venue_url != ''?'</a>':''; ?>
 	<?php
         $event->event_cost = empty($event->event_cost) ? '' : $event->event_cost;
@@ -116,15 +123,21 @@ $this_event_id = $event_id;
 	}
 
 	$num_attendees = get_number_of_attendees_reg_limit($event_id, 'num_attendees'); //Get the number of attendees. Please visit http://eventespresso.com/forums/?p=247 for available parameters for the get_number_of_attendees_reg_limit() function.
-	if ($num_attendees >= $reg_limit) {
+	if ( $num_attendees >= $reg_limit && is_user_logged_in() && $already_registered == FALSE && $reg_limit != 0 ) {
 		?>
 		<p id="available_spaces-<?php echo $event_id ?>" class="available-spaces"><span class="section-title"><?php _e('Available Spaces:', 'event_espresso') ?> </span><?php echo get_number_of_attendees_reg_limit($event_id, 'available_spaces', 'All Seats Reserved') ?></p>
 		<?php if ($overflow_event_id != '0' && $allow_overflow == 'Y') { ?>
 			<p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Join Waiting List', 'event_espresso'); ?></a></p>
 			<?php
-		}
+		} else {
+            ?>
+                <p id="register_link-<?php echo $event_id ?>" class="register-link-footer">
+                    <a class="btn" id="a_register_link-<?php echo $event_id ?>" href="<?php echo $registration_url; ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('View Details', 'event_espresso'); ?></a> <?php echo isset($cart_link) && $externalURL == '' ? $cart_link : ''; ?>
+                </p>
+            <?php
+        }
 	} else {
-		if ($display_reg_form == 'Y' && $externalURL == '' && $reg_limit < 999999) {
+		if ($display_reg_form == 'Y' && $externalURL == '' && $reg_limit < 999999 && $reg_limit > 0 ) {
 			?>			<p id="available_spaces-<?php echo $event_id ?>" class="spaces-available"><span class="section-title"><?php _e('Available Spaces:', 'event_espresso') ?></span> <?php echo get_number_of_attendees_reg_limit($event_id, 'available_spaces') ?> / <?php echo get_number_of_attendees_reg_limit($event_id, 'reg_limit') ?></p>
 			<?php
 		}
@@ -136,7 +149,7 @@ $this_event_id = $event_id;
 		//echo event_espresso_get_status($event_id);
 		//print_r( event_espresso_get_is_active($event_id));
 
-        if( is_user_logged_in() && $cancellation_status == FALSE && date('Y-m-d') <= $registration_end ) {
+        if( is_user_logged_in() && date('Y-m-d') <= $registration_end ) {
             if ($multi_reg && event_espresso_get_status($event_id) == 'ACTIVE'/* && $display_reg_form == 'Y'*/) {
             // Uncomment && $display_reg_form == 'Y' in the line above to hide the add to cart link/button form the event list when the registration form is turned off.
 
@@ -156,11 +169,16 @@ $this_event_id = $event_id;
             }else{
                 $cart_link = false;
             }
-            if ($display_reg_form == 'Y' && $status['status'] != 'EXPIRED') {
+            if ( $display_reg_form == 'Y' && $status['status'] != 'EXPIRED' && $already_registered == FALSE && $event_meta['event_status'] != 'D' ) {
                 //Check to see if the Members plugin is installed.
                 $member_options = get_option('events_member_settings');
                 if ( function_exists('espresso_members_installed') && espresso_members_installed() == true && !is_user_logged_in() && ($member_only == 'Y' || $member_options['member_only_all'] == 'Y') ) {
                     echo '<p class="ee_member_only">'.__('Member Only Event', 'event_espresso').'</p>';
+                } else if( $reg_limit == 0 ) {
+                ?>
+                    <p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Apply to Attend', 'event_espresso'); ?></a></p>
+                    </p>
+                <?php
                 } else {
                 ?>
                     <p id="register_link-<?php echo $event_id ?>" class="register-link-footer">

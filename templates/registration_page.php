@@ -11,6 +11,10 @@ do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');
 if (!function_exists('register_attendees')) {
 
     function register_attendees($single_event_id = NULL, $event_id_sc =0, $reg_form_only = false) {
+    
+        // Enqueue the profile validation tool
+        wp_enqueue_script( 'ctlt_profile_validation_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/ctlt_profile_validator.js', array( 'jquery' ), '1.0.0', true );
+    
 		//Declare the $data object
 		$data = (object)array( 'event' => NULL );
 		$template_name = ( 'registration_page_display.php' );
@@ -31,6 +35,18 @@ if (!function_exists('register_attendees')) {
         }
 
         $event_id = $event_id_sc != '0' ? $event_id_sc : $_REQUEST['event_id'];
+
+        // Retrieve the admin information
+        if( class_exists( 'CTLT_Espresso_Controls' ) ) {
+            $sql = "SELECT meta_key, meta_value FROM " . CTLT_ESPRESSO_EVENTS_META . " WHERE event_id='%d' AND meta_key = '_ctlt_espresso_event_contiguous' ";
+            $admin_notes = $wpdb->get_results( $wpdb->prepare( $sql, $event_id ), ARRAY_A );
+            if( $admin_notes != null ) {
+                $admin_notes = $admin_notes[0];
+                $ctlt_noncontiguous = $admin_notes['meta_value'];
+            } else {
+                $ctlt_noncontiguous = 'no';
+            }
+        }
 
         if (!empty($_REQUEST['event_id_time'])) {
             $pieces = explode('|', $_REQUEST['event_id_time'], 3);
@@ -66,7 +82,6 @@ if (!function_exists('register_attendees')) {
 			$sql .= " LEFT JOIN " . EVENTS_VENUE_REL_TABLE . " r ON r.event_id = e.id LEFT JOIN " . EVENTS_VENUE_TABLE . " v ON v.id = r.venue_id ";
 		}
 		$sql.= " WHERE e.is_active='Y' ";
-		$sql.= " AND e.event_status != 'D' ";
 
 		//Get the ID of a single event
 		if ($single_event_id != NULL) {
@@ -93,32 +108,57 @@ if (!function_exists('register_attendees')) {
             //These are the variables that can be used throughout the registration page
             //foreach ($events as $event) {
             global $this_event_id;
+            $event = $data->event;
             $event_id = $data->event->id;
             $this_event_id = $event_id;
             
-            $cancellation_status = FALSE;
             $categories = null;
             // Retrieve the category ids associated with the event
             $sql = "SELECT category_id FROM " . EVENTS_DETAIL_TABLE . " WHERE id = " . $event_id;
             $category_ids = $wpdb->get_results( $sql );
             
-            
             if( is_null( $category_ids[0]->category_id ) == FALSE) {
                 // Retrieve the category name based on the event category
                 $sql = "SELECT category_name, id FROM " . EVENTS_CATEGORY_TABLE . " WHERE id IN (" . $category_ids[0]->category_id . ")";
                 $categories = $wpdb->get_results( $sql );
-                $cancellation_status = FALSE;
-                $counter = 0;
-                foreach($categories as $category) {
-                    if(strtolower($category->category_name) == "cancelled") {
-                        unset($categories[$counter]);
-                        $cancellation_status = TRUE;
-                    }
-                    $counter++;
+                $categories_url = get_page_by_title( 'Series' );
+                if( $categories_url != null ) {
+                    $categories_url =  $categories_url->ID;
                 }
-                $categories_url = get_page_by_title( 'Event Categories' );
-                $categories_url =  $categories_url->ID;
             }
+            
+            // Retrieve member data, compare events for which they are registered against the current event. If they match,
+            $already_registered = FALSE;
+            if( is_user_logged_in() ) {
+                $attendee_ids = $wpdb->get_results( $wpdb->prepare( "SELECT attendee_id FROM ". EVENTS_MEMBER_REL_TABLE . " WHERE user_id = '%d'", get_current_user_id() ) );
+                $cs_attendee_ids = array();
+                $sql = "SELECT event_id FROM " .    EVENTS_ATTENDEE_TABLE . " WHERE payment_status != 'Cancelled' AND id IN (";
+                foreach( $attendee_ids as $attendee_id ) {
+                    array_push($cs_attendee_ids, $attendee_id->attendee_id);
+                    $sql .= "%s";
+                    if ( $attendee_id != end( $attendee_ids ) ) {
+                        $sql .= ",";
+                    }
+                }
+                $sql .= ")";
+                $attended_event_ids = $wpdb->get_results( $wpdb->prepare( $sql, $cs_attendee_ids ) );
+                foreach( $attended_event_ids as $attended_event_id ) {
+                    if( $event_id == $attended_event_id->event_id ) {
+                        $already_registered = TRUE;
+                    }
+                }
+            }
+            
+            $ini_url = 'UserInfo.ini';
+            $faculties = parse_ini_file($ini_url, true);
+            
+            
+            // Verify that user meta information is appropriately filled out
+            $user_id = get_current_user_id();
+            $user_info = get_user_meta( $user_id );
+            $user_department = $user_info['event_espresso_department'][0];
+            $user_faculty = $user_info['event_espresso_faculty'][0];
+            $user_organization = $user_info['event_espresso_organization'][0];
             
             $event_name = stripslashes_deep($data->event->event_name);
             $event_desc = stripslashes_deep($data->event->event_desc);

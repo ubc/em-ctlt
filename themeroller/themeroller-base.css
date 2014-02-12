@@ -817,10 +817,9 @@ p.register-link-footer { clear: left; padding-top: 10px; }
 
 /* Autocomplete */
 input#ee_autocomplete, input#ee_fem_autocomplete{
-	width:400px;
-}
-input#ee_autocomplete{
-	margin-left:15px;
+	width:90%;
+    max-width: 400px;
+    margin-bottom: 15px;
 }
 ul.ui-autocomplete{
 	width:400px;

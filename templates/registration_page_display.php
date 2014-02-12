@@ -12,10 +12,11 @@
     ?>
         <h3 id="event_title-<?php echo $event_id; ?>">
             <?php echo $event_name ?> <?php echo $is_active['status'] == 'EXPIRED' ? ' - <span class="expired_event">Event Expired</span>' : ''; ?> <?php echo $is_active['status'] == 'PENDING' ? ' - <span class="expired_event">Event is Pending</span>' : ''; ?> <?php echo $is_active['status'] == 'DRAFT' ? ' - <span class="expired_event">Event is a Draft</span>' : ''; ?>
-        Registration
         <?php
-            if($cancellation_status == TRUE) {
-                echo '<span class="ctlt_cancelled">- CANCELLED</span>';
+            if( $all_meta['event_status'] == 'D' ) {
+                ?>
+                <span style="color:red">- Cancelled</span>
+                <?php
             }
         ?>
         </h3>
@@ -25,9 +26,9 @@
                 foreach($categories as $category) {
                     $category_id = $category->id;
                     $category_name = $category->category_name;
-                    $category_url = add_query_arg('category_id', $category_id, get_permalink($categories_url) );
-                    $category_url = add_query_arg('category_name', $category, $category_url );
-                    echo '<a href="'. $category_url .'">' . $category_name . '</a>';
+                    $category_url = get_permalink( $org_options['event_page_id'] );
+                    $category_url = add_query_arg('category_name', $category_name, $category_url );
+                    echo '<a href="' . $category_url . '">' . $category_name . '</a>';
                     if ($category != end($categories))
                         echo ', ';
                 }
@@ -60,11 +61,39 @@
         </div>
         <?php
         }//End display description
+        ?>
 
+        <?php
+            if( is_user_logged_in() && $admin_notes['_ctlt_espresso_do_not_handout'] == 'no' ) {
+                $handout = ctlt_display_event_materials_list( $event_id );
+                if( $handout != null ) {
+                    $upload_base_dir = wp_upload_dir();
+                    echo '<a href="' . $upload_base_dir['baseurl'] . '/' . $handout[0]->attachment_url . '">Event Materials</a>';
+                }
+            }
+        ?>
+
+        <h4>Event Details:</h4>
+        <p><?php echo event_date_display($start_date, get_option('date_format')); ?>
+        <?php if ($end_date !== $start_date) : ?> - <?php echo event_date_display($end_date, get_option('date_format')); ?>
+        <?php endif; ?>
+
+        <?php
+            if( $ctlt_noncontiguous == 'yes' ) {
+                ?>
+                <br />NOTE: This event occurs on non-contiguous days.
+                <?php
+            }
+        ?>
+        </p>
+        <p><?php echo espresso_event_time($event_id, 'start_time'); ?> - <?php echo espresso_event_time($event_id, 'end_time'); ?></p>
+
+        <?php
+        
         echo $venue_url != ''?'<a href="'.$venue_url.'">':'';
         echo $venue_title != ''?'<p id="event_venue_name-'.$event_id.'" class="event_venue_name">'.stripslashes_deep($venue_title).'</p>':'';
         echo $venue_url != ''?'</a>':'';
-
+        
         if ( is_user_logged_in() ) {
 
         switch ($is_active['status']) {
@@ -118,7 +147,29 @@
             break;
 
             default: //This will display the registration form
-                if($cancellation_status == FALSE) {
+                ?>
+
+                <?php
+                    if( $all_meta['event_status'] == 'D' ) {
+                        ?>
+                        <h4>This event has been cancelled and is no longer available for registration.</h4>
+                        <?php
+                    } else
+                    if( $already_registered == TRUE ) {
+                        ?>
+                        <h4>You are already registered for this event or waitlist.</h4>
+                        <p>Select "My Events" to view or change your registration details.</p>
+                        <?php
+                    }
+                    else
+                    if ( $reg_limit == 0 ) {
+                        ?>
+                        <p>This event requires an application to join.</p>
+                        <p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Apply to Attend', 'event_espresso'); ?></a>
+                        </p>
+                        <?php
+                    }
+                    else
                     if ($num_attendees >= $reg_limit) {
                     ?>
                     <div class="espresso_event_full event-display-boxes" id="espresso_event_full-<?php echo $event_id; ?>">
@@ -129,7 +180,7 @@
                     $num_attendees = get_number_of_attendees_reg_limit($event_id, 'num_attendees'); //Get the number of attendees. Please visit http://eventespresso.com/forums/?p=247 for available parameters for the get_number_of_attendees_reg_limit() function.
                     if (($num_attendees >= $reg_limit) && ($allow_overflow == 'Y' && $overflow_event_id != 0)) {
                         ?>
-                            <p>If you still wish to attend this event, you can join the waiting list and you will be assigned a spot as soon as one is available on a first come first serve basis.</p>
+                            <p>If you still wish to attend this event, you can join the waiting list.</p>
                             <p id="register_link-<?php echo $overflow_event_id ?>" class="register-link-footer"><a class="btn" id="a_register_link-<?php echo $overflow_event_id ?>" href="<?php echo espresso_reg_url($overflow_event_id); ?>" title="<?php echo stripslashes_deep($event_name) ?>"><?php _e('Join Waiting List', 'event_espresso'); ?></a></p>
                         <?php } ?>
                     </div>
@@ -139,12 +190,6 @@
     ?>
         <div class="event_espresso_form_wrapper">
             <form method="post" action="<?php echo get_permalink( $event_page_id );?>" id="registration_form">
-                    <h4>Event Details:</h4>
-                    <p><?php echo event_date_display($start_date, get_option('date_format')); ?>
-        <?php if ($end_date !== $start_date) : ?>
-                    - <?php echo event_date_display($end_date, get_option('date_format')); ?>
-        <?php endif; ?>
-                    <p><?php echo espresso_event_time($event_id, 'start_time'); ?> - <?php echo espresso_event_time($event_id, 'end_time'); ?></p>
         <?php
 
                 // * * This section shows the registration form if it is an active event * *
@@ -189,9 +234,6 @@
                             do_action('espresso_seating_chart_select', $event_id);
                                 
                         }
-            
-                    // CTLT: Get user information
-                    $user_info = get_userdata(get_current_user_id());
         ?>
                     
                     <div id="event-reg-form-groups">
@@ -258,9 +300,42 @@
                         } 
                         //End use captcha  
         ?>
+                    <p>
+                        <?php
+                        
+                            if( $user_organization == "" || $user_organization == null ) {
+                                ?>
+                                    <br />Enter your organization (required): <input name="user_organization" id="user_organization">
+                                <?php
+                            }
+                            if( $user_faculty == "" || $user_faculty == null ) {
+                                ?>
+                                    <br />Select your faculty (required):
+                                    <select name="user_faculty" id="user_faculty">
+                                    <option value=""></option>
+                                    <?php
+                                        foreach( $faculties['faculty'] as $faculty ) {
+                                            echo '<option value="' . $faculty . '" ';
+                                            if($faculty == $user_faculty ) {
+                                                echo 'selected="selected"';
+                                            }
+                                            echo '>' . $faculty . '</option>';
+                                        }
+                                    ?>
+                                </select>
+                                <?php
+                            }
+                            if( $user_department == "" || $user_department == null ) {
+                                ?>
+                                    <br />Enter your department (required): <input name="user_department" id="user_department">
+                                <?php
+                            }
+                        ?>
+
+                    </p>
                     <p class="event_form_submit" id="event_form_submit-<?php echo $event_id; ?>">
                     <br />
-                        <input class="btn" id="event_form_field-<?php echo $event_id; ?>" type="submit" name="Submit" value="<?php _e('Confirm Registration', 'event_espresso'); ?>">
+                        <input class="btn" id="event_form_field-<?php echo $event_id; ?>" type="submit" name="Submit" value="<?php _e('Confirm', 'event_espresso'); ?>">
                     </p>
                     
         <?php }
@@ -272,7 +347,6 @@
         
     <?php
                             }
-                        }
                     break;
                     
                 }
