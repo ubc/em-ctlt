@@ -832,3 +832,9 @@ function ctlt_event_espresso_update_post_tags( $event_info ) {
     }
     
 }
+
+
+
+function ctlt_add_department_fields() {
+    
+}

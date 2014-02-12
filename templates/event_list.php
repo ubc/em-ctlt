@@ -83,7 +83,7 @@ if (!function_exists('event_espresso_get_event_details')) {
 		
 		if (!empty($event_category_id)){
 			$category_identifier = $event_category_id;
-		} else if ( $_GET["category_name"] ) {
+		} else if ( isset($_REQUEST["category_name"]) ) {
             $category_name = $_GET["category_name"];
             $sql = "SELECT id FROM " . EVENTS_CATEGORY_TABLE . " WHERE category_name = '%s' LIMIT 1";
             $sql = $wpdb->get_results( $wpdb->prepare( $sql, $category_name ) );
