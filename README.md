@@ -10,6 +10,18 @@ events
 
 CTLT Changes
 
+v.0.20 - simplified the templates file, removing the custom CTLT categories files
+      - removed extraneous themeroller files
+      - updated information displayed in event lists, registration events
+      - updated rules for allowing registration for waitlists, special event types
+      - added rules for creating special events
+      - updated event creation displays, hiding elements with css
+      - added email notifications to admin when event is created
+      - updated rules for displaying cancelled events
+      - added automatic/manual waitlist transfer
+      - added automatic emails to attendees the day before an event
+      - added rules for required profile field additions
+
 v.0.18 - made further changes to event_list, event_list_display, registration_page_display, registration_page, payment_page, and confirmation_display for user specifications
 
 v.0.17 - changed formatting of registration_display, event_list_display, payment_page, and confirmation_display to better conform to CLF standards
