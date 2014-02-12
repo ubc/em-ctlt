@@ -542,14 +542,14 @@ function ctlt_automatic_waitlist_transfer_deletion_by_admin( $attendee_id, $even
         
         $sql_results = $wpdb->get_results( $wpdb->prepare( $sql, $overflow_event_id ) );
         
-        $waitlisted_attendee = $sql_results[0]->id;
-        
-        if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
-            $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
-            $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+        if( isset($sql_results[0]) ) {
+            $waitlisted_attendee = $sql_results[0]->id;
+            if( $current_attendees < $max_attendees && $waitlisted_attendee != NULL ) {
+                $wpdb->update( EVENTS_ATTENDEE_TABLE, array( 'event_id' => $event_id ), array( 'ID' => $waitlisted_attendee ), array( '%d' ) );
+                $wpdb->update( EVENTS_MEMBER_REL_TABLE, array( 'event_id' => $event_id ), array( 'attendee_id' => $waitlisted_attendee ), array ( '%d' ) );
+            }
+            ctlt_transfer_email( $waitlisted_attendee, $event_id );
         }
-        
-        ctlt_transfer_email( $waitlisted_attendee, $event_id );
     }
     
 }
@@ -809,10 +809,12 @@ add_action( 'action_hook_espresso_insert_event_success', 'ctlt_event_espresso_up
 
 function ctlt_event_espresso_update_post_tags( $event_info ) {
 
-    $event_tags = $event_info['event_category'];
+    if( isset($event_info['event_category']) ) {
+        $event_tags = $event_info['event_category'];
+    }
     $event_post = $event_info['post_id'];
     
-    if( $event_tags != null ) {
+    if( isset($event_tags) ) {
         global $wpdb;
         $sql = "SELECT category_name FROM " . EVENTS_CATEGORY_TABLE . " WHERE ";
         $argument_counter = 0;
