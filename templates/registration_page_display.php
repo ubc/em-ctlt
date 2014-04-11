@@ -305,29 +305,53 @@
                         
                             if( $user_organization == "" || $user_organization == null ) {
                                 ?>
-                                    <br />Enter your organization (required): <input name="user_organization" id="user_organization">
+                                    <br />Enter your organization (required): <input name="event_espresso_organization" id="event_espresso_organization">
                                 <?php
                             }
                             if( $user_faculty == "" || $user_faculty == null ) {
                                 ?>
                                     <br />Select your faculty (required):
-                                    <select name="user_faculty" id="user_faculty">
-                                    <option value=""></option>
-                                    <?php
-                                        foreach( $faculties['faculty'] as $faculty ) {
-                                            echo '<option value="' . $faculty . '" ';
-                                            if($faculty == $user_faculty ) {
-                                                echo 'selected="selected"';
+                                    <select name="event_espresso_faculty" id="event_espresso_faculty">
+                                        <option value=""></option>
+                                        <?php
+                                            foreach( $org_data as $organization_key => $organization_value ) {
+                                                foreach( $organization_value as $faculty_key => $faculty_value ) {
+                                                    echo '<option value="' . $faculty_key . '" ';
+                                                    if(esc_attr($faculty_key) == esc_attr( $user_faculty ) ) {
+                                                        echo 'selected="selected"';
+                                                    }
+                                                    echo '>' . $faculty_key . '</option>';
+                                                }
                                             }
-                                            echo '>' . $faculty . '</option>';
-                                        }
-                                    ?>
-                                </select>
+                                        ?>
+                                    <option value="N/A">N/A</option>
+                                    </select>
                                 <?php
                             }
                             if( $user_department == "" || $user_department == null ) {
                                 ?>
-                                    <br />Enter your department (required): <input name="user_department" id="user_department">
+                                    <br />Enter your department (required):
+                                    <select name="event_espresso_department" id="event_espresso_department">
+                                        <option value=""></option>
+                                        <?php
+                                            foreach( $org_data as $organization_key => $organization_value ) {
+                                                foreach( $organization_value as $faculty_key => $faculty_value ) {
+                                                    if(esc_attr($faculty_key) == esc_attr( $user_faculty ) ) {
+                                                                foreach( $faculty_value as $department_key => $department_value ) {
+                                                                    if( substr( $department_value['name'] ,0 ,3 ) != "(i)" ) {
+                                                                        echo '<option value="' . $department_value['name'] . '" ';
+                                                                        if(esc_attr($department_value['name']) == esc_attr( $user_department ) ) {
+                                                                            echo 'selected="selected"';
+                                                                        }
+                                                                        echo '>' . $department_value['name'] . '</option>';
+                                                                    }
+                                                                }
+                                                    }
+                                                }
+                                            }
+                                        ?>
+                                    <option value="N/A">N/A</option>
+                                    </select>
                                 <?php
                             }
                         ?>

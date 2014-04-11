@@ -13,7 +13,7 @@ if (!function_exists('register_attendees')) {
     function register_attendees($single_event_id = NULL, $event_id_sc =0, $reg_form_only = false) {
     
         // Enqueue the profile validation tool
-        wp_enqueue_script( 'ctlt_profile_validation_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'templates/js/ctlt_profile_validator.js', array( 'jquery' ), '1.0.0', true );
+        wp_enqueue_script( 'ctlt_profile_validation_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'js/ctlt_profile_validator.js', array( 'jquery' ), '1.0.0', true );
     
 		//Declare the $data object
 		$data = (object)array( 'event' => NULL );
@@ -127,7 +127,7 @@ if (!function_exists('register_attendees')) {
                 }
             }
             
-            // Retrieve member data, compare events for which they are registered against the current event. If they match,
+            // Retrieve member data, compare events for which they are registered against the current event.
             $already_registered = FALSE;
             if( is_user_logged_in() ) {
                 $attendee_ids = $wpdb->get_results( $wpdb->prepare( "SELECT attendee_id FROM ". EVENTS_MEMBER_REL_TABLE . " WHERE user_id = '%d'", get_current_user_id() ) );
@@ -149,9 +149,17 @@ if (!function_exists('register_attendees')) {
                 }
             }
             
-            $ini_url = 'UserInfo.ini';
-            $faculties = parse_ini_file($ini_url, true);
+            // Retrieve faculty and department information
+            ob_start(); 
+            require_once( ABSPATH . "/wp-content/uploads/espresso/organization/ubcdepartments.php" );
+            $org_data = ob_get_contents();
+            ob_end_clean();
             
+            $org_data = unserialize($org_data);
+            
+            wp_enqueue_script( 'ctlt_profile_information_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'js/ctlt_profile_information.js', array( 'jquery' ), '1.0.0', true );
+            
+            wp_localize_script( 'ctlt_profile_information_js', 'ctlt_profile_infomration_js_url', "wp-content/uploads/espresso/organization/ubcdepartments.php?type=json" );
             
             // Verify that user meta information is appropriately filled out
             $user_id = get_current_user_id();

@@ -327,10 +327,19 @@ add_action( 'show_user_profile', 'ctlt_profile_fields' );
 add_action( 'edit_user_profile', 'ctlt_profile_fields' );
 
 function ctlt_profile_fields( $user ) {
-
-    $ini_url = "templates/UserInfo.ini";
-    $departments = parse_ini_file($ini_url, true);
     
+    
+    
+    ob_start();
+    require_once( ABSPATH . "/wp-content/uploads/espresso/organization/ubcdepartments.php" );
+    $org_data = ob_get_contents();
+    ob_end_clean();
+    
+    $org_data = unserialize($org_data);
+    
+    wp_enqueue_script( 'ctlt_profile_information_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'js/ctlt_profile_information.js', array( 'jquery' ), '1.0.0', true );
+    wp_localize_script( 'ctlt_profile_information_js', 'ctlt_profile_infomration_js_url', "../wp-content/uploads/espresso/organization/ubcdepartments.php?type=json" );
+
     ?>
 
     <table class="form-table">
@@ -343,18 +352,21 @@ function ctlt_profile_fields( $user ) {
 		</tr>
         <tr>
 			<th><label for="event_espresso_faculty">Faculty <span class="description">(required)</span></label></th>
-			<td>
+            <td>
                 <select name="event_espresso_faculty" id="event_espresso_faculty">
-                    <option value=""></option>
-                    <?php
-                        foreach( $departments['faculty'] as $department ) {
-                            echo '<option value="' . $department . '" ';
-                            if($department == esc_attr( get_the_author_meta( 'event_espresso_faculty', $user->ID ) ) ) {
+                <option value=""></option>
+                <?php
+                    foreach( $org_data as $organization_key => $organization_value ) {
+                        foreach( $organization_value as $faculty_key => $faculty_value ) {
+                            echo '<option value="' . $faculty_key . '" ';
+                            if(esc_attr($faculty_key) == esc_attr( get_the_author_meta( 'event_espresso_faculty', $user->ID ) ) ) {
                                 echo 'selected="selected"';
                             }
-                            echo '>' . $department . '</option>';
+                            echo '>' . $faculty_key . '</option>';
                         }
-                    ?>
+                    }
+                ?>
+                <option value="N/A">N/A</option>
                 </select>
 				<span class="description">Please enter the UBC Faculty with which you are associated.</span>
 			</td>
@@ -362,8 +374,26 @@ function ctlt_profile_fields( $user ) {
         <tr>
 			<th><label for="event_espresso_department">Department <span class="description">(required)</span></label></th>
 			<td>
-				<input type="text" name="event_espresso_department" id="event_espresso_department" value="<?php echo esc_attr( get_the_author_meta( 'event_espresso_department', $user->ID ) ); ?>" class="regular-text" /><br />
-				<span class="description">Please enter the UBC department with which you are associated.</span>
+                <select name="event_espresso_department" id="event_espresso_department">
+                <option value=""></option>
+                <?php
+                    foreach( $org_data as $organization_key => $organization_value ) {
+                        foreach( $organization_value as $faculty_key => $faculty_value ) {
+                            if(esc_attr($faculty_key) == esc_attr( get_the_author_meta( 'event_espresso_faculty', $user->ID ) ) ) {
+                                        foreach( $faculty_value as $department_key => $department_value ) {
+                                            echo '<option value="' . $department_value['name'] . '" ';
+                                            if(esc_attr($department_value['name']) == esc_attr( get_the_author_meta( 'event_espresso_department', $user->ID ) ) ) {
+                                                echo 'selected="selected"';
+                                            }
+                                            echo '>' . $department_value['name'] . '</option>';
+                                        }
+                            }
+                        }
+                    }
+                ?>
+                <option value="N/A">N/A</option>
+                </select>
+				<span class="description">Please enter the UBC Department with which you are associated.</span>
 			</td>
 		</tr>
         <tr>
@@ -654,7 +684,7 @@ function ctlt_event_espresso_send_cancellation_notice($event_id) {
             }
             $email_body .= '<br />Time: ' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time'); ;
             $email_body .= '</p>';
-            $email_body .= '<p>Please check our website at <a href=">' . get_site_url() . '">' . get_site_url() .'</a> for upcoming sessions. Thank you very much for your interest in our sessions at CTLT.</p>';
+            $email_body .= '<p>Please check our website at <a href=">' . get_site_url() . '">' . get_site_url() .'</a> for upcoming sessions. Thank you very much for your interest in our sessions.</p>';
             $email_body .= '<p>Regards,';
             $email_body .= '<br />' . $org_options['organization'] . ' Events Team</p>';
             $email_body .= '<p>-----------------------------------------------------------------';
@@ -708,7 +738,7 @@ function ctlt_transfer_email( $attendee_id, $event_id ) {
             $end_date = $attendee->end_date;
             
             $subject = __('Event Registration Success', 'event_espresso');
-            $email_body = '<p>Dear Seminar Registrant,</p>';
+            $email_body = '<p>Dear Event Registrant,</p>';
             $email_body .= '<p>Congratulations! You have successfully been transferred from the waitlist for the following event and are now registered:</p>';
             $email_body .= '<p>' . $event_name;
             $email_body .= '<br />Date: ' . event_date_display($start_date, get_option('date_format'));
@@ -717,9 +747,9 @@ function ctlt_transfer_email( $attendee_id, $event_id ) {
             }
             $email_body .= '<br />Time: ' . espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time'); ;
             $email_body .= '</p>';
-            $email_body .= '<p>Please check our website at <a href=">' . get_site_url() . '">' . get_site_url() .'</a> for upcoming sessions. Thank you very much for your interest in our sessions at CTLT.</p>';
+            $email_body .= '<p>Please check our website at <a href=">' . get_site_url() . '">' . get_site_url() .'</a> for upcoming sessions. Thank you very much for your interest in our sessions.</p>';
             $email_body .= '<p>Regards,';
-            $email_body .= '<br />' . $org_options['organization'] . ' Events Team</p>';
+            $email_body .= '<br />' . $org_options['organization'] . '</p>';
             $email_body .= '<p>-----------------------------------------------------------------';
             $email_body .= '<br />' . $org_options['organization'];
             $email_body .= '<br />' . $org_options['organization_street1'];
@@ -835,8 +865,15 @@ function ctlt_event_espresso_update_post_tags( $event_info ) {
     
 }
 
-
+/*
+Function Name: CTLT Department Options
+Author: Nathan Sidles
+Contact: nsidles@gmail.com
+Website:
+Description: Allow maintenance of department options for users to select
+Requirements:
+*/
 
 function ctlt_add_department_fields() {
-    
+    add_option( 'ctlt_departments', array() );
 }
