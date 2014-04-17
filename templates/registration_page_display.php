@@ -81,7 +81,7 @@
         <?php
             if( $ctlt_noncontiguous == 'yes' ) {
                 ?>
-                <br />NOTE: This event occurs on non-contiguous days.
+                <br />NOTE: This event occurs on non-consecutive days and/or locations. See the event description for details.
                 <?php
             }
         ?>
@@ -140,6 +140,22 @@
                 <p class="event_full">
                     <strong>
                         <?php echo  __('You will be able to register starting ', 'event_espresso') . ' ' . event_espresso_no_format_date($reg_start_date, 'F d, Y'); ?>
+                    </strong>
+                </p>
+            </div>
+    <?php
+            break;
+        
+            case 'PENDING':
+                //only show the event description.
+                // if todays date is after $reg_end_date
+                // if todays date is prior to $reg_start_date
+    ?>
+        <div class="event-registration-pending event-messages ui-corner-all ui-state-highlight">
+            <span class="ui-icon ui-icon-alert"></span>
+                <p class="event_full">
+                    <strong>
+                        <?php _e('We are sorry but this event is not yet open for registration.', 'event_espresso'); ?>
                     </strong>
                 </p>
             </div>

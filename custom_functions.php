@@ -243,7 +243,7 @@ function espresso_include_js_for_templates() {
 /*
 Function Name: CTLT Display Event Materials List
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Displays a list of materials for events that choose to make them available.
 Requirements: none
@@ -271,7 +271,7 @@ function ctlt_display_event_materials_list( $event_id ) {
 /*
 Function Name: CTLT Profile Fields Hiding
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Hides profile fields in Profile page for WordPress users
 Requirements: none
@@ -294,7 +294,7 @@ add_action( 'admin_print_styles-user-edit.php', 'remove_profile_fields' );
 /*
 Function Name: CTLT Modify Contact Methods
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Adds contact methods to Profile page for WordPress users
 Requirements: none
@@ -317,7 +317,7 @@ add_filter('user_contactmethods', 'modify_contact_methods');
 /*
 Function Name: CTLT Profile Fields
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Adds profile fields for organization/department/unit
 Requirements: none
@@ -408,7 +408,7 @@ function ctlt_profile_fields( $user ) {
 /*
 Function Name: CTLT Save Contact Methods
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Saves profile fields for organization/department/unit
 Requirements: none
@@ -431,7 +431,7 @@ function ctlt_save_extra_profile_fields( $user_id ) {
 /*
 Function Name: CTLT Automatic Email Reminders
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Sends out a standardized reminder email to all registered participants a day before an event occurs
 Requirements: none
@@ -450,7 +450,7 @@ function ctlt_automatic_email_reminders() {
 	
     global $wpdb;
     
-    $date =  mktime(0, 0, 0, date("m")  , date("d")+1, date("Y"));
+    $date =  mktime(0, 0, 0, date("m")  , date("d")+2, date("Y"));
     
     $sql = "SELECT third_results.id, event_name, start_date, end_date, venue_id, start_time, end_time, name, address, address2, city, state, zip, country, category_id FROM (";
     $sql .= "SELECT second_results.id, event_name, start_date, end_date, venue_id, start_time, end_time, category_id FROM (";
@@ -504,7 +504,7 @@ function ctlt_automatic_email_reminders() {
 /*
 Function Name: CTLT Automatic Waitlist Event Creation
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Automatically creates a waitlist event for events
 Requirements: none
@@ -540,7 +540,7 @@ function ctlt_automatic_waitlist_event($main_event) {
 /*
 Function Name: CTLT Automatic Waitlist Transfer for Administrative Deletion
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Automatically transfers people into events when a site administrator deletes a current registrant
 Requirements: none
@@ -587,7 +587,7 @@ function ctlt_automatic_waitlist_transfer_deletion_by_admin( $attendee_id, $even
 /*
 Function Name: CTLT Automatic Waitlist Transfer for User Deletion
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Automatically transfers people into events when a current registrant delete themselves
 Requirements: events-members plugin
@@ -640,7 +640,7 @@ function ctlt_automatic_waitlist_transfer_for_user( $attendee_id ) {
 /*
 Function Name: CTLT Send Automatic Email Cancellation Message
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Automatically sends cancellation email to attendees when the event is deleted
 Requirements:
@@ -695,7 +695,6 @@ function ctlt_event_espresso_send_cancellation_notice($event_id) {
             $email_body .= ', ' . $org_options['organization_state'];
             $email_body .= '</p><p>' . get_site_url() . '</p>';
             
-            $body = str_replace($tags, $vals, $email_body);
             wp_mail($attendee_email, stripslashes_deep(html_entity_decode($subject, ENT_QUOTES, "UTF-8")), stripslashes_deep(html_entity_decode(wpautop($email_body), ENT_QUOTES, "UTF-8")), $headers);
         }
     }
@@ -704,7 +703,7 @@ function ctlt_event_espresso_send_cancellation_notice($event_id) {
 /*
 Function Name: CTLT Transfer Email
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Automatically sends notification of transfer if attendees are moved from the waitlist to the main event
 Requirements:
@@ -758,7 +757,6 @@ function ctlt_transfer_email( $attendee_id, $event_id ) {
             $email_body .= ', ' . $org_options['organization_state'];
             $email_body .= '</p><p>' . get_site_url() . '</p>';
             
-            $body = str_replace($tags, $vals, $email_body);
             wp_mail($attendee_email, stripslashes_deep(html_entity_decode($subject, ENT_QUOTES, "UTF-8")), stripslashes_deep(html_entity_decode(wpautop($email_body), ENT_QUOTES, "UTF-8")), $headers);
         }
     }
@@ -768,7 +766,7 @@ function ctlt_transfer_email( $attendee_id, $event_id ) {
 /*
 Function Name: CTLT Event Espresso Update Notice
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Automatically sends event update email to organization contact if an event is updated
 Requirements:
@@ -820,7 +818,6 @@ function ctlt_event_espresso_update_notice( $event_info ) {
         $email_body .= '<br /> Venue Name: ' . $venue_name;
         $email_body .= '</p>';
         
-        $body = str_replace($tags, $vals, $email_body);
         wp_mail($org_options['contact_email'], stripslashes_deep(html_entity_decode($subject, ENT_QUOTES, "UTF-8")), stripslashes_deep(html_entity_decode(wpautop($email_body), ENT_QUOTES, "UTF-8")), $headers);
     }
 }
@@ -828,7 +825,7 @@ function ctlt_event_espresso_update_notice( $event_info ) {
 /*
 Function Name: CTLT Event Update Post Tags
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
 Description: Updates the WordPress post associated with an event with tags matching the user categories
 Requirements:
@@ -866,14 +863,41 @@ function ctlt_event_espresso_update_post_tags( $event_info ) {
 }
 
 /*
-Function Name: CTLT Department Options
+Function Name: CTLT Event Creation Admin Notification
 Author: Nathan Sidles
-Contact: nsidles@gmail.com
+Contact: nsidles@mail.ubc.ca.com
 Website:
-Description: Allow maintenance of department options for users to select
+Description: Sends site admin an email when event drafts are created
 Requirements:
 */
 
-function ctlt_add_department_fields() {
-    add_option( 'ctlt_departments', array() );
+add_action( 'action_hook_espresso_insert_event_success', 'ctlt_event_creation_admin_notification', 10, 1 );
+
+function ctlt_event_creation_admin_notification( $event_info ) {
+    
+    global $wpdb;
+    $sql = "SELECT wp_user FROM " . EVENTS_DETAIL_TABLE . " WHERE id = " . $event_info['event_id'];
+    $sql_results = $wpdb->get_results( $sql, ARRAY_A );
+    
+    if($event_info['event_status'] == 'P') {
+        foreach( $sql_results as $sql_result ) {
+            
+            $user_info = get_userdata( $sql_result['wp_user'] );
+            $user_nicename = $user_info->user_nicename;
+            $user_email = $user_info->user_email;
+            
+            $email_message = "Dear Event Managament Staff:\r\n\r\n";
+            $email_message .= $user_nicename . " at " . $user_email . " has created a draft event that needs administrator approval before being published. The event's title is " . $event_info['event'] . " and its ID is " . $event_info['event_id'] . ".\r\n\r\n";
+            $email_message .= "To approve and publish this event, login as an administrator, navigate to the Event Overview event list, select 'Pending' from the event filters, and open the event, and change its status to active. If you are logged in, you may also click the link below to go directly to the event:\r\n\r\n";
+            $email_message .= get_option('siteurl') . "/wp-admin/admin.php?page=events&action=edit&event_id=" . $event_info['event_id'];
+            
+            $email_from = get_option('admin_email');
+            $email_to = get_option('admin_email');
+            $email_subject = "Pending Event Created";
+            
+            wp_mail($email_from, $email_subject, $email_message, $email_to);
+            
+        }
+    }
+   
 }

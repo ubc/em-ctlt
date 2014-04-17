@@ -14,7 +14,7 @@ do_action('action_hook_espresso_log', __FILE__, 'FILE LOADED', '');
 			<p class="instruct">
 				<?php _e('Thank you, ' . $fname . ' ' . $lname . '! Your registration is confirmed for', 'event_espresso');
                  ?>
-	    			<b><?php echo stripslashes_deep($event_name) ?></b>
+	    			<b><a href="<?php echo $event_url; ?>"><?php echo stripslashes_deep($event_name) ?></a></b>
 			</p>
 		</div>
 	  	<p>

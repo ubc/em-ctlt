@@ -80,7 +80,7 @@ $this_event_id = $event_id;
     <?php echo espresso_event_time($event_id, 'start_time') . ' - ' . espresso_event_time($event_id, 'end_time') . '';
         if( $ctlt_noncontiguous == 'yes' ) {
             ?>
-            <br />NOTE: This event occurs on non-contiguous days.
+            <br />NOTE: This event occurs on non-consecutive days and/or locations. See the event description for details.
             <?php
         }
         echo $venue_title != ''?'<br />':'';

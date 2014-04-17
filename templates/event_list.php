@@ -480,25 +480,20 @@ if (!function_exists('event_espresso_get_event_details')) {
 				} else {
 					switch (event_espresso_get_status($event_id)) {
 						case 'NOT_ACTIVE':
-							//Don't show the event
-							//Uncomment the following two lines to show events that are not active and the active status array
-							//print_r( event_espresso_get_is_active($event_id));
-							//include('event_list_display.php');
+
+                            echo '<div class="pending_event">';
+                            if ( empty( $path ) ) {
+                              include( $template_name );
+                            } else {
+                              include( $path );
+                            }
+                            echo '</div>';
+                        
+							break;
 							
 
 						case 'PENDING':
-							if (current_user_can('administrator') || function_exists('espresso_member_data') && espresso_can_view_event($event_id) == true) {
-								//Uncomment to show active status array
-								//print_r( event_espresso_get_is_active($event_id));
-
-								echo '<div class="pending_event">';
-								if ( empty( $path ) ) {
-								  include( $template_name );
-								} else {
-								  include( $path );
-								}
-								echo '</div>';
-							}
+							
 							break;
 
 						default:
