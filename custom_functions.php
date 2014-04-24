@@ -901,3 +901,70 @@ function ctlt_event_creation_admin_notification( $event_info ) {
     }
    
 }
+
+add_action( 'admin_menu', 'ctlt_event_attendees_export_to_html' );
+
+function ctlt_event_attendees_export_to_html( ) {
+
+if( isset($_POST['ctlt_export_to_html']) && !empty($_POST['ctlt_export_to_html']) ) {
+    
+        if ( !isset($_POST['ctlt_espresso_nonce_field']) || !wp_verify_nonce($_POST['ctlt_espresso_nonce_field'],'ctlt_espresso_nonce_check') ) {
+                print 'Sorry, your nonce did not verify. You do not currently have sufficient privileges to save your edits. Please contact the CTLT support team for further information.';
+                exit;
+        } else {
+        
+            global $wpdb;
+        
+            $sql = "SELECT * FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = " . $_GET['event_id'] . " ORDER BY lname";
+        
+            $attendee_results = $wpdb->get_results( $sql, ARRAY_A );
+            
+            $sql = "SELECT * FROM " . EVENTS_DETAIL_TABLE . " WHERE id = " . $_GET['event_id'];
+            
+            $event_results = $wpdb->get_results( $sql, ARRAY_A );
+            
+            ?>
+
+            <style>
+                table,th,td {
+                    border:1px solid black;
+                    border-collapse:collapse;
+                    padding: 10px;
+                }
+            </style>
+
+            <div style="text-align: center;">
+
+                <h1>Attendees for <?php echo $event_results[0]['event_name']; ?></h1>
+
+                <p>Start date: <?php echo $event_results[0]['start_date']; ?></p>
+
+                <table style="text-align: center; width: 100%;">
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Initials</th>
+                    </tr>
+                    <?php
+                        foreach($attendee_results as $attendee) {
+                            ?>
+                                <tr>
+                                    <td><?php echo $attendee['fname']; ?></td>
+                                    <td><?php echo $attendee['lname']; ?></td>
+                                    <td><?php echo $attendee['email']?></td>
+                                    <td></td>
+                                </tr>
+                            <?php
+                        }
+                    ?>
+                </table>
+
+            </div>
+
+            <?php
+            exit;
+        }
+
+    }
+}
