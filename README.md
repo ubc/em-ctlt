@@ -10,6 +10,10 @@ events
 
 CTLT Changes
 
+v.0.22 - added additional reporting for events
+- bug and compatibility fixes
+- added export to html feature
+
 v.0.20 - simplified the templates file, removing the custom CTLT categories files
       - removed extraneous themeroller files
       - updated information displayed in event lists, registration events

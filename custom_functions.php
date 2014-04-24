@@ -902,6 +902,15 @@ function ctlt_event_creation_admin_notification( $event_info ) {
    
 }
 
+/*
+Function Name: CTLT Attendees Export to HTML
+Author: Nathan Sidles
+Contact: nsidles@mail.ubc.ca.com
+Website:
+Description: Exports attendee information to a printable html page
+Requirements:
+*/
+
 add_action( 'admin_menu', 'ctlt_event_attendees_export_to_html' );
 
 function ctlt_event_attendees_export_to_html( ) {
@@ -915,11 +924,28 @@ if( isset($_POST['ctlt_export_to_html']) && !empty($_POST['ctlt_export_to_html']
         
             global $wpdb;
         
-            $sql = "SELECT * FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = " . $_GET['event_id'] . " ORDER BY lname";
+            $sql = "SELECT fname, lname, payment_status, Type, Organization, Faculty, Department, Other_Unit, PhoneNumber, email FROM ( ";
+
+            $sql .= "SELECT event_id, fname, lname, payment_status, email, Type, MAX(CASE WHEN meta_key = 'event_espresso_organization' THEN meta_value END) as Organization, MAX(CASE WHEN meta_key = 'event_espresso_faculty' THEN meta_value END) as Faculty, MAX(CASE WHEN meta_key = 'event_espresso_department' THEN meta_value END) as Department, MAX(CASE WHEN meta_key = 'event_espresso_other_unit' THEN meta_value END) as Other_Unit, MAX(CASE WHEN meta_key = 'event_espresso_phone_number' THEN meta_value END) as PhoneNumber, attendee_id FROM ( ";
+
+            $sql .= "SELECT second_results.event_id, second_results.attendee_id, fname, lname, payment_status, email, Type, user_id FROM ( ";
+
+            $sql .= "SELECT event_id, first_results.attendee_id as attendee_id, fname, lname, payment_status, email, MAX(CASE WHEN " . EVENTS_ANSWER_TABLE . ".question_id IN (SELECT id FROM " . EVENTS_QUESTION_TABLE . " WHERE question = 'Attending As') THEN " . EVENTS_ANSWER_TABLE . ".answer END) as Type FROM ( ";
+
+            $sql .= "SELECT id as attendee_id, fname, lname, payment_status, email, event_id FROM " . EVENTS_ATTENDEE_TABLE . " WHERE event_id = " . $_GET['event_id'];
+
+            $sql .= ") AS first_results ";
+            $sql .= "INNER JOIN " . EVENTS_ANSWER_TABLE . " ON " . EVENTS_ANSWER_TABLE . ".attendee_id = first_results.attendee_id GROUP BY first_results.attendee_id) AS second_results ";
+            $sql .= "INNER JOIN " . EVENTS_MEMBER_REL_TABLE . " ON " . EVENTS_MEMBER_REL_TABLE . ".attendee_id = second_results.attendee_id ";
+            $sql .= ") AS third_results ";
+            $sql .= "INNER JOIN " . $wpdb->prefix . "usermeta ON " . $wpdb->prefix . "usermeta.user_id = third_results.user_id GROUP BY attendee_id ";
+            $sql .= ") AS fourth_results ";
         
             $attendee_results = $wpdb->get_results( $sql, ARRAY_A );
             
-            $sql = "SELECT * FROM " . EVENTS_DETAIL_TABLE . " WHERE id = " . $_GET['event_id'];
+            $sql = "SELECT * FROM (SELECT * FROM " . EVENTS_DETAIL_TABLE . " WHERE id = " . $_GET['event_id'] . ") ";
+            
+            $sql .= "as first_results LEFT JOIN " . $wpdb->prefix . "events_start_end ON " . $wpdb->prefix . "events_start_end.event_id = first_results.id";
             
             $event_results = $wpdb->get_results( $sql, ARRAY_A );
             
@@ -931,19 +957,26 @@ if( isset($_POST['ctlt_export_to_html']) && !empty($_POST['ctlt_export_to_html']
                     border-collapse:collapse;
                     padding: 10px;
                 }
+                td {
+                    font-size: 12px;
+                }
             </style>
 
             <div style="text-align: center;">
 
                 <h1>Attendees for <?php echo $event_results[0]['event_name']; ?></h1>
 
-                <p>Start date: <?php echo $event_results[0]['start_date']; ?></p>
+                <p>Start date: <?php echo $event_results[0]['start_date']; ?>; Start time: <?php echo $event_results[0]['start_time']; ?> - <?php echo $event_results[0]['end_time']; ?></p>
 
                 <table style="text-align: center; width: 100%;">
                     <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
+                        <th>Attending As</th>
+                        <th>Organization</th>
+                        <th>Faculty</th>
+                        <th>Department</th>
                         <th>Initials</th>
                     </tr>
                     <?php
@@ -953,6 +986,10 @@ if( isset($_POST['ctlt_export_to_html']) && !empty($_POST['ctlt_export_to_html']
                                     <td><?php echo $attendee['fname']; ?></td>
                                     <td><?php echo $attendee['lname']; ?></td>
                                     <td><?php echo $attendee['email']?></td>
+                                    <td><?php echo $attendee['Type']?></td>
+                                    <td><?php echo $attendee['Organization']?></td>
+                                    <td><?php echo $attendee['Faculty']?></td>
+                                    <td><?php echo $attendee['Department']?></td>
                                     <td></td>
                                 </tr>
                             <?php
