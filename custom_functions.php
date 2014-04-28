@@ -338,7 +338,7 @@ function ctlt_profile_fields( $user ) {
     $org_data = unserialize($org_data);
     
     wp_enqueue_script( 'ctlt_profile_information_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'js/ctlt_profile_information.js', array( 'jquery' ), '1.0.0', true );
-    wp_localize_script( 'ctlt_profile_information_js', 'ctlt_profile_infomration_js_url', "../wp-content/uploads/espresso/organization/ubcdepartments.php?type=json" );
+    wp_localize_script( 'ctlt_profile_information_js', 'ctlt_profile_information_js_url', "../wp-content/uploads/espresso/organization/ubcdepartments.php?type=json" );
 
     ?>
 
@@ -465,7 +465,7 @@ function ctlt_automatic_email_reminders() {
     foreach( $daily_events as $daily_event ) {
     
         $daily_event_subject = "";
-        $daily_event_message = "You are currently registered for " . $daily_event['event_name'] . ".\r\n\r\n The event starts tomorrow at " . $daily_event['start_time'];
+        $daily_event_message = "You are currently registered for " . $daily_event['event_name'] . ".\r\n\r\n The event starts two days from now at " . $daily_event['start_time'];
         if( $daily_event['name'] != '' ) {
             $daily_event_message .= " at " . $daily_event['name'];
             if( $daily_event['address'] != '') {
