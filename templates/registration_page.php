@@ -88,7 +88,7 @@ if (!function_exists('register_attendees')) {
 			//If a single event needs to be displayed, get its ID
             $sql .= " AND event_identifier = '" . $single_event_id . "' ";
         } else {
-			$sql.= " AND e.id = '" . $event_id . "' LIMIT 0,1";
+			$sql.= " AND e.id = %d LIMIT 0,1";
         }
 
         //Support for diarise
@@ -99,7 +99,7 @@ if (!function_exists('register_attendees')) {
             $sql .= " LIMIT 0,1";
         }
 		
-        $data->event = $wpdb->get_row( $wpdb->prepare( $sql, NULL ), OBJECT);
+        $data->event = $wpdb->get_row( $wpdb->prepare( $sql, $event_id ), OBJECT);
         $num_rows = $wpdb->num_rows;
 
         //Build the registration page
@@ -150,16 +150,12 @@ if (!function_exists('register_attendees')) {
             }
             
             // Retrieve faculty and department information
-            ob_start(); 
-            require_once( ABSPATH . "/wp-content/uploads/espresso/organization/ubcdepartments.php" );
+            ob_start();
             $org_data = ob_get_contents();
             ob_end_clean();
             
             $org_data = unserialize($org_data);
-            
-            wp_enqueue_script( 'ctlt_profile_information_js', trailingslashit( EVENT_ESPRESSO_UPLOAD_URL ) . 'js/ctlt_profile_information.js', array( 'jquery' ), '1.0.0', true );
-            
-            wp_localize_script( 'ctlt_profile_information_js', 'ctlt_profile_infomration_js_url', "wp-content/uploads/espresso/organization/ubcdepartments.php?type=json" );
+        
             
             // Verify that user meta information is appropriately filled out
             $user_id = get_current_user_id();

@@ -3,16 +3,22 @@ em-ctlt
 
 events
 
-* IMPORTANT: THIS IS NOT A PLUGIN OR THEME REPO. 
+* IMPORTANT: THIS IS NOT A PLUGIN OR THEME REPO.
+* IMPORTANT: SOME CHANGES DEPEND ON CUSTOM CTLT CHANGES TO EVENT ESPRESSO CORE PLUGINS. SEE DOCS.md FOR MORE INFORMATION. 
 * This is only to work on template customization for Events Espresso. (see https://eventespresso.com/wiki/put-custom-templates/)
+
+See DOCS.md for more explanation.
 
 == changelog ==
 
 CTLT Changes
 
+v.0.23 - corrected SQL
+       - improved documentation
+
 v.0.22 - added additional reporting for events
-- bug and compatibility fixes
-- added export to html feature
+      - bug and compatibility fixes
+      - added export to html feature
 
 v.0.20 - simplified the templates file, removing the custom CTLT categories files
       - removed extraneous themeroller files

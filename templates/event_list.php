@@ -324,20 +324,22 @@ if (!function_exists('event_espresso_get_event_details')) {
             $already_registered = FALSE;
             if( is_user_logged_in() ) {
                 $attendee_ids = $wpdb->get_results( $wpdb->prepare( "SELECT attendee_id FROM ". EVENTS_MEMBER_REL_TABLE . " WHERE user_id = '%d'", get_current_user_id() ) );
-                $cs_attendee_ids = array();
-                $sql = "SELECT event_id FROM " .    EVENTS_ATTENDEE_TABLE . " WHERE payment_status != 'Cancelled' AND id IN (";
-                foreach( $attendee_ids as $attendee_id ) {
-                    array_push($cs_attendee_ids, $attendee_id->attendee_id);
-                    $sql .= "%s";
-                    if ( $attendee_id != end( $attendee_ids ) ) {
-                        $sql .= ",";
+                if( count( $attendee_ids > 0 ) ) {
+                    $cs_attendee_ids = array();
+                    $sql = "SELECT event_id FROM " .    EVENTS_ATTENDEE_TABLE . " WHERE payment_status != 'Cancelled' AND id IN (";
+                    foreach( $attendee_ids as $attendee_id ) {
+                        array_push($cs_attendee_ids, $attendee_id->attendee_id);
+                        $sql .= "%s";
+                        if ( $attendee_id != end( $attendee_ids ) ) {
+                            $sql .= ",";
+                        }
                     }
-                }
-                $sql .= ")";
-                $attended_event_ids = $wpdb->get_results( $wpdb->prepare( $sql, $cs_attendee_ids ) );
-                foreach( $attended_event_ids as $attended_event_id ) {
-                    if( $event_id == $attended_event_id->event_id ) {
-                        $already_registered = TRUE;
+                    $sql .= ")";
+                    $attended_event_ids = $wpdb->get_results( $wpdb->prepare( $sql, $cs_attendee_ids ) );
+                    foreach( $attended_event_ids as $attended_event_id ) {
+                        if( $event_id == $attended_event_id->event_id ) {
+                            $already_registered = TRUE;
+                        }
                     }
                 }
             }

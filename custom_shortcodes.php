@@ -227,8 +227,8 @@ Shortcode Name: CTLT Event Search
 Author: Nathan Sidles
 Contact: nsidles@ubc.ca
 Website:
-Description: Shortcode to display a list of event materials
-Usage Example: [CTLT_EVENT_MATERIALS_LIST]
+Description: Shortcode to display a searchable database of events
+Usage Example: [CTLT_EVENT_SEARCH]
 Notes: This file should be stored in your "/wp-content/uploads/espresso/" directory.
 */
 function ctlt_autocomplete_search(){
