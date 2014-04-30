@@ -274,3 +274,13 @@ if (isset($reg_limit) && empty($reg_limit)) {
 The second change is after the "if ( isset( $_REQUEST[ 'create_post' ] ) ) " clause:
 
 do_action( 'ctlt_espresso_update_event', $event_id );
+
+
+## event-espresso/includes/event-management/edit_event.php
+
+This change allows event managers to edit events only before they are published. It occurs just after the "$values = array(" assignment clause:
+
+if (function_exists('espresso_is_my_event') && espresso_is_my_event($event_id) != true && $event->event_status != 'P' ) {
+	echo '<h2>' . __('Sorry, you do not have permission to edit this event.', 'event_espresso') . '</h2>';
+	return;
+}

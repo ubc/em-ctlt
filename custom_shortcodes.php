@@ -213,8 +213,7 @@ function ctlt_event_materials_list( $event_id ) {
         $materials_list .= "<p>";
         $materials_list .= "<strong>" . $event->event_name . "</strong> - ";
         $materials_list .= date("F j, Y", strtotime("$event->start_date"));
-        $upload_base_dir['baseurl'] .= "<br />";
-        $materials_list .= '<a href="' . $upload_base_dir['baseurl'] . '/' . $event->attachment_url . '">Media</a> (right-click to download)';
+        $materials_list .= ' <a href="' . $upload_base_dir['baseurl'] . '/' . $event->attachment_url . '">Media</a> (right-click to download)';
         $materials_list .= "</p>";
     }
     
