@@ -27,13 +27,13 @@ class ubcdepartments {
         if( isset( $_GET['dates_url'] ) ) {
             $ubc_units_dates = fopen( $_GET['dates_url'], "r" );
         } else {
-            $ubc_units_dates = fopen( "http://citykindaguy.com/ubcdepartments/ps_dept_tbl.csv", "r" );
+            $ubc_units_dates = fopen( "http://em.ctlt.ubc.ca/ps_dept_tbl.csv", "r" );
         }
         
         if( isset( $_GET['organization_url'] ) ) {
               $ubc_units_organization = fopen( $_GET['organization_url'], "r");
         } else {
-              $ubc_units_organization = fopen( "http://citykindaguy.com/ubcdepartments/ps_ubc_findnode.csv", "r" );
+              $ubc_units_organization = fopen( "http://em.ctlt.ubc.ca/ps_ubc_findnode.csv", "r" );
         }
         
         $data = $this->parse_data_to_array( $ubc_units_dates, $ubc_units_organization );
