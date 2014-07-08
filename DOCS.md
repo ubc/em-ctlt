@@ -284,3 +284,9 @@ if (function_exists('espresso_is_my_event') && espresso_is_my_event($event_id) !
 	echo '<h2>' . __('Sorry, you do not have permission to edit this event.', 'event_espresso') . '</h2>';
 	return;
 }
+
+## event-espresso/includes/functions/admin.php
+
+This change removes some extra comments created by event-espresso that lists directory and files (just commented out line 1419).
+
+//add_action('wp_footer', 'espresso_files_in_uploads', 20);
